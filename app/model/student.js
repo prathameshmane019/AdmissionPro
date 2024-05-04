@@ -46,8 +46,22 @@ const studentSchema = new Schema(
         type: Double,
      },
    
-    
-    
+     mobile: {
+        type: String,
+       
+      },
+      Pmobile: {
+        type: String,
+       
+      },
+      gmail: {
+        type: String,
+       
+      },
+      Pgmail: {
+        type: String,
+       
+      },
     pwd: {
       type: String,
       

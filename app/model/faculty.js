@@ -17,7 +17,6 @@ const facultySchema = new Schema(
         type: String,
        
       },
-     
      Gender:{
         type:String,
      },
@@ -38,16 +37,12 @@ const facultySchema = new Schema(
      mobile:{
         type: String,
      },
-     
-   
-    
     
     pwd: {
       type: String,
       
     },
-    
-   
+
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields

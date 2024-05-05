@@ -21,6 +21,10 @@ const sidebarItems = [
     name: "Manage Faculty",
     href: "/admin/faculty",
     icon: MdOutlineManageAccounts,
+  },{
+    name: "Manage Students",
+    href: "/admin/students",
+    icon: MdOutlineManageAccounts,
   },
   {
     name: "Profile",

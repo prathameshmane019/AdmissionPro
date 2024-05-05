@@ -1,4 +1,3 @@
-import FacultyTable from '@/app/components/facultyTable'
 import React from 'react'
 
 const page = () => {

@@ -5,29 +5,29 @@ const { Schema, model } = mongoose;
 
 const facultySchema = new Schema(
   {
-    Name: {
+    firstname: {
       type: String,
       required: true,
     },
-    FName: {
+    fathername: {
         type: String,
        
       },
-      LName: {
+      lastname: {
         type: String,
        
       },
      
-     Gender:{
+     gender:{
         type:String,
      },
-     DOB:{
+     dob:{
         type:String,
      },
-     Role:{
+     role:{
         type:String,
      },
-     Department:{
+     department:{
         type:String,
      },
 
@@ -39,7 +39,7 @@ const facultySchema = new Schema(
         type: String,
      },
      
-   
+   students :[],
     
     
     pwd: {

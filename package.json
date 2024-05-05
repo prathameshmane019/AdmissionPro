@@ -11,7 +11,9 @@
   "dependencies": {
     "@nextui-org/react": "^2.3.6",
     "axios": "^1.6.8",
+    "formidable": "^3.5.1",
     "framer-motion": "^11.1.7",
+    "moment": "^2.30.1",
     "mongodb": "^6.6.0",
     "mongoose": "^8.3.3",
     "next": "14.2.3",
@@ -19,7 +21,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.2.0",
-    "sonner": "^1.4.41"
+    "sonner": "^1.4.41",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "^8",

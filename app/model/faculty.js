@@ -1,24 +1,21 @@
-import { Double } from 'mongodb';
+
 import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
 const facultySchema = new Schema(
   {
-    firstname: {
+    firstName: {
       type: String,
-      required: true,
     },
-    fathername: {
+    fatherName: {
         type: String,
        
       },
-      lastname: {
+      lastName: {
         type: String,
        
       },
-
-     
      gender:{
 
         type:String,
@@ -32,21 +29,16 @@ const facultySchema = new Schema(
      department:{
         type:String,
      },
-
-     
-     gmail:{
+     email:{
         type: String,
      },
      mobile:{
         type: String,
      },     
    students :[],
-
     pwd: {
-      type: String,
-      
+      type: String,  
     },
-
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields

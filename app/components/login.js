@@ -22,6 +22,9 @@ export default function LoginComponent() {
     if (session?.user?.role === "admin") {
       router.replace("/admin");      
     }
+    if (session?.user?.role === "faculty") {
+      router.replace("/faculty");      
+    }
     console.log(session);
   }, [session,router]);
 
@@ -61,7 +64,7 @@ export default function LoginComponent() {
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
             className="mb-4"
-            placeholder="User ID"
+            placeholder="User Email Address"
           />
           <Input
             label="Password"

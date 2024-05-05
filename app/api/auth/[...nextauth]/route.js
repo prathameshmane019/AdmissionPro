@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectMongoDB} from "@/app/lib/connectDb"
+import { connectMongoDB } from "@/app/lib/connectDb";
 import Faculty from '@/app/model/faculty';
 
 export const authOptions = ({
@@ -11,36 +11,26 @@ export const authOptions = ({
       async authorize(credentials) {
         try {
           await connectMongoDB();
-      
-          const Id = credentials.userId;
+          const email = credentials.userId;
           const password = credentials.password;
-          let userRole;
-          let id;
-          console.log(credentials);
-          const user = await Faculty.findOne({ _id: Id });
-          console.log(department);
-          if (user._id.startsWith("A")) {
-            userRole = "admin";
-            id = admin._id;
-          }
-          else if(user){
-            userRole = "faculty";
-            id = admin._id;
-          } else {
+console.log(email);
+          // Find user by email
+          const user = await Faculty.findOne({ email });
+console.log(user);
+          if (!user) {
+            // User not found
             return null;
           }
-          const isVerified = (user && user.password === password);
-          console.log(isVerified);
-          if (isVerified) {
-            const userWithRole = {
-              ...user?.toObject(), // Optional chaining to prevent errors if user is null
-              role: userRole,
-              id: id,// Add department name to user object
-            };
-            return Promise.resolve(userWithRole);
-          } else {
-            return null; // Return null if credentials are invalid
+
+          const isVerified = (user.pwd === password);
+
+          if (!isVerified) {
+            return null;
           }
+
+          const userRole = user.isAdmin ? "admin" : "faculty";
+
+          return { ...user.toObject(), role: userRole };
         } catch (error) {
           console.error('Error during authorization:', error);
           return null;
@@ -50,8 +40,8 @@ export const authOptions = ({
   ],
   session: {
     sessionCallback: async (session, user) => {
-      session.user = { ...user, role: user.role, id: user.id}; // Add department name to the session
-      return Promise.resolve(session);
+      session.user = { ...user, role: user.role }; 
+      return session;
     },
   },
   callbacks: {
@@ -59,20 +49,18 @@ export const authOptions = ({
       if (account) {
         token.accessToken = account.access_token;
         token.role = user.role;
-        token.id = user.id; // Add department name to the token
       }
       return token;
     },
     async session({ session, token }) {
       session.user.accessToken = token.accessToken;
       session.user.role = token.role;
-      session.user.id = token.id; // Add department name to the session
       return session;
     }
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/", // Customize the sign-in page route as needed
+    signIn: "/",
   },
 });
 

@@ -6,7 +6,7 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "@nextui-org/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation"; 

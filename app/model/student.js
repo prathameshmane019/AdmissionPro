@@ -1,56 +1,59 @@
-import { Double } from 'mongodb';
+
 import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
 const studentSchema = new Schema(
   {
-    Name: {
+    firstName: {
       type: String,
       required: true,
     },
-    FName: {
+    fatherName: {
         type: String,
        
       },
-      LName: {
+      lastName: {
         type: String,
        
       },
-      MName: {
+      motherName: {
         type: String,
        
       },
      Gender:{
         type:String,
      },
-     DOB:{
+     dob:{
         type:String,
      },
-     Category:{
+     category:{
         type:String,
      },
-     Disability:{
+     disability:{
         type:String,
      },
-     HSC:{
-        type: Double,
+     hsc:{
+        type: Number,
      },
      SSC:{
-        type: Double,
+        type: Number,
      },
-     CET:{
-        type: Double,
+     cet:{
+        type: Number,
      },
-     JEE:{
-        type: Double,
+     pcm:{
+      type: Number,
+   },
+     jee:{
+        type: Number,
      },
-   
+  
      mobile: {
         type: String,
        
       },
-      Pmobile: {
+      parentMobile: {
         type: String,
        
       },
@@ -58,16 +61,7 @@ const studentSchema = new Schema(
         type: String,
        
       },
-      Pgmail: {
-        type: String,
-       
-      },
-    pwd: {
-      type: String,
-      
-    },
     
-   
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields

@@ -316,6 +316,20 @@ export default function TableComponent() {
                         >
                             Add New
                         </Button>
+                        <Button
+                className="bg-foreground text-background"
+                size="sm"
+                onClick={() => document.getElementById('fileInput').click()}
+            >
+                Import
+                <input
+                    id="fileInput"
+                    type="file"
+                    accept=".csv"
+                    style={{ display: 'none' }}
+                    onChange={handleImport}
+                />
+            </Button>
                     </div>
                 </div>
                 <div className="flex justify-between items-center">

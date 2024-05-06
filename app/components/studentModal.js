@@ -21,7 +21,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
     pcm: 0,
     mobile: "",
     parentMobile: "",
-    gmail: "",
+    email: "",
   });
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         pcm: user.pcm || 0,
         mobile: user.mobile || "",
         parentMobile: user.parentMobile || "",
-        gmail: user.gmail || "",
+        email: user.email || "",
       });
     } else {
       setFormData({
@@ -61,7 +61,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         pcm: 0,
         mobile: "",
         parentMobile: "",
-        gmail: "",
+        email: "",
       });
     }
   }, [isOpen, mode, user]);
@@ -140,7 +140,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <p>Parent's Mobile: {user.parentMobile}</p>
                 </div>
                 <div>
-                  <p>Email: {user.gmail}</p>
+                  <p>Email: {user.email}</p>
                 </div>
               </div>
             )}
@@ -192,7 +192,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="parentMobile" label="Parent's Mobile" value={formData.parentMobile} onChange={handleChange} />
                 </div>
                 <div>
-                  <Input name="gmail" label="Email" value={formData.gmail} onChange={handleChange} required />
+                  <Input name="email" label="Email" value={formData.email} onChange={handleChange} required />
                 </div>
               </div>
             )}

@@ -23,7 +23,7 @@ export async function POST(req) {
             pcm,
             mobile,
             parentMobile,
-            gmail,
+            email,
         } = data;
 
         const newStudent = new Student({
@@ -42,12 +42,13 @@ export async function POST(req) {
             pcm,
             mobile,
             parentMobile,
-            gmail,
+            email,
         });
 
         await newStudent.save();
 
         console.log("Student created successfully");
+        console.log(newStudent);
         return NextResponse.json({ message: "Student created successfully", student: newStudent });
     } catch (error) {
         console.log(error);
@@ -74,10 +75,8 @@ export async function GET() {
 export async function DELETE(req) {
     try {
         await connectMongoDB();
-
         const { searchParams } = new URL(req.url);
         const _id = searchParams.get("_id");
-
         const deleted = await Student.findByIdAndDelete(_id);
 
         if (!deleted) {
@@ -115,7 +114,7 @@ export async function PUT(req) {
             pcm,
             mobile,
             parentMobile,
-            gmail,
+            email,
         } = data;
 
         const updatedStudent = await Student.findByIdAndUpdate(
@@ -136,7 +135,7 @@ export async function PUT(req) {
                 pcm,
                 mobile,
                 parentMobile,
-                gmail,
+                email,
             },
             { new: true }
         );

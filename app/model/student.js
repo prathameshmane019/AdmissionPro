@@ -57,7 +57,7 @@ const studentSchema = new Schema(
         type: String,
        
       },
-      gmail: {
+      email: {
         type: String,
        
       },

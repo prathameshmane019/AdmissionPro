@@ -80,6 +80,7 @@ export default function TableComponent() {
             const response = await fetch('/api/students');
             const data = await response.json();
             setUsers(data.students);
+            console.log(students);
         } catch (error) {
             console.error('Error fetching users:', error);
         }
@@ -110,8 +111,8 @@ export default function TableComponent() {
         let filteredUsers = [...users];
 
         if (hasSearchFilter) {
-            filteredUsers = filteredUsers.filter((user) =>
-                user.name.toLowerCase().includes(filterValue.toLowerCase())
+            filteredUsers = filteredUsers.filter((user) =>(
+                user.firstName.toLowerCase().includes(filterValue.toLowerCase()) || user.lastName.toLowerCase().includes(filterValue.toLowerCase()))
             );
         }
         if (statusFilter !== "all" && statusFilter.size !== statusOptions.length) {

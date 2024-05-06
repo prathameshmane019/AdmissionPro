@@ -1,5 +1,5 @@
-import db from '../../utils/db'; // Import your database connection
-import { Product } from '../../models/Product'; // Import your Product model
+// import db from '../../utils/db'; // Import your database connection
+// import { Product } from '../../models/Product'; // Import your Product model
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

@@ -3,6 +3,7 @@ import React, { useState,useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
 import axios from "axios";
 
+
 const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
   
   const [formData, setFormData] = useState({

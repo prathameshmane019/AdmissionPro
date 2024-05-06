@@ -8,11 +8,15 @@ import { MongoDBClient } from 'mongodb';
 import { connectMongoDB } from '@/app/lib/connectDb';
 import { NextResponse } from 'next/server';
 import Upload from "@/app/model/upload";
-export const config = {
+
+
+export const __routeConfig = {
+  // new configuration format
   api: {
     bodyParser: false,
   },
 };
+
 
 export  async function POST(req, res) {
 

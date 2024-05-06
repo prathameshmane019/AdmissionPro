@@ -1,14 +1,12 @@
-
-import React from 'react';
-import Search from './components/search'; // Import the Search component
-
-const Page = () => {
+import React from 'react'
+// import TableComponent from './components/table'
+import FileUpload from './components/index'
+const page = () => {
   return (
     <div className='mx-10 mt-10'>
-      <Search />
+      <FileUpload/>
     </div>
-  );
-};
+  )
+}
 
-export default Page;
-
+export default page

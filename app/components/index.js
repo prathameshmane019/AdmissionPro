@@ -1,51 +1,56 @@
-// pages/index.js
 "use client"
-import { useState } from 'react';
-import axios from 'axios';
-import { useDropzone } from 'react-dropzone';
+import React, { useState } from "react";
+import axios from "axios";
+import Papa from 'papaparse';
 
 const UploadPage = () => {
-  const [file, setFile] = useState(null);
+  const [jsonData, setJsonData] = useState(null);
 
-  const onDrop = async (acceptedFiles) => {
-    const formData = new FormData();
-    formData.append('file', acceptedFiles[0]);
-
-    try {
-      const response = await axios.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        complete: (result) => {
+          setJsonData(result.data);
+        },
+        error: (error) => {
+          console.error('Error parsing CSV: ', error);
         }
       });
-      console.log(response.data); // Log response from server
-    } catch (error) {
-      console.error('Error uploading file:', error);
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const handleUpload = async () => {
+    try {
+      // Check if jsonData is available
+      if (!jsonData) {
+        console.error('No JSON data available for upload');
+        return;
+      }
+
+      // Send jsonData to the server
+      const response = await axios.post("/api/upload", { jsonData });
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error uploading data:', error);
+    }
+  };
 
   return (
     <div>
-      <div {...getRootProps()} style={dropzoneStyle}>
-        <input {...getInputProps()} />
-        {
-          isDragActive ?
-            <p>Drop the files here ...</p> :
-            <p>Drag 'n' drop a CSV file here, or click to select one</p>
-        }
-      </div>
+      <input type="file" onChange={handleFileUpload} />
+      <button onClick={handleUpload} disabled={!jsonData}>
+        Upload Data
+      </button>
+      {jsonData && (
+        <div>
+          <h2>Converted JSON Data:</h2>
+          <pre>{JSON.stringify(jsonData, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
-};
-
-const dropzoneStyle = {
-  border: '2px dashed #cccccc',
-  borderRadius: '4px',
-  padding: '20px',
-  textAlign: 'center',
-  cursor: 'pointer',
-  marginTop: '20px'
 };
 
 export default UploadPage;

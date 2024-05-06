@@ -58,7 +58,7 @@ export default function TableComponent() {
     const [selectedKeys, setSelectedKeys] = useState(new Set());
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
     const [statusFilter, setStatusFilter] = useState("all");
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(15);
     const [sortDescriptor, setSortDescriptor] = useState({
         column: "name", // Change default sorting column here
         direction: "ascending",
@@ -235,7 +235,6 @@ export default function TableComponent() {
     };
 
     const handleModalSubmit = () => {
-        console.log("Modal submit:", modalMode, selectedUser);
         handleModalClose();
     };
 

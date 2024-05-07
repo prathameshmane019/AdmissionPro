@@ -66,7 +66,6 @@ module.exports = {
               950:"#3b0764"
             },
           },
-          // ... rest of the colors
         },
         mytheme: {
           extend: "dark",

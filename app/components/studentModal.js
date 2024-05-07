@@ -20,9 +20,13 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
     cet: 0,
     jee: 0,
     pcm: 0,
+    group: "",
     mobile: "",
     parentMobile: "",
     email: "",
+     address: "",
+     branch: "",
+     remark: "",
   });
 
   useEffect(() => {
@@ -46,6 +50,8 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         parentMobile: user.parentMobile || "",
         email: user.email || "",
         address: user.address || "",
+        branch: user.branch || "",
+        remark: user.remark || "",
       });
     } else {
       setFormData({
@@ -67,6 +73,8 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         parentMobile: "",
         email: "",
         address: "",
+        branch: "",
+        remark: "",
       });
     }
   }, [isOpen, mode, user]);
@@ -153,6 +161,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                 <div>
                   <p>Address: {user.address}</p>
                 </div>
+                <div>
+                  <p>Interested Branch: {user.branch}</p>
+                </div>
+                <div>
+                  <p>Remark: {user.remark}</p>
+                </div>
               </div>
             )}
             {(mode === "edit" || mode === "add") && (
@@ -210,6 +224,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                 </div>
                 <div>
                   <Input name="address" label="Address" value={formData.address} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="branch" label=" Interested Branch" value={formData.branch} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="remark" label="Remark" value={formData.remark} onChange={handleChange} required />
                 </div>
               </div>
             )}

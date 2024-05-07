@@ -69,7 +69,14 @@ const studentSchema = new Schema(
         type: String,
        
       },
-    
+      branch: {
+        type: String,
+       
+      },
+      remark: {
+        type: String,
+       
+      },
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields

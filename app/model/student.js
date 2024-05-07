@@ -48,6 +48,10 @@ const studentSchema = new Schema(
      jee:{
         type: Number,
      },
+     group: {
+      type: String,
+     
+    },
   
      mobile: {
         type: String,
@@ -58,6 +62,10 @@ const studentSchema = new Schema(
        
       },
       email: {
+        type: String,
+       
+      },
+      address: {
         type: String,
        
       },

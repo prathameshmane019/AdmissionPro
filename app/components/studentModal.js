@@ -41,9 +41,11 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         cet: user.cet || 0,
         jee: user.jee || 0,
         pcm: user.pcm || 0,
+        group: user.group || "",
         mobile: user.mobile || "",
         parentMobile: user.parentMobile || "",
         email: user.email || "",
+        address: user.address || "",
       });
     } else {
       setFormData({
@@ -60,9 +62,11 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         cet: 0,
         jee: 0,
         pcm: 0,
+        group: "",
         mobile: "",
         parentMobile: "",
         email: "",
+        address: "",
       });
     }
   }, [isOpen, mode, user]);
@@ -135,6 +139,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <p>PCM Group: {user.pcm}</p>
                 </div>
                 <div>
+                  <p>Group: {user.group}</p>
+                </div>
+                <div>
                   <p>Mobile: {user.mobile}</p>
                 </div>
                 <div>
@@ -142,6 +149,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                 </div>
                 <div>
                   <p>Email: {user.email}</p>
+                </div>
+                <div>
+                  <p>Address: {user.address}</p>
                 </div>
               </div>
             )}
@@ -187,6 +197,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="pcm" label="PCM Group" value={formData.pcm} onChange={handleChange} type="number" />
                 </div>
                 <div>
+                  <Input name="group" label="Group" value={formData.group} onChange={handleChange} required />
+                </div>
+                <div>
                   <Input name="mobile" label="Mobile" value={formData.mobile} onChange={handleChange} required />
                 </div>
                 <div>
@@ -194,6 +207,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                 </div>
                 <div>
                   <Input name="email" label="Email" value={formData.email} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="address" label="Address" value={formData.address} onChange={handleChange} required />
                 </div>
               </div>
             )}

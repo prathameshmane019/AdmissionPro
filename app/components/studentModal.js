@@ -67,6 +67,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         parentMobile: "",
         email: "",
         address: "",
+        branch: "",
       });
     }
   }, [isOpen, mode, user]);
@@ -153,6 +154,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                 <div>
                   <p>Address: {user.address}</p>
                 </div>
+                <div>
+                  <p>Interested Branch: {user.branch}</p>
+                </div>
+                <div>
+                  <p>Remark: {user.remark}</p>
+                </div>
               </div>
             )}
             {(mode === "edit" || mode === "add") && (
@@ -210,6 +217,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                 </div>
                 <div>
                   <Input name="address" label="Address" value={formData.address} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="branch" label=" Interested Branch" value={formData.branch} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="remark" label="Remark" value={formData.remark} onChange={handleChange} required />
                 </div>
               </div>
             )}

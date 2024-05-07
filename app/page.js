@@ -33,7 +33,7 @@ export default function Home() {
         <section className="text-center my-12">
           <h1 className="text-5xl font-bold text-blue-500 mb-4"> Admission Management System for Engineering College</h1>
           <p className="text-gray-600 text-lg mb-8">Do the Admission processes with Admission Pro.</p>
-          <Link href="/givefeedback" ><button  className="bg-blue-500 text-white px-8 py-3 rounded-full hover:bg-blue-600 shadow-lg">Let&#39;s Start </button></Link>
+          <Link href="/login" ><button  className="bg-blue-500 text-white px-8 py-3 rounded-full hover:bg-blue-600 shadow-lg">Let&#39;s Start </button></Link>
         </section>
 
         <section className="text-center my-12">

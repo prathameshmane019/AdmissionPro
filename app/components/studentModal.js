@@ -3,6 +3,7 @@ import React, { useState,useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
 import axios from "axios";
 
+
 const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
   
   const [formData, setFormData] = useState({
@@ -101,10 +102,10 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <p>Name: {user.firstName} {user.lastName}</p>
                 </div>
                 <div>
-                  <p>Father's Name: {user.fatherName}</p>
+                  <p>Father&#39;s Name: {user.fatherName}</p>
                 </div>
                 <div>
-                  <p>Mother's Name: {user.motherName}</p>
+                  <p>Mother&#39;s Name: {user.motherName}</p>
                 </div>
                 <div>
                   <p>Gender: {user.Gender}</p>
@@ -137,7 +138,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <p>Mobile: {user.mobile}</p>
                 </div>
                 <div>
-                  <p>Parent's Mobile: {user.parentMobile}</p>
+                  <p>Parent&#39;s Mobile: {user.parentMobile}</p>
                 </div>
                 <div>
                   <p>Email: {user.email}</p>
@@ -153,10 +154,10 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="lastName" label="Last Name" value={formData.lastName} onChange={handleChange} />
                 </div>
                 <div>
-                  <Input name="fatherName" label="Father's Name" value={formData.fatherName} onChange={handleChange} />
+                  <Input name="fatherName" label="Father&#39;s Name" value={formData.fatherName} onChange={handleChange} />
                 </div>
                 <div>
-                  <Input name="motherName" label="Mother's Name" value={formData.motherName} onChange={handleChange} />
+                  <Input name="motherName" label="Mother&#39;s Name" value={formData.motherName} onChange={handleChange} />
                 </div>
                 <div>
                   <Input name="Gender" label="Gender" value={formData.Gender} onChange={handleChange} required />
@@ -189,7 +190,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="mobile" label="Mobile" value={formData.mobile} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Input name="parentMobile" label="Parent's Mobile" value={formData.parentMobile} onChange={handleChange} />
+                  <Input name="parentMobile" label="Parent&#39;s Mobile" value={formData.parentMobile} onChange={handleChange} />
                 </div>
                 <div>
                   <Input name="email" label="Email" value={formData.email} onChange={handleChange} required />

@@ -71,7 +71,7 @@ export default function Search(props) {
   const { state, dispatch } = useContext(Store);
 
   return (
-    <Layout title="search">
+    // <Layout title="search">
       <div className="grid md:grid-cols-4 md:gap-5">
         <div>
           <div className="my-3">
@@ -183,7 +183,7 @@ export default function Search(props) {
           </ul>
         </div>
       </div>
-    </Layout>
+    // </Layout>
   );
 }
 

@@ -81,7 +81,7 @@ const FacultyModal = ({ isOpen, onClose, mode, faculty, onSubmit }) => {
                   <p>First Name: {faculty.firstName}</p>
                 </div>
                 <div>
-                  <p>Father's Name: {faculty.fatherName}</p>
+                  <p>Father&#39;s Name: {faculty.fatherName}</p>
                 </div>
                 <div>
                   <p>Last Name: {faculty.lastName}</p>

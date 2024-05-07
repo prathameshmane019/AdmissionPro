@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectMongoDB} from "@/app/lib/connectDb"
+import { connectMongoDB } from "@/app/lib/connectDb";
 import Student from "@/app/model/student";
 
 export async function POST(req) {
@@ -55,17 +55,23 @@ export async function POST(req) {
         return NextResponse.json({ error: "Failed to create student" });
     }
 }
-
-export async function GET() {
+export async function GET(req) {
     try {
         await connectMongoDB();
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const limit = 10; 
+        const skip = (page - 1) * limit;
 
-        const students = await Student.find();
+        const totalStudents = await Student.countDocuments();
+
+        // Retrieve students for the current page
+        const students = await Student.find().skip(skip).limit(limit);
 
         console.log("Students fetched successfully");
         console.log(students);
 
-        return NextResponse.json({ students });
+        return NextResponse.json({ students, total: totalStudents });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ error: "Failed to fetch students" });

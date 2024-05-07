@@ -48,7 +48,7 @@ const Sidebar = () => {
   return (
     <div className={`h-screen sidebar__wrapper ${isCollapsed ? 'collapsed' : ''}`}>
       <button className="btn shadow-xl " onClick={toggleSidebarcollapse}>
-        {isCollapsed ? <MdKeyboardArrowRight  className=" "/> : <MdKeyboardArrowLeft />}
+        {isCollapsed ? <MdKeyboardArrowRight  /> : <MdKeyboardArrowLeft />}
       </button>
       <aside className="sidebar rounded-r-lg shadow-2xl bg-primary-500  text-gray-100" data-collapse={isCollapsed}>
         <div className="sidebar__top  text-primary ">

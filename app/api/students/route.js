@@ -66,17 +66,7 @@ export async function GET(req) {
 
         const filters = {};
 
-        // Filter by firstName
-        const firstName = searchParams.get("firstName");
-        if (firstName) {
-            filters.firstName = { $regex: new RegExp(firstName, "i") };
-        }
-
-        // Filter by lastName
-        const lastName = searchParams.get("lastName");
-        if (lastName) {
-            filters.lastName = { $regex: new RegExp(lastName, "i") };
-        }
+       
 
         // Filter by category
         const category = searchParams.get("category");

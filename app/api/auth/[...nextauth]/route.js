@@ -13,10 +13,10 @@ export const authOptions = ({
           await connectMongoDB();
           const email = credentials.userId;
           const password = credentials.password;
-console.log(email);
+          console.log(email);
           // Find user by email
           const user = await Faculty.findOne({ email });
-console.log(user);
+          console.log(user);
           if (!user) {
             // User not found
             return null;
@@ -40,7 +40,7 @@ console.log(user);
   ],
   session: {
     sessionCallback: async (session, user) => {
-      session.user = { ...user, role: user.role }; 
+      session.user = { ...user, role: user.role };
       return session;
     },
   },

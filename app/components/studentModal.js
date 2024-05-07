@@ -20,9 +20,13 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
     cet: 0,
     jee: 0,
     pcm: 0,
+    group: "",
     mobile: "",
     parentMobile: "",
     email: "",
+     address: "",
+     branch: "",
+     remark: "",
   });
 
   useEffect(() => {
@@ -46,6 +50,8 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         parentMobile: user.parentMobile || "",
         email: user.email || "",
         address: user.address || "",
+        branch: user.branch || "",
+        remark: user.remark || "",
       });
     } else {
       setFormData({
@@ -68,6 +74,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         email: "",
         address: "",
         branch: "",
+        remark: "",
       });
     }
   }, [isOpen, mode, user]);

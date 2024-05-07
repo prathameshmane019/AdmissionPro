@@ -55,18 +55,73 @@ export async function POST(req) {
         return NextResponse.json({ error: "Failed to create student" });
     }
 }
+
 export async function GET(req) {
     try {
         await connectMongoDB();
         const { searchParams } = new URL(req.url);
         const page = parseInt(searchParams.get("page") || "1", 10);
-        const limit = 10; 
+        const limit = 10;
         const skip = (page - 1) * limit;
 
-        const totalStudents = await Student.countDocuments();
+        const filters = {};
 
-        // Retrieve students for the current page
-        const students = await Student.find().skip(skip).limit(limit);
+        // Filter by firstName
+        const firstName = searchParams.get("firstName");
+        if (firstName) {
+            filters.firstName = { $regex: new RegExp(firstName, "i") };
+        }
+
+        // Filter by lastName
+        const lastName = searchParams.get("lastName");
+        if (lastName) {
+            filters.lastName = { $regex: new RegExp(lastName, "i") };
+        }
+
+        // Filter by category
+        const category = searchParams.get("category");
+        if (category) {
+            filters.category = category;
+        }
+
+        // Filter by Gender
+        const Gender = searchParams.get("Gender");
+        if (Gender) {
+            filters.Gender = Gender;
+        }
+
+        // Filter by pcm
+        const pcmRange = searchParams.get("pcm");
+        if (pcmRange) {
+            const [min, max] = pcmRange.split(",");
+            filters.pcm = { $gte: parseInt(min, 10), $lte: parseInt(max, 10) };
+        }
+
+        // Filter by cet
+        const cetRange = searchParams.get("cet");
+        if (cetRange) {
+            const [min, max] = cetRange.split(",");
+            filters.cet = { $gte: parseInt(min, 10), $lte: parseInt(max, 10) };
+        }
+
+        // Filter by jee
+        const jeeRange = searchParams.get("jee");
+        if (jeeRange) {
+            const [min, max] = jeeRange.split(",");
+            filters.jee = { $gte: parseInt(min, 10), $lte: parseInt(max, 10) };
+        }
+
+        // Filter by hsc
+        const hscRange = searchParams.get("hsc");
+        if (hscRange) {
+            const [min, max] = hscRange.split(",");
+            filters.hsc = { $gte: parseInt(min, 10), $lte: parseInt(max, 10) };
+        }
+
+        const totalStudents = await Student.countDocuments(filters);
+
+        // Retrieve students for the current page with filters
+        const students = await Student.find(filters).skip(skip).limit(limit);
 
         console.log("Students fetched successfully");
         console.log(students);
@@ -77,26 +132,6 @@ export async function GET(req) {
         return NextResponse.json({ error: "Failed to fetch students" });
     }
 }
-
-export async function DELETE(req) {
-    try {
-        await connectMongoDB();
-        const { searchParams } = new URL(req.url);
-        const _id = searchParams.get("_id");
-        const deleted = await Student.findByIdAndDelete(_id);
-
-        if (!deleted) {
-            return NextResponse.json({ error: "Student not found" });
-        }
-
-        console.log("Student deleted successfully", deleted);
-        return NextResponse.json({ message: "Student deleted successfully" });
-    } catch (error) {
-        console.error("Error deleting student:", error);
-        return NextResponse.json({ error: "Failed to delete student" });
-    }
-}
-
 export async function PUT(req) {
     try {
         await connectMongoDB();

@@ -10,9 +10,10 @@ export default async function RootLayout({ children }) {
   //   console.log("unauthorised")
   //   redirect("/login");
   //  }
-  return (<div className="flex">
+  return (
+  <div className="flex h-screen">
     <Sidebar/>
-    <div className="w-full h-screen overflow-y-auto mx-10 mt-10" >
+    <div className="w-full h-screen overflow-y-auto " >
         {children}
       </div> 
       </div>

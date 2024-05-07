@@ -1,5 +1,5 @@
 "use client"
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useContext } from "react";
  // Import your Product model
 // import db from '../utils/db'; // Import your database connection
@@ -24,16 +24,17 @@ const prices = [
 const ratings = [1, 2, 3, 4, 5];
 
 export default function Search(props) {
+  const { searchParams } = new URL(req.url);
   const router = useRouter();
-  const {
-    query = 'all',
-    category = 'all',
-    brand = 'all',
-    price = 'all',
-    rating = 'all',
-    sort = 'featured',
-    page = 1,
-  } = router.query;
+  // const {
+  //   query = 'all',
+  //   category = 'all',
+  //   brand = 'all',
+  //   price = 'all',
+  //   rating = 'all',
+  //   sort = 'featured',
+  //   page = 1,
+  // } = router.query;
   const { products, countProducts, categories, brands, pages } = props;
 
   const filterSearch = (filters) => {

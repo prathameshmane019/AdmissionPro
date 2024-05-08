@@ -25,9 +25,11 @@ export async function POST(req) {
             mobile,
             parentMobile,
             email,
+
             address,
             branch,
             remark
+
         } = data;
 
         const newStudent = new Student({
@@ -48,9 +50,12 @@ export async function POST(req) {
             group,
             parentMobile,
             email,
+
             address,
             branch,
             remark
+
+
 
 
         });
@@ -76,31 +81,21 @@ export async function GET(req) {
 
         const filters = {};
 
-        // Filter by firstName
-        const firstName = searchParams.get("firstName");
-        if (firstName) {
-            filters.firstName = { $regex: new RegExp(firstName, "i") };
-        }
+       
 
-        // Filter by lastName
-        const lastName = searchParams.get("lastName");
-        if (lastName) {
-            filters.lastName = { $regex: new RegExp(lastName, "i") };
-        }
-
-        // Filter by category
         const category = searchParams.get("category");
         if (category) {
             filters.category = category;
         }
-
-        // Filter by Gender
+        const address = searchParams.get("address");
+        if (address) {
+          filters.address = { $regex: new RegExp(address, "i") };
+        }
         const Gender = searchParams.get("Gender");
         if (Gender) {
             filters.Gender = Gender;
         }
 
-        // Filter by pcm
         const pcmRange = searchParams.get("pcm");
         if (pcmRange) {
             const [min, max] = pcmRange.split(",");
@@ -169,9 +164,11 @@ export async function PUT(req) {
             group,
             parentMobile,
             email,
+
             address,
             branch,
             remark
+
 
         } = data;
 
@@ -195,9 +192,12 @@ export async function PUT(req) {
                 mobile,
                 parentMobile,
                 email,
+
                 address,
                 branch,
                 remark
+
+              
             },
             { new: true }
         );

@@ -35,6 +35,7 @@ const facultySchema = new Schema(
      mobile:{
         type: String,
      },     
+    
    students :[],
     pwd: {
       type: String,  

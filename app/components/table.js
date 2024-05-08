@@ -1,11 +1,9 @@
-
 "use client";
 import React, { useState, useMemo } from "react";
 import useSWR from "swr";
-import axios from 'axios';
+import axios from "axios";
 import {
     Table,
-    Tooltip,
     TableHeader,
     TableColumn,
     TableBody,
@@ -28,15 +26,8 @@ import { EditIcon } from "@/public/EditIcon";
 import { DeleteIcon } from "@/public/DeleteIcon";
 import { SearchIcon } from "@/public/SearchIcon";
 import { ChevronDownIcon } from "@/public/ChevronDownIcon";
-import { statusOptions } from "@/app/utils/data";
 import { capitalize } from "@/app/utils/utils";
 import StudentModal from "@/app/components/studentModal";
-
-const statusColorMap = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
-};
 
 const columns = [
     { uid: "firstName", name: "First Name", sortable: true },
@@ -44,13 +35,12 @@ const columns = [
     { uid: "lastName", name: "Last Name" },
     { uid: "Gender", name: "Gender" },
     { uid: "category", name: "Category" },
-    { uid: "disability", name: "Disability" },
     { uid: "cet", name: "CET Score", sortable: true },
     { uid: "pcm", name: "PCM Score", sortable: true },
     { uid: "jee", name: "JEE Score", sortable: true },
     { uid: "mobile", name: "Mobile" },
-    { uid: "parentMobile", name: "Parent's Mobile" },
     { uid: "gmail", name: "Email" },
+    { uid: "address", name: "Address" },
     { uid: "actions", name: "Actions" },
 ];
 const INITIAL_VISIBLE_COLUMNS = ["firstName", "fatherName", "lastName", "mobile", "category", "email", "actions"];
@@ -60,61 +50,79 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 export default function TableComponent() {
     const [filterValue, setFilterValue] = useState("");
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [statusFilter, setStatusFilter] = useState(new Set());
     const [rowsPerPage, setRowsPerPage] = useState(15);
-    const [data, setData] = useState(null); // State to store original data
+    const [data, setData] = useState(null);
     const [sortDescriptor, setSortDescriptor] = useState({
         column: "name",
         direction: "ascending",
     });
     const [page, setPage] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState("view"); // 'view', 'edit', or 'add'
+    const [modalMode, setModalMode] = useState("view");
     const [selectedUser, setSelectedUser] = useState(null);
+    const [title, setTitle] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({
-        firstName: "",
-        lastName: "",
         category: "",
         Gender: "",
         pcm: "",
         cet: "",
         jee: "",
         hsc: "",
+        address: "",
     });
+
+    const handleTitleChange = (e) => setTitle(e.target.value);
+
+    const handleClusterData = async () => {
+        try {
+            setLoading(true);
+            setError("");
+
+            const filteredItems = data?.students || [];
+            await axios.post("/api/cluster", {
+                data: filteredItems,
+                title,
+            });
+
+            setTitle("");
+            console.log("Data clustered and saved successfully!");
+        } catch (error) {
+            console.error("Error clustering data:", error);
+            setError("Failed to cluster data");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const { isLoading } = useSWR(`/api/students?page=${page}`, fetcher, {
         keepPreviousData: true,
-        onSuccess: setData
+        onSuccess: setData,
     });
 
-    const handleFilterChange = (e) => {
-        setFilters({ ...filters, [e.target.name]: e.target.value });
-    };
+    const handleFilterChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
 
     const handleSearch = async () => {
         try {
             const response = await axios.get("/api/students", {
                 params: filters,
             });
-            setData(response.data); // Set original data
+            setData(response.data);
         } catch (error) {
             console.error("Error fetching students:", error);
-            // Optionally handle error
         }
     };
 
     const deleteStudent = async (_id) => {
         try {
-            console.log("deleting");
             await axios.delete(`/api/students?_id=${_id}`);
         } catch (error) {
-            console.error("Error deleting department:", error);
+            console.error("Error deleting student:", error);
         }
     };
 
-    const pages = useMemo(() => {
-        return data?.total > 0 ? Math.ceil(data.total / rowsPerPage) : 0;
-    }, [data?.total, rowsPerPage]);
+    const pages = useMemo(() => (data?.total > 0 ? Math.ceil(data.total / rowsPerPage) : 0), [data?.total, rowsPerPage]);
 
     const onRowsPerPageChange = (e) => {
         setRowsPerPage(Number(e.target.value));
@@ -125,27 +133,10 @@ export default function TableComponent() {
 
     const headerColumns = useMemo(() => {
         if (visibleColumns === "all") return columns;
-
         return columns.filter((column) => visibleColumns.has(column.uid));
     }, [visibleColumns]);
 
-    const handleFilterReset = () => {
-        setFilters({
-            firstName: "",
-            lastName: "",
-            category: "",
-            Gender: "",
-            pcm: "",
-            cet: "",
-            jee: "",
-            hsc: "",
-        });
-        setData(null); // Reset original data
-    };
-
-    const tableData = useMemo(() => {
-        return data;
-    }, [data]);
+    const handleFilterReset = () => setFilters({ category: "", Gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" });
 
     const filteredItems = useMemo(() => {
         let filteredUsers = data?.students || [];
@@ -156,22 +147,16 @@ export default function TableComponent() {
                 user.lastName.toLowerCase().includes(filterValue.toLowerCase())
             );
         }
-        if (statusFilter.size > 0) {
-            filteredUsers = filteredUsers.filter((user) => statusFilter.has(user.status));
-        }
         return filteredUsers;
-    }, [data?.students, filterValue, statusFilter]);
+    }, [data?.students, filterValue]);
 
-    const items = useMemo(() => {
-        return data?.students || [];
-    }, [data?.students]);
+    const items = useMemo(() => data?.students || [], [data?.students]);
 
     const sortedItems = useMemo(() => {
         return [...items].sort((a, b) => {
             const first = a[sortDescriptor.column];
             const second = b[sortDescriptor.column];
             const cmp = first < second ? -1 : first > second ? 1 : 0;
-
             return sortDescriptor.direction === "descending" ? -cmp : cmp;
         });
     }, [sortDescriptor, items]);
@@ -179,72 +164,35 @@ export default function TableComponent() {
     const renderCell = (user, columnKey) => {
         const cellValue = user[columnKey];
         switch (columnKey) {
-            case "name":
-                return (
-                    <User
-                        avatarProps={{ radius: "full", size: "sm", src: user.avatar }}
-                        classNames={{
-                            description: "text-default-500",
-                        }}
-                        description={user.email}
-                        name={cellValue}
-                    >
-                        {user.email}
-                    </User>
-                );
-            case "role":
-                return (
-                    <div className="flex flex-col">
-                        <p className="text-bold text-small capitalize">{cellValue}</p>
-                        <p className="text-bold text-tiny capitalize text-default-500">{user.team}</p>
-                    </div>
-                );
-            case "status":
-                return (
-                    <Chip
-                        className="capitalize border-none gap-1 text-default-600"
-                        color={statusColorMap[user.status]}
-                        size="sm"
-                        variant="dot"
-                    >
-                        {cellValue}
-                    </Chip>
-                );
             case "actions":
                 return (
                     <div className="relative flex items-center gap-2">
-                        <Tooltip content="Details">
-                            <span
-                                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                                onClick={() => {
-                                    setModalMode("view");
-                                    setSelectedUser(user);
-                                    setModalOpen(true);
-                                }}
-                            >
-                                <EyeIcon />
-                            </span>
-                        </Tooltip>
-                        <Tooltip content="Edit user">
-                            <span
-                                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                                onClick={() => {
-                                    setModalMode("edit");
-                                    setSelectedUser(user);
-                                    setModalOpen(true);
-                                }}
-                            >
-                                <EditIcon />
-                            </span>
-                        </Tooltip>
-                        <Tooltip color="danger" content="Delete user">
-                            <span
-                                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                                onClick={() => deleteStudent(user._id)}
-                            >
-                                <DeleteIcon />
-                            </span>
-                        </Tooltip>
+                        <span
+                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                            onClick={() => {
+                                setModalMode("view");
+                                setSelectedUser(user);
+                                setModalOpen(true);
+                            }}
+                        >
+                            <EyeIcon />
+                        </span>
+                        <span
+                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                            onClick={() => {
+                                setModalMode("edit");
+                                setSelectedUser(user);
+                                setModalOpen(true);
+                            }}
+                        >
+                            <EditIcon />
+                        </span>
+                        <span
+                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                            onClick={() => deleteStudent(user._id)}
+                        >
+                            <DeleteIcon />
+                        </span>
                     </div>
                 );
             default:
@@ -266,9 +214,7 @@ export default function TableComponent() {
         setSelectedUser(null);
     };
 
-    const handleModalSubmit = () => {
-        handleModalClose();
-    }
+    const handleModalSubmit = () => handleModalClose();
 
     const topContent = (
         <div className="flex flex-col gap-4">
@@ -290,36 +236,7 @@ export default function TableComponent() {
                 <div className="flex gap-3">
                     <Dropdown>
                         <DropdownTrigger className="hidden sm:flex">
-                            <Button
-                                endContent={<ChevronDownIcon className="text-small" />}
-                                size="sm"
-                                variant="flat"
-                            >
-                                Status
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                            disallowEmptySelection
-                            aria-label="Table Columns"
-                            closeOnSelect={false}
-                            selectedKeys={statusFilter}
-                            selectionMode="multiple"
-                            onSelectionChange={setStatusFilter}
-                        >
-                            {statusOptions.map((status) => (
-                                <DropdownItem key={status.uid} className="capitalize">
-                                    {capitalize(status.name)}
-                                </DropdownItem>
-                            ))}
-                        </DropdownMenu>
-                    </Dropdown>
-                    <Dropdown>
-                        <DropdownTrigger className="hidden sm:flex">
-                            <Button
-                                endContent={<ChevronDownIcon className="text-small" />}
-                                size="sm"
-                                variant="flat"
-                            >
+                            <Button endContent={<ChevronDownIcon className="text-small" />} size="sm" variant="flat">
                                 Columns
                             </Button>
                         </DropdownTrigger>
@@ -330,9 +247,10 @@ export default function TableComponent() {
                             selectedKeys={visibleColumns}
                             selectionMode="multiple"
                             onSelectionChange={setVisibleColumns}
+                            className="overflow-y-auto"
                         >
                             {columns.map((column) => (
-                                <DropdownItem key={column.uid} className="capitalize">
+                                <DropdownItem key={column.uid} className="capitalize ">
                                     {capitalize(column.name)}
                                 </DropdownItem>
                             ))}
@@ -356,7 +274,7 @@ export default function TableComponent() {
                 <label className="flex items-center text-default-400 text-small">
                     Rows per page:
                     <select
-                        className="bg-transparent outline-none                        text-default-400 text-small"
+                        className="bg-transparent outline-none text-default-400 text-small"
                         onChange={onRowsPerPageChange}
                     >
                         <option value="5">5</option>
@@ -382,12 +300,6 @@ export default function TableComponent() {
                 variant="light"
                 onChange={setPage}
             />
-            <span className="text-small text-default-400">
-                {statusFilter.size === statusOptions.length ?
-                    "All statuses selected" :
-                    `${statusFilter.size} of ${statusOptions.length} selected`}
-            </span>
-
         </div>
     );
 
@@ -468,16 +380,38 @@ export default function TableComponent() {
                             size="sm"
                         />
                     </div>
+                    <div>
+                        <Input
+                            name="address"
+                            label="Address"
+                            value={filters.address}
+                            onChange={handleFilterChange}
+                            placeholder="Filter by address"
+                        />
+                    </div>
                 </div>
                 <div className="my-4">
-                    <Button
-                    className="bg-foreground text-background"
-                        onClick={handleSearch}
-                        auto
-                        size="sm"
-                    >
+                    <Button className="bg-foreground text-background" onClick={handleSearch} auto size="sm">
                         Search
                     </Button>
+                </div>
+                <div className="flex gap-5 my-4">
+                        <label htmlFor="title"></label>
+                        <Input
+                            type="text"
+                            id="title"
+                            value={title}
+                            onChange={handleTitleChange}
+                            placeholder="Enter a title"
+                            label="Title for the new dataset"
+                            size="sm"
+                            variant="bordered"
+                        />
+                    <Button onClick={handleClusterData} className="bg-foreground text-background" size="sm" disabled={loading}>
+                        {loading ? "Clustering data..." : "Cluster Data"}
+                    </Button>
+                    
+                    {error && <p>{error}</p>}
                 </div>
             </div>
             <Table
@@ -530,4 +464,3 @@ export default function TableComponent() {
         </>
     );
 }
-

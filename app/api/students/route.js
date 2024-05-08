@@ -47,9 +47,17 @@ export async function POST(req) {
             jee,
             pcm,
             mobile,
+            group,
             parentMobile,
             email,
-            address
+
+            address,
+            branch,
+            remark
+
+
+
+
         });
 
         await newStudent.save();
@@ -121,6 +129,8 @@ export async function GET(req) {
         const students = await Student.find(filters).skip(skip).limit(limit);
 
         console.log("Students fetched successfully");
+        
+        
         console.log(students);
 
         return NextResponse.json({ students, total: totalStudents });

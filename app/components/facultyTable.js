@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { ChevronDownIcon } from "@/public/ChevronDownIcon";
+import { toast } from 'sonner';
 
 import {
   Table,
@@ -208,8 +209,10 @@ export default function FacultyTable() {
         if (response.status === 200 || response.status === 201) {
           setFaculty([...faculty, response.data]);
           console.log("Faculty added successfully");
+          toast.success('Faculty added successfully')
         } else {
           console.error("Failed to add faculty");
+          toast.error('Failed to add faculty')
         }
       } catch (error) {
         console.error("Error adding faculty:", error);

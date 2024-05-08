@@ -408,6 +408,7 @@ export default function FacultyTable() {
         mode={modalMode}
         faculty={selectedFaculty}
         onSubmit={handleModalSubmit}
+        fetch = {fetchFaculty}
       />
     </>
   );

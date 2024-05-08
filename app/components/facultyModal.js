@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
 import axios from "axios";
 
-const FacultyModal = ({ isOpen, onClose, mode, faculty, onSubmit }) => {
+const FacultyModal = ({ isOpen, onClose, mode, faculty, onSubmit,fetch }) => {
   const [formData, setFormData] = useState({
     firstName: "",
     fatherName: "",
@@ -59,7 +59,7 @@ const FacultyModal = ({ isOpen, onClose, mode, faculty, onSubmit }) => {
         const response = await axios.put(`/api/faculty?_id=${faculty._id}`, formData);
         console.log("Faculty updated:", response.data);
       }
-      onSubmit();
+      fetch();
       onClose();
     } catch (error) {
       console.error("Error:", error);

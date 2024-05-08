@@ -33,7 +33,7 @@ export async function POST(req) {
         await newFaculty.save();
 
         console.log("Faculty created successfully");
-        return NextResponse.json({ message: "Faculty created successfully", faculty: newFaculty });
+        return NextResponse.json({ message: "Faculty created successfully"});
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: "Failed to create faculty" });

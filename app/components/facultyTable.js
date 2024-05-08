@@ -115,6 +115,7 @@ export default function FacultyTable() {
         );
       });
     }
+    filteredFaculty = filteredFaculty.filter((member) => member.department !== "Central");
 
     return filteredFaculty;
   }, [faculty, filterValue]);

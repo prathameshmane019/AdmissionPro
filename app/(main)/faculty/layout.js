@@ -6,7 +6,7 @@ export default async function RootLayout({ children }) {
   const session = await getServerSession(authOptions);
   const role = session?.user?.role
  
-  if (!(role==="admin")) {
+  if (!(role==="faculty")) {
     console.log("unauthorised")
     redirect("/login");
    }

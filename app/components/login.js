@@ -15,10 +15,6 @@ export default function LoginComponent() {
   const router = useRouter();
   const { data: session } = useSession();
   useEffect(() => {
-    if (session?.user?.role === "department") {
-      router.replace("/admin");
-    }
-    
     if (session?.user?.role === "admin") {
       router.replace("/admin");      
     }

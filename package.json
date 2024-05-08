@@ -11,24 +11,17 @@
   "dependencies": {
     "@nextui-org/react": "^2.3.6",
     "axios": "^1.6.8",
-    "cors": "^2.8.5",
-    "csv-parser": "^3.0.0",
-    "formidable": "^3.5.1",
     "framer-motion": "^11.1.7",
     "moment": "^2.30.1",
-    "mongodb": "^6.6.0",
     "mongoose": "^8.3.3",
-    "multer": "^1.4.5-lts.1",
     "next": "^14.2.3",
     "next-auth": "^4.24.7",
-    "papaparse": "^5.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
     "react-icons": "^5.2.0",
     "sonner": "^1.4.41",
-    "swr": "^2.2.5",
-    "xlsx": "^0.18.5"
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "eslint": "^8",

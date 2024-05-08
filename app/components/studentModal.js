@@ -2,6 +2,7 @@
 import React, { useState,useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
 import axios from "axios";
+import { toast } from 'sonner';
 
 
 const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
@@ -90,9 +91,11 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
       if (mode === "add") {
         const response = await axios.post("/api/students", formData);
         console.log("Student added:", response.data);
+        toast.success('student added sucessfully')
       } else if (mode === "edit") {
         const response = await axios.put(`/api/students?_id=${user._id}`, formData);
         console.log("Student updated:", response.data);
+        toast.success('student updated sucessfully')
       }
       onSubmit();
       onClose();

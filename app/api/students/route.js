@@ -21,9 +21,13 @@ export async function POST(req) {
             cet,
             jee,
             pcm,
+            group,
             mobile,
             parentMobile,
             email,
+            address,
+            branch,
+            remark
         } = data;
 
         const newStudent = new Student({
@@ -154,8 +158,13 @@ export async function PUT(req) {
             jee,
             pcm,
             mobile,
+            group,
             parentMobile,
             email,
+            address,
+            branch,
+            remark
+
         } = data;
 
         const updatedStudent = await Student.findByIdAndUpdate(
@@ -174,9 +183,13 @@ export async function PUT(req) {
                 cet,
                 jee,
                 pcm,
+                group,
                 mobile,
                 parentMobile,
                 email,
+                address,
+                branch,
+                remark
             },
             { new: true }
         );

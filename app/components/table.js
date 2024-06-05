@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
-import useSWR from "swr";
+import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import {
     Table,
@@ -15,19 +14,18 @@ import {
     Dropdown,
     DropdownMenu,
     DropdownItem,
-    Chip,
-    User,
     Pagination,
     Spinner,
 } from "@nextui-org/react";
+
 import { PlusIcon } from "@/public/PlusIcon";
 import { EyeIcon } from "@/public/EyeIcon";
 import { EditIcon } from "@/public/EditIcon";
 import { DeleteIcon } from "@/public/DeleteIcon";
 import { SearchIcon } from "@/public/SearchIcon";
 import { ChevronDownIcon } from "@/public/ChevronDownIcon";
-import { capitalize } from "@/app/utils/utils";
 import StudentModal from "@/app/components/studentModal";
+import { capitalize } from "@/app/utils/utils";
 
 const columns = [
     { uid: "firstName", name: "First Name", sortable: true },
@@ -39,23 +37,18 @@ const columns = [
     { uid: "pcm", name: "PCM Score", sortable: true },
     { uid: "jee", name: "JEE Score", sortable: true },
     { uid: "mobile", name: "Mobile" },
-    { uid: "gmail", name: "Email" },
+    { uid: "email", name: "Email" },
     { uid: "address", name: "Address" },
     { uid: "actions", name: "Actions" },
 ];
 const INITIAL_VISIBLE_COLUMNS = ["firstName", "fatherName", "lastName", "mobile", "category", "email", "actions"];
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
-
 export default function TableComponent() {
     const [filterValue, setFilterValue] = useState("");
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [rowsPerPage, setRowsPerPage] = useState(15);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [data, setData] = useState(null);
-    const [sortDescriptor, setSortDescriptor] = useState({
-        column: "name",
-        direction: "ascending",
-    });
+    const [sortDescriptor, setSortDescriptor] = useState({ column: "firstName", direction: "ascending" });
     const [page, setPage] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("view");
@@ -63,29 +56,47 @@ export default function TableComponent() {
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [filters, setFilters] = useState({
-        category: "",
-        Gender: "",
-        pcm: "",
-        cet: "",
-        jee: "",
-        hsc: "",
-        address: "",
-    });
+    const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" });
 
+    useEffect(() => {
+        fetchStudents();
+    }, [page, rowsPerPage]);
+
+    const fetchStudents = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('/api/students', {
+                params: {
+                    page,
+                    limit: rowsPerPage,
+                    ...filters,
+                    search: filterValue
+                }
+            });
+            setData(response.data);
+        } catch (error) {
+            console.error("Error fetching students:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+        const onSearchChange = (value) => {
+        if (value) {
+            setFilterValue(value);
+            setPage(1);
+        } else {
+            setFilterValue("");
+        }
+    };
     const handleTitleChange = (e) => setTitle(e.target.value);
 
     const handleClusterData = async () => {
         try {
             setLoading(true);
             setError("");
-
-            const filteredItems = data?.students || [];
-            await axios.post("/api/cluster", {
-                data: filteredItems,
-                title,
-            });
-
+            await axios.post("/api/cluster", { title,filters });
             setTitle("");
             console.log("Data clustered and saved successfully!");
         } catch (error) {
@@ -95,28 +106,19 @@ export default function TableComponent() {
             setLoading(false);
         }
     };
-
-    const { isLoading } = useSWR(`/api/students?page=${page}`, fetcher, {
-        keepPreviousData: true,
-        onSuccess: setData,
-    });
+    
 
     const handleFilterChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
 
     const handleSearch = async () => {
-        try {
-            const response = await axios.get("/api/students", {
-                params: filters,
-            });
-            setData(response.data);
-        } catch (error) {
-            console.error("Error fetching students:", error);
-        }
+        setPage(1);
+        await fetchStudents();
     };
 
     const deleteStudent = async (_id) => {
         try {
             await axios.delete(`/api/students?_id=${_id}`);
+            fetchStudents(); // Refetch data after deletion
         } catch (error) {
             console.error("Error deleting student:", error);
         }
@@ -136,88 +138,176 @@ export default function TableComponent() {
         return columns.filter((column) => visibleColumns.has(column.uid));
     }, [visibleColumns]);
 
-    const handleFilterReset = () => setFilters({ category: "", Gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" });
+    const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "",search:"" });
 
     const filteredItems = useMemo(() => {
         let filteredUsers = data?.students || [];
-
         if (hasSearchFilter) {
             filteredUsers = filteredUsers.filter((user) =>
-                user.firstName.toLowerCase().includes(filterValue.toLowerCase()) ||
-                user.lastName.toLowerCase().includes(filterValue.toLowerCase())
+                (user.firstName && user.firstName.toLowerCase().includes(filterValue.toLowerCase())) ||
+                (user.lastName && user.lastName.toLowerCase().includes(filterValue.toLowerCase()))
             );
         }
         return filteredUsers;
     }, [data?.students, filterValue]);
 
-    const items = useMemo(() => data?.students || [], [data?.students]);
-
-    const sortedItems = useMemo(() => {
-        return [...items].sort((a, b) => {
-            const first = a[sortDescriptor.column];
-            const second = b[sortDescriptor.column];
-            const cmp = first < second ? -1 : first > second ? 1 : 0;
-            return sortDescriptor.direction === "descending" ? -cmp : cmp;
-        });
-    }, [sortDescriptor, items]);
+    const items = useMemo(() => data?.students || [], [data]);
 
     const renderCell = (user, columnKey) => {
-        const cellValue = user[columnKey];
         switch (columnKey) {
+            case "firstName":
+            case "lastName":
+            case "fatherName":
+            case "mobile":
+            case "gmail":
+            case "category":
+            case "cet":
+            case "pcm":
+            case "jee":
+            case "address":
+            case "gender":
+                return user[columnKey];
             case "actions":
                 return (
                     <div className="relative flex items-center gap-2">
-                        <span
-                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                            onClick={() => {
-                                setModalMode("view");
-                                setSelectedUser(user);
-                                setModalOpen(true);
-                            }}
-                        >
-                            <EyeIcon />
-                        </span>
-                        <span
-                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                            onClick={() => {
-                                setModalMode("edit");
-                                setSelectedUser(user);
-                                setModalOpen(true);
-                            }}
-                        >
-                            <EditIcon />
-                        </span>
-                        <span
-                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                            onClick={() => deleteStudent(user._id)}
-                        >
-                            <DeleteIcon />
-                        </span>
+                        <Button isIconOnly color="primary" variant="light" onPress={() => openModal("view", user)}>
+                            <EyeIcon className="h-4 w-4" />
+                        </Button>
+                        <Button isIconOnly color="warning" variant="light" onPress={() => openModal("edit", user)}>
+                            <EditIcon className="h-4 w-4" />
+                        </Button>
+                        <Button isIconOnly color="danger" variant="light" onPress={() => deleteStudent(user._id)}>
+                            <DeleteIcon className="h-4 w-4" />
+                        </Button>
                     </div>
                 );
             default:
-                return cellValue;
+                return user[columnKey];
         }
     };
 
-    const onSearchChange = (value) => {
-        if (value) {
-            setFilterValue(value);
-            setPage(1);
-        } else {
-            setFilterValue("");
-        }
+    const openModal = (mode, user = null) => {
+        setModalMode(mode);
+        setSelectedUser(user);
+        setModalOpen(true);
     };
 
-    const handleModalClose = () => {
-        setModalOpen(false);
-        setSelectedUser(null);
-    };
 
-    const handleModalSubmit = () => handleModalClose();
-
-    const topContent = (
+        const topContent = (
         <div className="flex flex-col gap-4">
+             <div className="mb-4 flex justify-between">
+                <div className="flex gap-2">
+                    <Input
+                        aria-label="Filter by category"
+                        placeholder="Filter by category"
+                        value={filters.category}
+                        onChange={handleFilterChange}
+                        name="category"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                    <Input
+                        aria-label="Filter by address"
+                        placeholder="Filter by address"
+                        value={filters.address}
+                        onChange={handleFilterChange}
+                        name="address"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                    <Input
+                        aria-label="Filter by Gender"
+                        placeholder="Filter by Gender"
+                        value={filters.gender}
+                        onChange={handleFilterChange}
+                        name="gender"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                    <Input
+                        aria-label="Filter by PCM"
+                        placeholder="Filter by PCM"
+                        value={filters.pcm}
+                        onChange={handleFilterChange}
+                        name="pcm"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                    <Input
+                        aria-label="Filter by CET"
+                        placeholder="Filter by CET"
+                        value={filters.cet}
+                        onChange={handleFilterChange}
+                        name="cet"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                    <Input
+                        aria-label="Filter by JEE"
+                        placeholder="Filter by JEE"
+                        value={filters.jee}
+                        onChange={handleFilterChange}
+                        name="jee"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                    <Input
+                        aria-label="Filter by HSC"
+                        placeholder="Filter by HSC"
+                        value={filters.hsc}
+                        onChange={handleFilterChange}
+                        name="hsc"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />  
+                      
+                </div>
+                
+            </div>
+            <div className="flex gap-5 my-2 items-center justify-center">
+                         <Input
+                             type="text"
+                             id="title"
+                             value={title}
+                             onChange={handleTitleChange}
+                             placeholder="Enter a title"
+                             size="sm"
+                             variant="bordered"
+                         />
+                     <Button onClick={handleClusterData} className="bg-foreground text-background" size="sm" disabled={loading}>
+                         {loading ? "Clustering data..." : "Cluster Data"}
+                     </Button>
+                    
+                     {error && <p>{error}</p>}
+                 </div>
             <div className="flex justify-between gap-3 items-end">
                 <Input
                     isClearable
@@ -234,6 +324,18 @@ export default function TableComponent() {
                     onValueChange={onSearchChange}
                 />
                 <div className="flex gap-3">
+                <Button color="primary" onClick={handleSearch}
+                      className="bg-foreground text-background"
+                        size="sm">
+                        Search
+                    </Button>
+                    <Button 
+                        color="secondary"
+                        className="bg-foreground text-background"
+                        size="sm"
+                        onClick={handleFilterReset}>
+                        Reset Filters
+                    </Button>
                     <Dropdown>
                         <DropdownTrigger className="hidden sm:flex">
                             <Button endContent={<ChevronDownIcon className="text-small" />} size="sm" variant="flat">
@@ -268,13 +370,14 @@ export default function TableComponent() {
                         Add New
                     </Button>
                 </div>
+                
             </div>
             <div className="flex justify-between items-center">
                 <span className="text-default-400 text-small">Total {data?.total} users</span>
                 <label className="flex items-center text-default-400 text-small">
                     Rows per page:
                     <select
-                        className="bg-transparent outline-none text-default-400 text-small"
+                        className="bg-transparent outline-none text-default-400 text-small" value={rowsPerPage}
                         onChange={onRowsPerPageChange}
                     >
                         <option value="5">5</option>
@@ -286,7 +389,8 @@ export default function TableComponent() {
         </div>
     );
 
-    const bottomContent = (
+    const closeModal = () => setModalOpen(false);
+        const bottomContent = (
         <div className="py-2 px-2 flex justify-between items-center">
             <Pagination
                 showControls
@@ -303,164 +407,55 @@ export default function TableComponent() {
         </div>
     );
 
-    const classNames = {
-        wrapper: ["max-h-[382px]", "max-w-3xl"],
-        th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
-        td: [
-            "group-data-[first=true]:first:before:rounded-none",
-            "group-data-[first=true]:last:before:rounded-none",
-            "group-data-[middle=true]:before:rounded-none",
-            "group-data-[last=true]:first:before:rounded-none",
-            "group-data-[last=true]:last:before:rounded-none",
-        ],
-    };
 
     return (
-        <>
-            <div>
-                <h2>Student Filters</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <div>
-                        <Input
-                            label="Category"
-                            name="category"
-                            value={filters.category}
-                            onChange={handleFilterChange}
-                            placeholder="Enter category"
-                            size="sm"
-                        />
-                    </div>
-                    <div>
-                        <Input
-                            label="Gender"
-                            name="Gender"
-                            value={filters.Gender}
-                            onChange={handleFilterChange}
-                            placeholder="Enter gender"
-                            size="sm"
-                        />
-                    </div>
-                    <div>
-                        <Input
-                            label="PCM Range (e.g., 100,200)"
-                            name="pcm"
-                            value={filters.pcm}
-                            onChange={handleFilterChange}
-                            placeholder="Enter PCM range"
-                            size="sm"
-                        />
-                    </div>
-                    <div>
-                        <Input
-                            label="CET Range (e.g., 50,80)"
-                            name="cet"
-                            value={filters.cet}
-                            onChange={handleFilterChange}
-                            placeholder="Enter CET range"
-                            size="sm"
-                        />
-                    </div>
-                    <div>
-                        <Input
-                            label="JEE Range (e.g., 20,60)"
-                            name="jee"
-                            value={filters.jee}
-                            onChange={handleFilterChange}
-                            placeholder="Enter JEE range"
-                            size="sm"
-                        />
-                    </div>
-                    <div>
-                        <Input
-                            label="HSC Range (e.g., 60,90)"
-                            name="hsc"
-                            value={filters.hsc}
-                            onChange={handleFilterChange}
-                            placeholder="Enter HSC range"
-                            size="sm"
-                        />
-                    </div>
-                    <div>
-                        <Input
-                            name="address"
-                            label="Address"
-                            value={filters.address}
-                            onChange={handleFilterChange}
-                            placeholder="Filter by address"
-                        />
-                    </div>
-                </div>
-                <div className="my-4">
-                    <Button className="bg-foreground text-background" onClick={handleSearch} auto size="sm">
-                        Search
-                    </Button>
-                </div>
-                <div className="flex gap-5 my-4">
-                        <label htmlFor="title"></label>
-                        <Input
-                            type="text"
-                            id="title"
-                            value={title}
-                            onChange={handleTitleChange}
-                            placeholder="Enter a title"
-                            label="Title for the new dataset"
-                            size="sm"
-                            variant="bordered"
-                        />
-                    <Button onClick={handleClusterData} className="bg-foreground text-background" size="sm" disabled={loading}>
-                        {loading ? "Clustering data..." : "Cluster Data"}
-                    </Button>
-                    
-                    {error && <p>{error}</p>}
-                </div>
-            </div>
+        <div>
+           
             <Table
-                isCompact
-                removeWrapper
-                aria-label="Example table with custom cells, pagination and sorting"
+                aria-label="Student Table"
+                sortDescriptor={sortDescriptor}
                 bottomContent={bottomContent}
                 bottomContentPlacement="outside"
-                checkboxesProps={{
-                    classNames: {
-                        wrapper: "after:bg-foreground after:text-background text-background ",
-                    },
-                }}
-                classNames={classNames}
-                sortDescriptor={sortDescriptor}
+                onSortChange={setSortDescriptor}
+                selectedKeys={visibleColumns}
+                onSelectionChange={setVisibleColumns}
                 topContent={topContent}
                 topContentPlacement="outside"
+
             >
                 <TableHeader columns={headerColumns}>
                     {(column) => (
                         <TableColumn
                             key={column.uid}
-                            align={column.uid === "actions" ? "center" : "start"}
                             allowsSorting={column.sortable}
+                            sortDescriptor={sortDescriptor}
+                            onSortChange={setSortDescriptor}
                         >
                             {column.name}
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody
-                    emptyContent={"No users found"}
-                    items={sortedItems}
-                    loadingContent={<Spinner />}
-                    loadingState={isLoading ? "loading" : "idle"}
-                >
-                    {(item) => (
-                        <TableRow key={item._id}>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                <TableBody items={filteredItems}>
+                    {(user) => (
+                        <TableRow key={user._id}>
+                            {(columnKey) => (
+                                <TableCell key={columnKey}>
+                                    {renderCell(user, columnKey)}
+                                </TableCell>
+                            )}
                         </TableRow>
                     )}
                 </TableBody>
             </Table>
-            <StudentModal
-                isOpen={modalOpen}
-                onClose={handleModalClose}
-                mode={modalMode}
-                user={selectedUser}
-                onSubmit={handleModalSubmit}
-            />
-        </>
+            {modalOpen && (
+                <StudentModal
+                    isOpen={modalOpen}
+                    mode={modalMode}
+                    user={selectedUser}
+                    onClose={closeModal}
+                    onUserChange={handleClusterData}
+                />
+            )}
+        </div>
     );
 }

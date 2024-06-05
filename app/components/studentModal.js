@@ -12,12 +12,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
     fatherName: "",
     lastName: "",
     motherName: "",
-    Gender: "",
+    gender: "",
     dob: "",
     category: "",
     disability: "",
     hsc: 0,
-    SSC: 0,
+    ssc: 0,
     cet: 0,
     jee: 0,
     pcm: 0,
@@ -37,12 +37,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         fatherName: user.fatherName || "",
         lastName: user.lastName || "",
         motherName: user.motherName || "",
-        Gender: user.Gender || "",
+        gender: user.gender || "",
         dob: user.dob || "",
         category: user.category || "",
         disability: user.disability || "",
         hsc: user.hsc || 0,
-        SSC: user.SSC || 0,
+        ssc: user.ssc || 0,
         cet: user.cet || 0,
         jee: user.jee || 0,
         pcm: user.pcm || 0,
@@ -60,12 +60,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         fatherName: "",
         lastName: "",
         motherName: "",
-        Gender: "",
+        gender: "",
         dob: "",
         category: "",
         disability: "",
         hsc: 0,
-        SSC: 0,
+        ssc: 0,
         cet: 0,
         jee: 0,
         pcm: 0,
@@ -123,7 +123,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <p>Mother&#39;s Name: {user.motherName}</p>
                 </div>
                 <div>
-                  <p>Gender: {user.Gender}</p>
+                  <p>Gender: {user.gender}</p>
                 </div>
                 <div>
                   <p>Date of Birth: {user.dob}</p>
@@ -138,7 +138,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <p>HSC Score: {user.hsc}</p>
                 </div>
                 <div>
-                  <p>SSC Score: {user.SSC}</p>
+                  <p>SSC Score: {user.ssc}</p>
                 </div>
                 <div>
                   <p>CET Score: {user.cet}</p>
@@ -187,7 +187,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="motherName" label="Mother&#39;s Name" value={formData.motherName} onChange={handleChange} />
                 </div>
                 <div>
-                  <Input name="Gender" label="Gender" value={formData.Gender} onChange={handleChange} required />
+                  <Input name="gender" label="Gender" value={formData.gender} onChange={handleChange} required />
                 </div>
                 <div>
                   <Input name="dob" label="Date of Birth" value={formData.dob} onChange={handleChange} required />
@@ -202,7 +202,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="hsc" label="HSC Score" value={formData.hsc} onChange={handleChange} type="number" required />
                 </div>
                 <div>
-                  <Input name="SSC" label="SSC Score" value={formData.SSC} onChange={handleChange} type="number" required />
+                  <Input name="ssc" label="SSC Score" value={formData.ssc} onChange={handleChange} type="number" required />
                 </div>
                 <div>
                   <Input name="cet" label="CET Score" value={formData.cet} onChange={handleChange} type="number" />

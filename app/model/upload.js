@@ -12,7 +12,6 @@ const uploadSchema = new Schema(
       District: {
         
         type: String,
-      
       },
       FirstName: {
 

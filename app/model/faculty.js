@@ -5,40 +5,32 @@ const { Schema, model } = mongoose;
 
 const facultySchema = new Schema(
   {
-    firstName: {
+    name: {
       type: String,
     },
-    fatherName: {
-        type: String,
-       
-      },
-      lastName: {
-        type: String,
-       
-      },
-     gender:{
+  
+    role: {
+      type: String,
+    },
 
-        type:String,
-     },
-     dob:{
-        type:String,
-     },
-     role:{
-        type:String,
-     },
-     department:{
-        type:String,
-     },
-     email:{
-        type: String,
-     },
-     mobile:{
-        type: String,
-     },     
-    
-   students :[],
-    pwd: {
-      type: String,  
+    department: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+    mobile: {
+      type: String,
+    },
+    gender: {
+      type: String,
+    },
+    students: [],
+    cluster: {
+      type: String
+    },
+    password: {
+      type: String,
     },
   },
   {

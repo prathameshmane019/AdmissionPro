@@ -1,142 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
-import axios from "axios";
+import React from "react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
 
-const FacultyModal = ({ isOpen, onClose, mode, faculty, onSubmit,fetch }) => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    fatherName: "",
-    lastName: "",
-    gender: "",
-    dob: "",
-    role: "",
-    department: "",
-    email: "",
-    mobile: "",
-    pwd: "",
-  });
-
-  useEffect(() => {
-    if (mode === "edit" && faculty) {
-      setFormData({
-        firstName: faculty.firstName || "",
-        fatherName: faculty.fatherName || "",
-        lastName: faculty.lastName || "",
-        gender: faculty.gender || "",
-        dob: faculty.dob || "",
-        role: faculty.role || "",
-        department: faculty.department || "",
-        email: faculty.email || "",
-        mobile: faculty.mobile || "",
-        pwd: faculty.pwd || "",
-      });
-    } else {
-      setFormData({
-        firstName: "",
-        fatherName: "",
-        lastName: "",
-        gender: "",
-        dob: "",
-        role: "",
-        department: "",
-        email: "",
-        mobile: "",
-        pwd: "",
-      });
-    }
-  }, [isOpen, mode, faculty]);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    try {
-      if (mode === "add") {
-        const response = await axios.post("/api/faculty", formData);
-        console.log("Faculty added:", response.data);
-      } else if (mode === "edit") {
-        const response = await axios.put(`/api/faculty?_id=${faculty._id}`, formData);
-        console.log("Faculty updated:", response.data);
-      }
-      fetch();
-      onClose();
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+export default function App() {
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   return (
-    <Modal backdrop="opaque" isOpen={isOpen} size="4xl" onOpenChange={onClose} classNames={{ backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20" }}>
-      <ModalContent>
-        <>
-          <ModalHeader className="flex flex-col gap-1">
-            {mode === "view" ? "View Faculty" : mode === "edit" ? "Edit Faculty" : "Add New Faculty"}
-          </ModalHeader>
-          <ModalBody>
-            {mode === "view" && faculty && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div>
-                  <p>First Name: {faculty.firstName}</p>
-                </div>
-                <div>
-                  <p>Father&#39;s Name: {faculty.fatherName}</p>
-                </div>
-                <div>
-                  <p>Last Name: {faculty.lastName}</p>
-                </div>
-                <div>
-                  <p>Gender: {faculty.gender}</p>
-                </div>
-                <div>
-                  <p>Date of Birth: {faculty.dob}</p>
-                </div>
-                <div>
-                  <p>Role: {faculty.role}</p>
-                </div>
-                <div>
-                  <p>Department: {faculty.department}</p>
-                </div>
-                <div>
-                  <p>Email: {faculty.email}</p>
-                </div>
-                <div>
-                  <p>Mobile: {faculty.mobile}</p>
-                </div>
-                <div>
-                  <p>Password: {faculty.pwd}</p>
-                </div>
-              </div>
-            )}
-            {(mode === "edit" || mode === "add") && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input name="firstName" label="First Name" value={formData.firstName} onChange={handleChange} required />
-                <Input name="fatherName" label="Father's Name" value={formData.fatherName} onChange={handleChange} />
-                <Input name="lastName" label="Last Name" value={formData.lastName} onChange={handleChange} />
-                <Input name="gender" label="Gender" value={formData.gender} onChange={handleChange} required />
-                <Input name="dob" label="Date of Birth" value={formData.dob} onChange={handleChange} required />
-                <Input name="role" label="Role" value={formData.role} onChange={handleChange} required />
-                <Input name="department" label="Department" value={formData.department} onChange={handleChange} required />
-                <Input name="email" label="Email" value={formData.email} onChange={handleChange} required />
-                <Input name="mobile" label="Mobile" value={formData.mobile} onChange={handleChange} required />
-                <Input name="pwd" label="Password" value={formData.pwd} onChange={handleChange} required />
-              </div>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button color="danger" variant="light" onPress={onClose} className="mr-2">
-              Close
-            </Button>
-            {(mode === "edit" || mode === "add") && (
-              <Button color="primary" onPress={handleSubmit}>
-                Save
-              </Button>
-            )}
-          </ModalFooter>
-        </>
-      </ModalContent>
-    </Modal>
+    <>
+      <Button onPress={onOpen}>Open Modal</Button>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} isKeyboardDismissDisabled={true}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+              <ModalBody>
+                <p> 
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
+                  dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. 
+                  Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. 
+                  Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur 
+                  proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Action
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
-};
-
-export default FacultyModal;
+}

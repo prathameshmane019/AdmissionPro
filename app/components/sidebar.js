@@ -16,7 +16,6 @@ const sidebarItems = [
     href: "/admin",
     icon: RxDashboard,
   },
- 
   {
     name: "Manage Faculty",
     href: "/admin/faculty",
@@ -25,6 +24,11 @@ const sidebarItems = [
     name: "Manage Students",
     href: "/admin/students",
     icon: MdOutlineManageAccounts,
+  },
+  {
+    name: "Clusters",
+    href: "/admin/clusters",
+    icon: TbReportAnalytics,
   },
   {
     name: "Profile",

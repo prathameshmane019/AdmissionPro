@@ -5,29 +5,26 @@ import Faculty from "@/app/model/faculty";
 export async function POST(req) {
     try {
         await connectMongoDB();
-
         const data = await req.json();
         console.log(data);
         const {
-            firstName,
-            fatherName,
-            lastName,
+            name,
             gender,
             department,
             role,
             email,
             mobile,
+            pwd
         } = data;
 
         const newFaculty = new Faculty({
-            firstName,
-            fatherName,
-            lastName,
+            name,
             gender,
             department,
             role,
             email,
             mobile,
+            pwd
         });
 
         await newFaculty.save();
@@ -45,11 +42,10 @@ export async function GET() {
         await connectMongoDB();
 
         const faculty = await Faculty.find();
-
         console.log("Faculty fetched successfully");
         console.log(faculty);
 
-        return NextResponse.json( faculty );
+        return NextResponse.json(faculty);
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: "Failed to fetch faculty" });
@@ -86,31 +82,25 @@ export async function PUT(req) {
         const data = await req.json();
         console.log(data);
         const {
-            firstName,
-            fatherName,
-            lastName,
+            name,
             gender,
             department,
             role,
             email,
             mobile,
-            pwd,
-            dob
+            pwd
         } = data;
 
         const updatedFaculty = await Faculty.findByIdAndUpdate(
             _id,
             {
-                firstName,
-                fatherName,
-                lastName,
+                name,
                 gender,
                 department,
                 role,
                 email,
                 mobile,
-                pwd,
-                dob
+                pwd
             },
             { new: true }
         );

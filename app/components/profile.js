@@ -1,9 +1,12 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
-const Profile = ({ profile }) => {
+const Profile = () => {  
+  const { data: session } = useSession();
     // Check if profile is defined before destructuring
+    const profile = session?.user
     if (!profile) {
       return <div>Loading...</div>; // or handle the case when profile is undefined
     }

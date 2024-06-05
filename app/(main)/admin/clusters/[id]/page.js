@@ -1,64 +1,63 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import axios from 'axios';
 
-const ManageClusterPage = () => {
-  const router = useRouter();
-  const { clusterId } = router.query;
+const ManageClusterPage = ({ params }) => {
   const [cluster, setCluster] = useState(null);
   const [action, setAction] = useState('');
   const [name, setName] = useState('');
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+console.log(params.id);
   useEffect(() => {
-    if (clusterId) {
+    if (params.id) {
       fetchCluster();
     }
-  }, [clusterId]);
+  }, [params.id]);
 
   const fetchCluster = async () => {
     try {
-      const res = await fetch(`/api/cluster/${clusterId}`);
-      const data = await res.json();
-      setCluster(data);
+      setIsLoading(true);
+      console.log(params.id);
+      const res = await axios.get(`/api/cluster?id=${params.id}`);
+      console.log("cluster "+ res.data);
+      setCluster(res.data);
     } catch (error) {
+      setError('Error fetching cluster');
       console.error('Error fetching cluster:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
+  
+  if (isLoading) {
+    return <h2>Loading...</h2>;
+  }
 
-  const handleAction = async () => {
-    try {
-      const method = action.includes('Add') ? 'PUT' : 'DELETE';
-      const type = action.includes('Faculty') ? 'faculty' : 'student';
-      const res = await fetch(`/api/cluster/${clusterId}`, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          type,
-        }),
-      });
-
-      const data = await res.json();
-      if (!data.error) {
-        fetchCluster();
-        setAction('');
-        setName('');
-      } else {
-        console.error(data.error);
-      }
-    } catch (error) {
-      console.error('Error handling action:', error);
-    }
-  };
+  if (error) {
+    return <h2 style={{ color: 'red' }}>{error}</h2>;
+  }
 
   return (
     <>
-      <h1>Manage Cluster: {clusterId}</h1>
+      <h2>Manage Cluster: {params.id}</h2>
       {cluster && (
         <>
+          <h3>Student Names</h3>
+          <ul>
+            {cluster && cluster?.student_names?.map((name, index) => (
+              <li key={index}>{name}</li>
+            ))}
+          </ul>
+
+          <h3>Faculty Names</h3>
+          <ul >
+            {cluster && cluster?.faculty_names?.map((name, index) => (
+              <li key={index}>{name}</li>
+            ))}
+          </ul>
+{/* 
           <Select fullWidth placeholder="Select Action" onChange={(value) => setAction(value)}>
             <SelectItem key="add-faculty" value="Add Faculty">
               Add Faculty
@@ -76,7 +75,7 @@ const ManageClusterPage = () => {
           <Input clearable fullWidth value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter name" />
           <Button auto onClick={handleAction}>
             Submit
-          </Button>
+          </Button> */}
         </>
       )}
     </>

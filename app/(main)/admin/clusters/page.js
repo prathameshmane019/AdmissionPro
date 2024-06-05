@@ -31,15 +31,15 @@ const Page = () => {
           <TableColumn>Actions</TableColumn>
         </TableHeader>
         <TableBody>
-          {clusters.map((cluster) => (
+          {clusters && clusters?.map((cluster) => (
             <TableRow key={cluster._id}>
               <TableCell>
-                <Link href={`/cluster/${cluster._id}`}>{cluster._id}</Link>
+                <Link href={`clusters/${cluster._id}`}>{cluster._id}</Link>
               </TableCell>
               <TableCell>{cluster.student_names.length}</TableCell>
               <TableCell>{cluster.faculty_names?.length || 0}</TableCell>
               <TableCell>
-                <Link href={`/cluster/${cluster._id}/manage`}>
+                <Link href={`clusters/${cluster._id}/manage`}>
                   <Button>Manage</Button>
                 </Link>
               </TableCell>

@@ -6,7 +6,8 @@ export async function POST(req) {
     try {
         await connectMongoDB();
         const data = await req.json();
-        const newStudent = new Student(data);
+
+
         await newStudent.save();
         console.log("Student created successfully");
         return NextResponse.json({ message: "Student created successfully", student: newStudent });
@@ -56,6 +57,11 @@ export async function GET(req) {
 
         const totalStudents = await Student.countDocuments(filters);
         const students = await Student.find(filters).skip(skip).limit(limit);
+
+        console.log("Students fetched successfully");
+        
+        
+
         console.log(students);
         console.log("Students fetched successfully");
         return NextResponse.json({ students, total: totalStudents });

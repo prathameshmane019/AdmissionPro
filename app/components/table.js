@@ -38,7 +38,9 @@ const columns = [
     { uid: "jee", name: "JEE Score", sortable: true },
     { uid: "mobile", name: "Mobile" },
     { uid: "email", name: "Email" },
+    { uid: "collegeName ", name: "College Name" },
     { uid: "address", name: "Address" },
+    { uid: "cluster", name: "Cluster" },
     { uid: "actions", name: "Actions" },
 ];
 const INITIAL_VISIBLE_COLUMNS = ["firstName", "fatherName", "lastName", "mobile", "category", "email", "actions"];
@@ -160,6 +162,8 @@ export default function TableComponent() {
             case "fatherName":
             case "mobile":
             case "gmail":
+            case "collegeName":
+            case "cluster":
             case "category":
             case "cet":
             case "pcm":
@@ -229,6 +233,32 @@ export default function TableComponent() {
                         value={filters.gender}
                         onChange={handleFilterChange}
                         name="gender"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                       <Input
+                        aria-label="Filter by College Name "
+                        placeholder="Filter by College Name"
+                        value={filters.collegeName}
+                        onChange={handleFilterChange}
+                        name="collegeName"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
+                    <Input
+                        aria-label="Filter by Cluster "
+                        placeholder="Filter by Cluster"
+                        value={filters.cluster}
+                        onChange={handleFilterChange}
+                        name="cluster"
                         variant="bordered"
                         size="sm"
                         classNames={{

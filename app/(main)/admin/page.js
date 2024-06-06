@@ -38,7 +38,7 @@ function Dashboard() {
 
   const fetchDoctorCount = async () => {
     try {
-      const response = await axios.get('/api/students');
+      const response = await axios.get('/api/student');
       setDoctorCount(response.data.length);
     } catch (error) {
       console.error('Error fetching doctor data:', error);
@@ -70,7 +70,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UserGroupIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Students</h5>
-            <h2 className="text-3xl font-bold text-white">{doctorCount}</h2>
+            <h2 className="text-3xl font-bold text-white">{studentsCount}</h2>
           </CardBody>
         </Card>
       </div>

@@ -17,7 +17,6 @@ const ManageClusterPage = ({ params }) => {
   const [students, setStudents] = useState([]);
   const [faculty, setFaculty] = useState([]);
   const [visible, setVisible] = useState(false);
-  console.log(setSelectedNames);
 
   useEffect(() => {
     if (params.id) {
@@ -48,10 +47,6 @@ const ManageClusterPage = ({ params }) => {
     } catch (error) {
       console.error('Error fetching members:', error);
     }
-  };
-
-  const handleConfirm = () => {
-    setVisible(true);
   };
 
   const handleAction = async () => {
@@ -90,7 +85,7 @@ const ManageClusterPage = ({ params }) => {
 
     return (
       <Select
-        items={faculty}
+        items={users || []}
         label={`Select ${selectedType}`}
         variant="bordered"
         isMultiline={true}
@@ -101,22 +96,11 @@ const ManageClusterPage = ({ params }) => {
           base: "max-w-xs",
           trigger: "min-h-12 py-2",
         }}
-        onChange={(items) => {
-          if (!Array.isArray(items)) return;
-          setSelectedNames(items.map(item => item.data.name));
-        }}
-        renderValue={(items) => {
-          return (
-            <div className="flex flex-wrap gap-2">
-              {items.map((item) => (
-                <Chip key={item.key}>{item.data.name}</Chip>
-              ))}
-            </div>
-          );
-        }}
+        value={selectedNames}
+        onSelectionChange={setSelectedNames}
       >
         {(user) => (
-          <SelectItem key={user._id} textValue={user.name}>
+          <SelectItem key={user._id} value={user._id} textValue={user.name}>
             <div className="flex gap-2 items-center">
               <div className="flex flex-col">
                 <span className="text-small">{user.name}</span>
@@ -129,7 +113,7 @@ const ManageClusterPage = ({ params }) => {
   };
 
   const renderAutocomplete = () => {
-    const items = selectedType === 'faculty' ? cluster.faculty_names : cluster.student_names;
+    const items = selectedType === 'faculty' ? cluster?.faculty_names || [] : cluster?.student_names || [];
 
     return (
       <Autocomplete
@@ -147,11 +131,9 @@ const ManageClusterPage = ({ params }) => {
   if (isLoading) {
     return <Spinner />;
   }
-
   if (error) {
     return <h2 style={{ color: 'red' }}>{error}</h2>;
   }
-
   return (
     <div style={{ maxWidth: '90vw', height: '100vh', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
       <h2>Manage Cluster: {params.id}</h2>
@@ -161,7 +143,7 @@ const ManageClusterPage = ({ params }) => {
             <Card className='w-[40vw] h-[60vh] overflow-y-auto p-5'>
               <h3>Student Names</h3>
               <ul>
-                {cluster.student_names.map((name, index) => (
+                {cluster.student_names?.map((name, index) => (
                   <li key={index}>{index + 1} {name}</li>
                 ))}
               </ul>
@@ -170,7 +152,7 @@ const ManageClusterPage = ({ params }) => {
             <Card className='w-[40vw] h-[60vh] overflow-y-auto p-5'>
               <h3>Faculty Names</h3>
               <ul>
-                {cluster.faculty_names.map((name, index) => (
+                {cluster.faculty_names?.map((name, index) => (
                   <li key={index}>{index + 1} {name}</li>
                 ))}
               </ul>
@@ -199,18 +181,18 @@ const ManageClusterPage = ({ params }) => {
             selectedAction.includes('add') ? renderSelect() : renderAutocomplete()
           )}
           <Spacer y={1} />
-          <Button auto onClick={handleConfirm} disabled={!selectedAction || !selectedType || !selectedNames.length}>
+          <Button auto onPress={() => setVisible(true)} disabled={!selectedAction || !selectedType || !selectedNames.length}>
             Submit
           </Button>
         </div>
       )}
-      <Modal closeButton blur isOpen={visible} onClose={() => setVisible(false)}>
+      <Modal blur isOpen={visible} onClose={() => setVisible(false)}>
         <ModalContent>
           <ModalHeader>
             <h4>Confirm Action</h4>
           </ModalHeader>
           <ModalBody>
-            <p>Are you sure you want to {selectedAction} the following {selectedType}(s): {selectedNames.join(', ')}?</p>
+            {/* <p>Are you sure you want to {selectedAction} the following {selectedType}(s): {selectedNames.join(', ')}?</p> */}
           </ModalBody>
           <ModalFooter>
             <Button auto flat color="error" onClick={() => setVisible(false)}>

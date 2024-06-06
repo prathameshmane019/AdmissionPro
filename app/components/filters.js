@@ -25,7 +25,6 @@ const StudentFilters = () => {
             const response = await axios.get("/api/students", {
                 params: filters,
             });
-            // Handle the response data
             console.log(response.data);
         } catch (error) {
             console.error("Error fetching students:", error);

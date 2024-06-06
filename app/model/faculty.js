@@ -1,6 +1,4 @@
-
 import mongoose from 'mongoose';
-
 const { Schema, model } = mongoose;
 
 const facultySchema = new Schema(
@@ -12,7 +10,6 @@ const facultySchema = new Schema(
     role: {
       type: String,
     },
-
     department: {
       type: String,
     },
@@ -26,6 +23,7 @@ const facultySchema = new Schema(
       type: String,
     },
     students: [],
+    
     cluster: {
       type: String
     },
@@ -39,5 +37,4 @@ const facultySchema = new Schema(
 );
 
 const Faculty = mongoose.models.Faculty || model('Faculty', facultySchema);
-
 export default Faculty;

@@ -6,8 +6,7 @@ export async function POST(req) {
     try {
         await connectMongoDB();
         const data = await req.json();
-
-
+        const newStudent = new  Student({data})
         await newStudent.save();
         console.log("Student created successfully");
         return NextResponse.json({ message: "Student created successfully", student: newStudent });

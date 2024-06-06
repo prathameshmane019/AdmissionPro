@@ -11,53 +11,43 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           await connectMongoDB();
-          const email = credentials.userId;
-          const password = credentials.password;
-          const user = await Faculty.findOne({ email });
-          
+          const { userId, password } = credentials;
+          const user = await Faculty.findOne({
+            $or: [
+              { email: userId },
+              { mobile: userId },
+              { name: userId }
+            ]
+          });
+
           if (!user) {
-            return null;
+            throw new Error('User not found');
           }
-          const isVerified = (user.pwd === password);
-          console.log(isVerified);
+
+          const isVerified = (user.password === password);
           if (!isVerified) {
-            return null;
+            throw new Error('Invalid credentials');
           }
-          let userRole;
-          console.log(user);
-          if(user && user.department === "Central"){
-           userRole = "admin"
-          }
-          else if(user){
-            userRole = "faculty"
-           }
-          console.log(userRole);
+
+          let userRole = user.department === "Central" ? "admin" : "faculty";
           return { ...user.toObject(), role: userRole };
         } catch (error) {
           console.error('Error during authorization:', error);
-          return null;
+          throw new Error('Authorization failed');
         }
       }
     }),
   ],
-  session: {
-    sessionCallback: async (session, user) => {
-      session.user = { ...user, role: user.role };
-      console.log(session);
-      return session;
-    },
-  },
   callbacks: {
-    async jwt({ token, account, user }) {
-      if (account) {
-        token.accessToken = account.access_token;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user._id;
         token.role = user.role;
       }
       return token;
     },
-
     async session({ session, token }) {
-      session.user.accessToken = token.accessToken;
+      session.user.id = token.id;
       session.user.role = token.role;
       return session;
     }

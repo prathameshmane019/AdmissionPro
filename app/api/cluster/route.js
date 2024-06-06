@@ -3,7 +3,6 @@ import { connectMongoDB } from "@/app/lib/connectDb";
 import Cluster from "@/app/model/cluster";
 import Student from "@/app/model/student";
 
-// POST - Create or update a cluster with filtered students
 export async function POST(req) {
   try {
     await connectMongoDB();
@@ -40,7 +39,6 @@ export async function POST(req) {
   }
 }
 
-// GET - Fetch cluster(s)
 export async function GET(req) {
   try {
     await connectMongoDB();
@@ -64,11 +62,14 @@ export async function PUT(req) {
     const { searchParams } = new URL(req.url);
     const clusterId = searchParams.get('id');
     const { action, names, type } = await req.json();
-
+    console.log(names);
     const cluster = await Cluster.findById(clusterId);
     if (!cluster) {
       return NextResponse.json({ error: "Cluster not found" });
     }
+
+    if (!cluster.student_names) cluster.student_names = [];
+    if (!cluster.faculty_names) cluster.faculty_names = [];
 
     if (action === 'add') {
       if (type === 'faculty') {
@@ -91,8 +92,6 @@ export async function PUT(req) {
     return NextResponse.json({ error: "Failed to update data" });
   }
 }
-
-// DELETE - Remove faculty or student from cluster
 export async function DELETE(req) {
   try {
     await connectMongoDB();

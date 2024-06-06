@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import {
+    Select, SelectItem, 
     Table,
     TableHeader,
     TableColumn,
@@ -59,9 +60,10 @@ export default function TableComponent() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" });
-
+    const [clusters, setClusters] = useState([]);
     useEffect(() => {
         fetchStudents();
+        fetchClusters();
     }, [page, rowsPerPage]);
 
     const fetchStudents = async () => {
@@ -82,9 +84,19 @@ export default function TableComponent() {
             setLoading(false);
         }
     };
+    const fetchClusters = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get('/api/cluster',);
+            setClusters(res.data);
+        } catch (error) {
+            console.error("Error fetching clusters:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-
-        const onSearchChange = (value) => {
+    const onSearchChange = (value) => {
         if (value) {
             setFilterValue(value);
             setPage(1);
@@ -98,7 +110,7 @@ export default function TableComponent() {
         try {
             setLoading(true);
             setError("");
-            await axios.post("/api/cluster", { title,filters });
+            await axios.post("/api/cluster", { title, filters });
             setTitle("");
             console.log("Data clustered and saved successfully!");
         } catch (error) {
@@ -108,7 +120,7 @@ export default function TableComponent() {
             setLoading(false);
         }
     };
-    
+
 
     const handleFilterChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
 
@@ -120,7 +132,7 @@ export default function TableComponent() {
     const deleteStudent = async (_id) => {
         try {
             await axios.delete(`/api/students?_id=${_id}`);
-            fetchStudents(); // Refetch data after deletion
+            fetchStudents();
         } catch (error) {
             console.error("Error deleting student:", error);
         }
@@ -140,7 +152,11 @@ export default function TableComponent() {
         return columns.filter((column) => visibleColumns.has(column.uid));
     }, [visibleColumns]);
 
-    const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "",search:"" });
+    const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "" });
+
+    const handleSelectionChange = (e) => {
+        filters.cluster = e.target.value;
+      };
 
     const filteredItems = useMemo(() => {
         let filteredUsers = data?.students || [];
@@ -197,10 +213,11 @@ export default function TableComponent() {
     };
 
 
-        const topContent = (
-        <div className="flex flex-col gap-4">
-             <div className="mb-4 flex justify-between">
-                <div className="flex gap-2">
+    const topContent = (
+        <div className="flex flex-col gap-4 w-100">
+            <div className="mx-auto w-100 flex justify-between">
+                <div className="justify-between">
+                    <div className="flex justify-between gap-4 my-3">
                     <Input
                         aria-label="Filter by category"
                         placeholder="Filter by category"
@@ -240,25 +257,12 @@ export default function TableComponent() {
                             inputWrapper: "border-1",
                         }}
                     />
-                       <Input
+                    <Input
                         aria-label="Filter by College Name "
                         placeholder="Filter by College Name"
                         value={filters.collegeName}
                         onChange={handleFilterChange}
                         name="collegeName"
-                        variant="bordered"
-                        size="sm"
-                        classNames={{
-                            base: "w-full sm:max-w-[44%]",
-                            inputWrapper: "border-1",
-                        }}
-                    />
-                    <Input
-                        aria-label="Filter by Cluster "
-                        placeholder="Filter by Cluster"
-                        value={filters.cluster}
-                        onChange={handleFilterChange}
-                        name="cluster"
                         variant="bordered"
                         size="sm"
                         classNames={{
@@ -279,6 +283,24 @@ export default function TableComponent() {
                             inputWrapper: "border-1",
                         }}
                     />
+                    </div>                    
+                    <div className="flex gap-4 my-3 items-center">
+                        <Select  
+                          label="select cluster"
+                          variant="bordered"
+                          selectedKeys={[filters.cluster]}
+                          className="max-w-xs"
+                          size="sm"
+                          onChange={handleSelectionChange}
+                          >
+                                {clusters && clusters.map((cluster) => (
+                                    <SelectItem key={cluster._id}>
+                                        {cluster._id}
+                                    </SelectItem>
+                                ))}
+                          
+                        </Select>
+                    
                     <Input
                         aria-label="Filter by CET"
                         placeholder="Filter by CET"
@@ -317,27 +339,27 @@ export default function TableComponent() {
                             base: "w-full sm:max-w-[44%]",
                             inputWrapper: "border-1",
                         }}
-                    />  
-                      
+                    />
+                    </div>
                 </div>
-                
+
             </div>
-            <div className="flex gap-5 my-2 items-center justify-center">
-                         <Input
-                             type="text"
-                             id="title"
-                             value={title}
-                             onChange={handleTitleChange}
-                             placeholder="Enter a title"
-                             size="sm"
-                             variant="bordered"
-                         />
-                     <Button onClick={handleClusterData} className="bg-foreground text-background" size="sm" disabled={loading}>
-                         {loading ? "Clustering data..." : "Cluster Data"}
-                     </Button>
-                    
-                     {error && <p>{error}</p>}
-                 </div>
+            <div className="flex gap-5  items-center justify-center">
+                <Input
+                    type="text"
+                    id="title"
+                    value={title}
+                    onChange={handleTitleChange}
+                    placeholder="Enter a title"
+                    size="sm"
+                    variant="bordered"
+                />
+                <Button onClick={handleClusterData} className="bg-foreground text-background" size="sm" disabled={loading}>
+                    {loading ? "Clustering data..." : "Cluster Data"}
+                </Button>
+
+                {error && <p>{error}</p>}
+            </div>
             <div className="flex justify-between gap-3 items-end">
                 <Input
                     isClearable
@@ -354,12 +376,12 @@ export default function TableComponent() {
                     onValueChange={onSearchChange}
                 />
                 <div className="flex gap-3">
-                <Button color="primary" onClick={handleSearch}
-                      className="bg-foreground text-background"
+                    <Button color="primary" onClick={handleSearch}
+                        className="bg-foreground text-background"
                         size="sm">
                         Search
                     </Button>
-                    <Button 
+                    <Button
                         color="secondary"
                         className="bg-foreground text-background"
                         size="sm"
@@ -400,7 +422,7 @@ export default function TableComponent() {
                         Add New
                     </Button>
                 </div>
-                
+
             </div>
             <div className="flex justify-between items-center">
                 <span className="text-default-400 text-small">Total {data?.total} users</span>
@@ -420,7 +442,7 @@ export default function TableComponent() {
     );
 
     const closeModal = () => setModalOpen(false);
-        const bottomContent = (
+    const bottomContent = (
         <div className="py-2 px-2 flex justify-between items-center">
             <Pagination
                 showControls
@@ -440,7 +462,7 @@ export default function TableComponent() {
 
     return (
         <div>
-           
+
             <Table
                 aria-label="Student Table"
                 sortDescriptor={sortDescriptor}
@@ -451,7 +473,6 @@ export default function TableComponent() {
                 onSelectionChange={setVisibleColumns}
                 topContent={topContent}
                 topContentPlacement="outside"
-
             >
                 <TableHeader columns={headerColumns}>
                     {(column) => (

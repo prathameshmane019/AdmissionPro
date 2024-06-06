@@ -25,6 +25,10 @@ export async function GET(req) {
         const skip = (page - 1) * limit;
 
         const filters = {};
+
+        const college = searchParams.get("college");
+        if (college) filters.college = college;
+
         const cluster = searchParams.get("cluster");
         if (cluster) filters.cluster = cluster;
         const category = searchParams.get("category");

@@ -32,14 +32,14 @@ const columns = [
     { uid: "firstName", name: "First Name", sortable: true },
     { uid: "fatherName", name: "Father's Name" },
     { uid: "lastName", name: "Last Name" },
-    { uid: "Gender", name: "Gender" },
+    { uid: "gender", name: "Gender" },
     { uid: "category", name: "Category" },
     { uid: "cet", name: "CET Score", sortable: true },
     { uid: "pcm", name: "PCM Score", sortable: true },
     { uid: "jee", name: "JEE Score", sortable: true },
     { uid: "mobile", name: "Mobile" },
     { uid: "email", name: "Email" },
-    { uid: "collegeName ", name: "College Name" },
+    { uid: "college ", name: "College Name" },
     { uid: "address", name: "Address" },
     { uid: "cluster", name: "Cluster" },
     { uid: "actions", name: "Actions" },
@@ -178,7 +178,7 @@ export default function TableComponent() {
             case "fatherName":
             case "mobile":
             case "gmail":
-            case "collegeName":
+            case "college":
             case "cluster":
             case "category":
             case "cet":
@@ -260,9 +260,9 @@ export default function TableComponent() {
                     <Input
                         aria-label="Filter by College Name "
                         placeholder="Filter by College Name"
-                        value={filters.collegeName}
+                        value={filters.college}
                         onChange={handleFilterChange}
-                        name="collegeName"
+                        name="college"
                         variant="bordered"
                         size="sm"
                         classNames={{
@@ -288,7 +288,8 @@ export default function TableComponent() {
                         <Select  
                           label="select cluster"
                           variant="bordered"
-                          selectedKeys={[filters.cluster]}
+                          placeholder="Select an cluster"
+                          selectedKeys={filters.cluster}
                           className="max-w-xs"
                           size="sm"
                           onChange={handleSelectionChange}

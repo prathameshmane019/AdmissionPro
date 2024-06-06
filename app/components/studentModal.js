@@ -25,6 +25,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
     mobile: "",
     parentMobile: "",
     email: "",
+    clusterName : "",
+    faculty: "",
+    collegeName: "",
      address: "",
      branch: "",
      remark: "",
@@ -50,6 +53,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         mobile: user.mobile || "",
         parentMobile: user.parentMobile || "",
         email: user.email || "",
+        clusterName : user.clusterName || "",
+        faculty : user.faculty || "",
+        collegeName : user.collegeName || "", 
         address: user.address || "",
         branch: user.branch || "",
         remark: user.remark || "",
@@ -73,6 +79,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         mobile: "",
         parentMobile: "",
         email: "",
+        clusterName: "",
+        faculty: "",
+        collegeName: "",
         address: "",
         branch: "",
         remark: "",
@@ -162,6 +171,15 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <p>Email: {user.email}</p>
                 </div>
                 <div>
+                  <p>Cluster Name: {user.clusterName}</p>
+                </div>
+                <div>
+                  <p>Faculty: {user.faculty}</p>
+                </div>
+                <div>
+                  <p>College Name: {user.collegeName}</p>
+                </div>
+                <div>
                   <p>Address: {user.address}</p>
                 </div>
                 <div>
@@ -224,6 +242,15 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                 </div>
                 <div>
                   <Input name="email" label="Email" value={formData.email} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="clusterName" label="Cluster Name" value={formData.clusterName} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="collegeName" label="College Name" value={formData.clusterName} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="faculty" label="Faculty" value={formData.faculty} onChange={handleChange} required />
                 </div>
                 <div>
                   <Input name="address" label="Address" value={formData.address} onChange={handleChange} required />

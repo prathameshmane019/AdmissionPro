@@ -15,7 +15,7 @@ const Profile = () => {
   
     return (
       <div className="profile">
-        <h2>{firstName}</h2>
+        <h2>FirstName:{firstName}</h2>
         <p>Email: {email}</p>
         <p>ID: {_id}</p>
       </div>
@@ -23,3 +23,7 @@ const Profile = () => {
   };
   
 export default Profile;
+
+
+
+

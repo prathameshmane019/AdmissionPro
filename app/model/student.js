@@ -58,6 +58,15 @@ const studentSchema = new Schema(
     email: {
       type: String
     },
+    clusterName: {
+      type: String
+    },
+    collegeName: {
+      type: String
+    },
+    faculty: {
+      type: String
+    },
     address: {
       type: String
     },

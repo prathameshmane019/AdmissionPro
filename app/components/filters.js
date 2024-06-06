@@ -5,6 +5,8 @@ import axios from "axios";
 const StudentFilters = () => {
     const [filters, setFilters] = useState({
         firstName: "",
+        collegeName:"",
+        cluster: "",
         lastName: "",
         category: "",
         Gender: "",
@@ -40,6 +42,29 @@ const StudentFilters = () => {
                         type="text"
                         name="firstName"
                         value={filters.firstName}
+                        onChange={handleFilterChange}
+                    />
+                </label>
+            </div>
+           
+            <div>
+                <label>
+                    College Name:
+                    <input
+                        type="text"
+                        name="collegeName"
+                        value={filters.collegeName}
+                        onChange={handleFilterChange}
+                    />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Cluster:
+                    <input
+                        type="text"
+                        name="cluster"
+                        value={filters.cluster}
                         onChange={handleFilterChange}
                     />
                 </label>

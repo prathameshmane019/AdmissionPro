@@ -6,43 +6,43 @@ import { UserCircleIcon, UsersIcon, UserGroupIcon } from '@heroicons/react/24/so
 import { toast } from 'sonner';
 
 function Dashboard() {
-  const [recordCount, setRecordCount] = useState("Loading");
-  const [userCount, setUserCount] = useState("Loading");
-  const [doctorCount, setDoctorCount] = useState("Loading");
+  const [clusterCount, setClusterCount] = useState("Loading");
+  const [facultyCount, setFacultyCount] = useState("Loading");
+  const [studentsCount, setStudentCount] = useState("Loading");
 
   useEffect(() => {
     fetchData();
-    fetchUserCount();
-    fetchDoctorCount();
+    fetchFacultyCount();
+    fetchStudentCount();
   }, []);
 
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/cluster');
-      setRecordCount(response.data.length);
+      setClusterCount(response.data.length);
     } catch (error) {
-      console.error('Error fetching record data:', error);
-      toast.error('Error fetching record data');
+      console.error('Error fetching cluster data:', error);
+      toast.error('Error fetching cluster data');
     }
   };
 
-  const fetchUserCount = async () => {
+  const fetchFacultyCount = async () => {
     try {
       const response = await axios.get('/api/faculty');
-      setUserCount(response.data.length);
+      setFacultyCount(response.data.length);
     } catch (error) {
-      console.error('Error fetching user data:', error);
-      toast.error('Error fetching user data');
+      console.error('Error fetching faculty data:', error);
+      toast.error('Error fetching faculty data');
     }
   };
 
-  const fetchDoctorCount = async () => {
+  const fetchStudentCount = async () => {
     try {
-      const response = await axios.get('/api/student');
-      setDoctorCount(response.data.length);
+      const response = await axios.get('/api/students');
+      setStudentCount(response.data.length);
     } catch (error) {
-      console.error('Error fetching doctor data:', error);
-      toast.error('Error fetching doctor data');
+      console.error('Error fetching student data:', error);
+      toast.error('Error fetching student data');
     }
   };
 
@@ -54,7 +54,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UserCircleIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Clusters</h5>
-            <h2 className="text-3xl font-bold text-white">{recordCount}</h2>
+            <h2 className="text-3xl font-bold text-white">{clusterCount}</h2>
           </CardBody>
         </Card>
 
@@ -62,7 +62,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UsersIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Faculty</h5>
-            <h2 className="text-3xl font-bold text-white">{userCount}</h2>
+            <h2 className="text-3xl font-bold text-white">{facultyCount}</h2>
           </CardBody>
         </Card>
 

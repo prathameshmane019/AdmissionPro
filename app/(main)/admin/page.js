@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
@@ -85,6 +84,9 @@ function Dashboard() {
         }],
         options: {
           ...chartData.options,
+          xaxis: {
+            categories: ['Interested', 'Not Interested'],
+          }
         }
       });
     } catch (error) {

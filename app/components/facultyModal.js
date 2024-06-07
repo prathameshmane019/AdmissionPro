@@ -1,48 +1,107 @@
-import React from "react";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
+"use client"
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,Input
+} from "@nextui-org/react";
+import { toast } from "sonner";
+export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit }) {
+  const [formData, setFormData] = useState({});
+ 
 
-export default function App() {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  useEffect(() => {
+    if (mode === "edit" && faculty) {
+      setFormData(faculty);
+    }
+  }, [isOpen, mode, faculty]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await onSubmit(formData);
+      onClose();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to submit data");
+    }
+  };
 
   return (
-    <>
-      <Button onPress={onOpen}>Open Modal</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} isKeyboardDismissDisabled={true}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
-              <ModalBody>
-                <p> 
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
-                  dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. 
-                  Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. 
-                  Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur 
-                  proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalContent>
+        <ModalHeader>{mode === "add" ? "Add Faculty" : "Edit Faculty"}</ModalHeader>
+        <ModalBody>
+          <div className="flex flex-col gap-4">
+            <Input
+              type="text"
+              name="name"
+              value={formData.name || ""}
+              placeholder="Name"
+              onChange={handleChange}
+            />
+            <Input
+              type="text"
+              name="gender"
+              value={formData.gender || ""}
+              placeholder="Gender"
+              onChange={handleChange}
+            />
+            <Input
+              type="text"
+              name="department"
+              value={formData.department || ""}
+              placeholder="Department"
+              onChange={handleChange}
+            />
+            <Input
+              type="text"
+              name="role"
+              value={formData.role || ""}
+              placeholder="Role"
+              onChange={handleChange}
+            />
+            <Input
+              type="email"
+              name="email"
+              value={formData.email || ""}
+              placeholder="Email"
+              onChange={handleChange}
+            />
+            <Input
+              type="text"
+              name="mobile"
+              value={formData.mobile || ""}
+              placeholder="Mobile"
+              onChange={handleChange}
+            />
+            {mode === "add" && (
+              <Input
+                type="password"
+                name="password"
+                value={formData.password || ""}
+                placeholder="Password"
+                onChange={handleChange}
+              />
+            )}
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" variant="light" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={handleSubmit}>
+            {mode === "add" ? "Add" : "Update"}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }

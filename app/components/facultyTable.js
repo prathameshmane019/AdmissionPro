@@ -52,7 +52,7 @@ export default function FacultyTable() {
   });
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("view"); // 'view', 'edit', or 'add'
+  const [modalMode, setModalMode] = useState("add"); // 'view', 'edit', or 'add'
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [faculty, setFaculty] = useState([]);
 
@@ -130,18 +130,6 @@ export default function FacultyTable() {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="View">
-              <span
-                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                onClick={() => {
-                  setModalMode("view");
-                  setSelectedFaculty(facultyMember);
-                  setModalOpen(true);
-                }}
-              >
-                <EyeIcon />
-              </span>
-            </Tooltip>
             <Tooltip content="Edit">
               <span
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"

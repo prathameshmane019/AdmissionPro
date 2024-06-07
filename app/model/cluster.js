@@ -12,6 +12,13 @@ const clusterSchema = new mongoose.Schema({
   },
   faculty_name: {
     type: [String],
+  },
+  faculty_id: {
+    type: [String],
+  }
+  ,
+  student_id: {
+    type: [String],
     required: true
   }
 }, {

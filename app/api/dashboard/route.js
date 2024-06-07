@@ -15,12 +15,12 @@ export async function GET() {
     // Fetch interested branch stats
     const students = await Student.find();
     const branchStats = students.reduce((acc, student) => {
-      const branch = student.branch;
-      if (branch) {
-        if (acc[branch]) {
-          acc[branch]++;
+      const remark = student.remark;
+      if (remark) {
+        if (acc[remark]) {
+          acc[remark]++;
         } else {
-          acc[branch] = 1;
+          acc[remark] = 1;
         }
       }
       return acc;

@@ -1,4 +1,4 @@
-// pages/api/dashboard.js
+
 import { NextResponse } from "next/server";
 import { connectMongoDB } from "@/app/lib/connectDb";
 import Cluster from '@/app/model/cluster';
@@ -12,7 +12,6 @@ export async function GET() {
     const facultyCount = await Faculty.find().countDocuments();
     const studentCount = await Student.find().countDocuments();
 
-    // Fetch interested branch stats
     const students = await Student.find();
     const branchStats = students.reduce((acc, student) => {
       const remark = student.remark;

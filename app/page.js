@@ -1,24 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import NoInternetPage from './NoInternetPage'; // Import the NoInternetPage component
 
 export default function Home() {
-  const [isOnline, setIsOnline] = useState(true);
-
-  useEffect(() => {
-    const handleOnlineStatusChange = () => {
-      setIsOnline(navigator.onLine);
-    };
-
-    window.addEventListener('online', handleOnlineStatusChange);
-    window.addEventListener('offline', handleOnlineStatusChange);
-
-    return () => {
-      window.removeEventListener('online', handleOnlineStatusChange);
-      window.removeEventListener('offline', handleOnlineStatusChange);
-    };
-  }, []);
 
   return (
     <>
@@ -27,9 +11,7 @@ export default function Home() {
         <meta name="description" content="Student Assure - Feedback for College Students" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {!isOnline ? (
-        <NoInternetPage />
-      ) : (
+
         <div className="bg-gray-100 min-h-screen">
           <header className="bg-white shadow-md">
             <div className="container mx-auto flex justify-between items-center px-4 py-6">
@@ -68,7 +50,6 @@ export default function Home() {
             </div>
           </footer>
         </div>
-      )}
     </>
   );
 }

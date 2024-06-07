@@ -158,7 +158,8 @@ export default function TableComponent() {
     const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "" });
 
     const handleSelectionChange = (e) => {
-        filters.cluster = e.target.value;
+        const value = e.target.value || ''; // Use an empty string as the default value
+        filters.cluster = value;
       };
 
     const filteredItems = useMemo(() => {
@@ -215,7 +216,7 @@ export default function TableComponent() {
         setModalOpen(true);
     };
 
-console.log(visibleColumns);
+console.log(selectedUser);
     const topContent = (
         <div className="flex flex-col gap-4 w-100">
             <div className="mx-auto w-100 flex justify-between">
@@ -454,7 +455,6 @@ console.log(visibleColumns);
                     cursor: "bg-foreground text-background",
                 }}
                 color="default"
-                isDisabled={hasSearchFilter}
                 page={page}
                 total={pages}
                 variant="light"
@@ -473,8 +473,8 @@ console.log(visibleColumns);
                 bottomContent={bottomContent}
                 bottomContentPlacement="outside"
                 onSortChange={setSortDescriptor}
-                selectedKeys={visibleColumns}
-                onSelectionChange={setVisibleColumns}
+                selectedKeys={selectedUser}
+                onSelectionChange={setSelectedUser}
                 topContent={topContent}
                 topContentPlacement="outside"
                 selectionMode="multiple"

@@ -1,9 +1,8 @@
 "use client"
-import React, { useState,useEffect } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select } from "@nextui-org/react";
 import axios from "axios";
 import { toast } from 'sonner';
-
 
 const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
   
@@ -25,12 +24,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
     mobile: "",
     parentMobile: "",
     email: "",
-    clusterName : "",
+    clusterName: "",
     faculty: "",
     collegeName: "",
-     address: "",
-     branch: "",
-     remark: "",
+    address: "",
+    branch: "",
+    remark: "",
   });
 
   useEffect(() => {
@@ -53,9 +52,9 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
         mobile: user.mobile || "",
         parentMobile: user.parentMobile || "",
         email: user.email || "",
-        clusterName : user.clusterName || "",
-        faculty : user.faculty || "",
-        collegeName : user.collegeName || "", 
+        clusterName: user.clusterName || "",
+        faculty: user.faculty || "",
+        collegeName: user.collegeName || "", 
         address: user.address || "",
         branch: user.branch || "",
         remark: user.remark || "",
@@ -89,9 +88,12 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
     }
   }, [isOpen, mode, user]);
 
-  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSelectChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -100,11 +102,11 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
       if (mode === "add") {
         const response = await axios.post("/api/students", formData);
         console.log("Student added:", response.data);
-        toast.success('student added sucessfully')
+        toast.success('student added successfully');
       } else if (mode === "edit") {
         const response = await axios.put(`/api/students?_id=${user._id}`, formData);
         console.log("Student updated:", response.data);
-        toast.success('student updated sucessfully')
+        toast.success('student updated successfully');
       }
       onSubmit();
       onClose();
@@ -112,6 +114,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
       console.error("Error:", error);
     }
   };
+
   return (
     <Modal backdrop="opaque" isOpen={isOpen} size="4xl" onOpenChange={onClose} classNames={{ backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20" }}>
       <ModalContent>
@@ -247,7 +250,7 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="clusterName" label="Cluster Name" value={formData.clusterName} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Input name="collegeName" label="College Name" value={formData.clusterName} onChange={handleChange} required />
+                  <Input name="collegeName" label="College Name" value={formData.collegeName} onChange={handleChange} required />
                 </div>
                 <div>
                   <Input name="faculty" label="Faculty" value={formData.faculty} onChange={handleChange} required />
@@ -256,10 +259,19 @@ const StudentModal = ({ isOpen, onClose, mode, user, onSubmit }) => {
                   <Input name="address" label="Address" value={formData.address} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Input name="branch" label=" Interested Branch" value={formData.branch} onChange={handleChange} required />
+                  <Select name="branch" label="Interested Branch" placeholder="Select Branch" value={formData.branch} onChange={(value) => handleSelectChange('branch', value)} required>
+                    <Select.Option value="CSE">CSE</Select.Option>
+                    <Select.Option value="ENTC">ENTC</Select.Option>
+                    <Select.Option value="Electrical">Electrical</Select.Option>
+                    <Select.Option value="MECH">MECH</Select.Option>
+                    <Select.Option value="Civil">Civil</Select.Option>
+                  </Select>
                 </div>
                 <div>
-                  <Input name="remark" label="Remark" value={formData.remark} onChange={handleChange} required />
+                  <Select name="remark" label="Remark" placeholder="Select Remark" value={formData.remark} onChange={(value) => handleSelectChange('remark', value)} required>
+                    <Select.Option value="Interested">Interested</Select.Option>
+                    <Select.Option value="notInterested">Not Interested</Select.Option>
+                  </Select>
                 </div>
               </div>
             )}

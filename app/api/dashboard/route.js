@@ -12,13 +12,28 @@ export async function GET() {
     const facultyCount = await Faculty.find().countDocuments();
     const studentCount = await Student.find().countDocuments();
 
+    // Fetch interested branch stats
+    const students = await Student.find();
+    const branchStats = students.reduce((acc, student) => {
+      const remark = student.remark;
+      if (remark) {
+        if (acc[remark]) {
+          acc[remark]++;
+        } else {
+          acc[remark] = 1;
+        }
+      }
+      return acc;
+    }, {});
+
     return NextResponse.json({
       clusters,
       facultyCount,
-      studentCount
-    },{status:200});
+      studentCount,
+      branchStats
+    }, {status: 200});
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
-    return NextResponse.json({ message: 'Internal server error' },{status:500});
+    return NextResponse.json({ message: 'Internal server error' }, {status: 500});
   }
 }

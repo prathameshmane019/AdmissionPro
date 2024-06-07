@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { Button, Input, Select, SelectItem ,Tab,Tabs,Card,CardBody,CardFooter} from '@nextui-org/react';
 import axios from 'axios';
 
 const ManageClusterPage = ({ params }) => {
+  
+  const [selected, setSelected] = useState("photos");
   const [cluster, setCluster] = useState(null);
   const [action, setAction] = useState('');
   const [name, setName] = useState('');
@@ -40,45 +42,29 @@ console.log(params.id);
   }
 
   return (
-    <>
-      <h2>Manage Cluster: {params.id}</h2>
-      {cluster && (
-        <>
-          <h3>Student Names</h3>
-          <ul>
-            {cluster && cluster?.student_names?.map((name, index) => (
-              <li key={index}>{name}</li>
-            ))}
-          </ul>
-
-          <h3>Faculty Names</h3>
-          <ul >
-            {cluster && cluster?.faculty_names?.map((name, index) => (
-              <li key={index}>{name}</li>
-            ))}
-          </ul>
-{/* 
-          <Select fullWidth placeholder="Select Action" onChange={(value) => setAction(value)}>
-            <SelectItem key="add-faculty" value="Add Faculty">
-              Add Faculty
-            </SelectItem>
-            <SelectItem key="remove-faculty" value="Remove Faculty">
-              Remove Faculty
-            </SelectItem>
-            <SelectItem key="add-student" value="Add Student">
-              Add Student
-            </SelectItem>
-            <SelectItem key="remove-student" value="Remove Student">
-              Remove Student
-            </SelectItem>
-          </Select>
-          <Input clearable fullWidth value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter name" />
-          <Button auto onClick={handleAction}>
-            Submit
-          </Button> */}
-        </>
-      )}
-    </>
+    <div className="flex w-full flex-col mx-auto items-center">
+      <Tabs 
+        aria-label="Options"         
+        selectedKey={selected}
+        onSelectionChange={setSelected}
+        className='mt-3'
+      >
+        <Tab key="students" title="Students">
+          <Card>
+            <CardBody>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </CardBody>
+          </Card>  
+        </Tab>
+        <Tab key="faculty" title="Faculties">
+          <Card>
+            <CardBody>
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            </CardBody>
+          </Card>  
+        </Tab>
+      </Tabs>
+    </div>  
   );
 };
 

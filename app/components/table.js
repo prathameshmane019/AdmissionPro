@@ -158,8 +158,7 @@ export default function TableComponent() {
     const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "" });
 
     const handleSelectionChange = (e) => {
-        const value = e.target.value || ''; // Use an empty string as the default value
-        filters.cluster = value;
+        filters.cluster = e.target.value;
       };
 
     const filteredItems = useMemo(() => {
@@ -216,7 +215,7 @@ export default function TableComponent() {
         setModalOpen(true);
     };
 
-console.log(selectedUser);
+console.log(visibleColumns);
     const topContent = (
         <div className="flex flex-col gap-4 w-100">
             <div className="mx-auto w-100 flex justify-between">
@@ -298,7 +297,7 @@ console.log(selectedUser);
                           size="sm"
                           onChange={handleSelectionChange}
                           >
-                                {clusters && clusters.map((cluster) => (
+                                {clusters && clusters?.map((cluster) => (
                                     <SelectItem key={cluster._id}>
                                         {cluster._id}
                                     </SelectItem>
@@ -455,6 +454,7 @@ console.log(selectedUser);
                     cursor: "bg-foreground text-background",
                 }}
                 color="default"
+                isDisabled={hasSearchFilter}
                 page={page}
                 total={pages}
                 variant="light"
@@ -473,11 +473,10 @@ console.log(selectedUser);
                 bottomContent={bottomContent}
                 bottomContentPlacement="outside"
                 onSortChange={setSortDescriptor}
-                selectedKeys={selectedUser}
-                onSelectionChange={setSelectedUser}
+                selectedKeys={visibleColumns}
+                onSelectionChange={setVisibleColumns}
                 topContent={topContent}
                 topContentPlacement="outside"
-                selectionMode="multiple"
             >
                 <TableHeader columns={headerColumns}>
                     {(column) => (

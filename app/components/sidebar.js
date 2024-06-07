@@ -68,9 +68,9 @@ const Sidebar = () => {
         <ul className="sidebar__list text-slate-900 dark:text-slate-50">
           {sidebarItems.map(({ name, href, icon: Icon }) => {
             return (
-              <li className="sidebar__item items-center" key={name}>
+              <li className="sidebar__item items-center "  key={name}>
                 <Link
-                  className={`sidebar__link ${pathname === href ? "sidebar__link--active" : ""}`}
+                  className={`sidebar__link  ${pathname === href ? "sidebar__link--active " : ""}`}
                   href={href}
                 >
                   <span className="sidebar__icon">
@@ -81,7 +81,7 @@ const Sidebar = () => {
               </li>
             );
           })}
-           <Button onClick={handleSignOut} color="primary" variant="flat">
+           <Button onClick={handleSignOut} color="secondary" variant="flat">
                 Log Out
               </Button>
         </ul>

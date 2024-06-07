@@ -289,7 +289,10 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   <Input name="address" label="Address" value={formData.address} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Select name="branch" label="Interested Branch" placeholder="Select Branch" selectedKeys={formData.branch} onSelectionChange={(value) => handleSelectChange('branch', value)} required>
+                  <Select name="branch" label="Interested Branch" placeholder="Select Branch" 
+                  selectedKeys={formData.branch ? [formData.branch] : []}
+                  onSelectionChange={(value) => handleSelectChange('branch', value)}
+                  >
                     <SelectItem value="CSE">CSE</SelectItem>
                     <SelectItem value="ENTC">ENTC</SelectItem>
                     <SelectItem value="Electrical">Electrical</SelectItem>
@@ -298,7 +301,10 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   </Select>
                 </div>
                 <div>
-                  <Select name="remark" label="Remark" placeholder="Select Remark" selectedKeys={formData.remark} onSelectionChange={(value) => handleSelectChange('remark', value)} required>
+                  <Select name="remark" label="Remark" placeholder="Select Remark" 
+                  selectedKeys={formData.remark ? [formData.remark] : []}
+                  onSelectionChange={(value) => handleSelectChange('remark', value)}
+                  >
                     <SelectItem value="Interested">Interested</SelectItem>
                     <SelectItem value="Not Interested">Not Interested</SelectItem>
                   </Select>

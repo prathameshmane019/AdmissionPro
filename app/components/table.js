@@ -61,6 +61,9 @@ export default function TableComponent() {
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" });
     const [clusters, setClusters] = useState([]);
+
+
+
     useEffect(() => {
         fetchStudents();
         fetchClusters();
@@ -212,7 +215,7 @@ export default function TableComponent() {
         setModalOpen(true);
     };
 
-
+console.log(visibleColumns);
     const topContent = (
         <div className="flex flex-col gap-4 w-100">
             <div className="mx-auto w-100 flex justify-between">
@@ -299,9 +302,9 @@ export default function TableComponent() {
                                         {cluster._id}
                                     </SelectItem>
                                 ))}
-                          
+
                         </Select>
-                    
+
                     <Input
                         aria-label="Filter by CET"
                         placeholder="Filter by CET"
@@ -474,6 +477,7 @@ export default function TableComponent() {
                 onSelectionChange={setVisibleColumns}
                 topContent={topContent}
                 topContentPlacement="outside"
+                selectionMode="multiple"
             >
                 <TableHeader columns={headerColumns}>
                     {(column) => (
@@ -511,3 +515,4 @@ export default function TableComponent() {
         </div>
     );
 }
+

@@ -2,16 +2,16 @@
 import { useState, useEffect } from 'react';
 import {
   Button, ModalHeader, ModalBody, ModalFooter, Select, SelectItem,
-  Card, Spinner, Modal, Spacer, Dropdown, Chip, Avatar, Autocomplete, AutocompleteItem,
+  Card, Spinner, Modal, Spacer, Dropdown, Autocomplete, AutocompleteItem,
   ModalContent, DropdownItem, DropdownMenu, DropdownTrigger
 } from '@nextui-org/react';
 import axios from 'axios';
 
 const ManageClusterPage = ({ params }) => {
+  const [values, setValues] = useState(new Set([]));
   const [cluster, setCluster] = useState(null);
   const [selectedAction, setSelectedAction] = useState('');
   const [selectedType, setSelectedType] = useState('');
-  const [selectedNames, setSelectedNames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [students, setStudents] = useState([]);
@@ -40,10 +40,10 @@ const ManageClusterPage = ({ params }) => {
 
   const fetchMembers = async () => {
     try {
-      // const studentRes = await axios.get('/api/student'); // Endpoint to fetch all students
-      const facultyRes = await axios.get('/api/faculty'); // Endpoint to fetch all faculty
-      // setStudents(studentRes.data);
+      const facultyRes = await axios.get('/api/faculty');
+      const studentRes = await axios.get('/api/students');
       setFaculty(facultyRes.data);
+      setStudents(studentRes.data);
     } catch (error) {
       console.error('Error fetching members:', error);
     }
@@ -56,10 +56,11 @@ const ManageClusterPage = ({ params }) => {
 
       const action = selectedAction.includes('add') ? 'add' : 'remove';
       const type = selectedType.includes('faculty') ? 'faculty' : 'student';
+      const idsArray = Array.from(values);
 
       const res = await axios.put(`/api/cluster?id=${params.id}`, {
         action,
-        names: selectedNames,
+        ids: idsArray,
         type,
       });
 
@@ -69,7 +70,7 @@ const ManageClusterPage = ({ params }) => {
         fetchCluster();
         setSelectedAction('');
         setSelectedType('');
-        setSelectedNames([]);
+        setValues(new Set([]));
         setVisible(false);
       }
     } catch (error) {
@@ -89,6 +90,7 @@ const ManageClusterPage = ({ params }) => {
         label={`Select ${selectedType}`}
         variant="bordered"
         isMultiline={true}
+        selectedKeys={values}
         selectionMode="multiple"
         placeholder={`Select a ${selectedType}`}
         labelPlacement="outside"
@@ -96,8 +98,7 @@ const ManageClusterPage = ({ params }) => {
           base: "max-w-xs",
           trigger: "min-h-12 py-2",
         }}
-        value={selectedNames}
-        onSelectionChange={setSelectedNames}
+        onSelectionChange={(keys) => setValues(new Set(keys))}
       >
         {(user) => (
           <SelectItem key={user._id} value={user._id} textValue={user.name}>
@@ -113,15 +114,15 @@ const ManageClusterPage = ({ params }) => {
   };
 
   const renderAutocomplete = () => {
-    const items = selectedType === 'faculty' ? cluster?.faculty_names || [] : cluster?.student_names || [];
+    const items = selectedType === 'faculty' ? cluster?.faculty_ids || [] : cluster?.student_ids || [];
 
     return (
       <Autocomplete
-        defaultItems={items.map((name, index) => ({ value: index, label: name }))}
+        defaultItems={items.map((id, index) => ({ value: index, label: id }))}
         label={`Remove ${selectedType}`}
         placeholder={`Search a ${selectedType} to remove`}
         className="max-w-xs"
-        onChange={(selected) => setSelectedNames([selected.label])}
+        onChange={(selected) => setValues(new Set([selected.value]))}
       >
         {(item) => <AutocompleteItem key={item.value}>{item.label}</AutocompleteItem>}
       </Autocomplete>
@@ -141,19 +142,19 @@ const ManageClusterPage = ({ params }) => {
         <div>
           <div className='flex'>
             <Card className='w-[40vw] h-[60vh] overflow-y-auto p-5'>
-              <h3>Student Names</h3>
+              <h3>Student IDs</h3>
               <ul>
-                {cluster.student_names?.map((name, index) => (
-                  <li key={index}>{index + 1} {name}</li>
+                {cluster.student_ids?.map((id, index) => (
+                  <li key={index}>{index + 1} {id}</li>
                 ))}
               </ul>
             </Card>
             <Spacer y={1} />
             <Card className='w-[40vw] h-[60vh] overflow-y-auto p-5'>
-              <h3>Faculty Names</h3>
+              <h3>Faculty IDs</h3>
               <ul>
-                {cluster.faculty_names?.map((name, index) => (
-                  <li key={index}>{index + 1} {name}</li>
+                {cluster.faculty_ids?.map((id, index) => (
+                  <li key={index}>{index + 1} {id}</li>
                 ))}
               </ul>
             </Card>
@@ -181,7 +182,7 @@ const ManageClusterPage = ({ params }) => {
             selectedAction.includes('add') ? renderSelect() : renderAutocomplete()
           )}
           <Spacer y={1} />
-          <Button auto onPress={() => setVisible(true)} disabled={!selectedAction || !selectedType || !selectedNames.length}>
+          <Button auto onPress={() => setVisible(true)} disabled={!selectedAction || !selectedType || values.size === 0}>
             Submit
           </Button>
         </div>
@@ -192,7 +193,7 @@ const ManageClusterPage = ({ params }) => {
             <h4>Confirm Action</h4>
           </ModalHeader>
           <ModalBody>
-            {/* <p>Are you sure you want to {selectedAction} the following {selectedType}(s): {selectedNames.join(', ')}?</p> */}
+            <p>Are you sure you want to {selectedAction} the following {selectedType}(s): {Array.from(values).join(', ')}?</p>
           </ModalBody>
           <ModalFooter>
             <Button auto flat color="error" onClick={() => setVisible(false)}>

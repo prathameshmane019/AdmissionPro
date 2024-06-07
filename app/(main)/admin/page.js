@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
@@ -40,7 +41,7 @@ function Dashboard() {
         colors: ['transparent']
       },
       xaxis: {
-        categories: [],
+        categories: ['Remark'],
       },
       yaxis: {
         title: {
@@ -71,19 +72,19 @@ function Dashboard() {
       const response = await axios.get('/api/dashboard');
       setData(response.data);
 
-      const branches = Object.keys(response.data.branchStats);
-      const counts = Object.values(response.data.branchStats);
+      const interestedCount = response.data.branchStats['Interested'] || 0;
+      const notInterestedCount = response.data.branchStats['Not Interested'] || 0;
 
       setChartData({
         series: [{
-          name: "Students",
-          data: counts
+          name: "Interested",
+          data: [interestedCount]
+        }, {
+          name: "Not Interested",
+          data: [notInterestedCount]
         }],
         options: {
           ...chartData.options,
-          xaxis: {
-            categories: branches
-          }
         }
       });
     } catch (error) {

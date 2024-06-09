@@ -24,9 +24,9 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     mobile: "",
     parentMobile: "",
     email: "",
-    clusterName: "",
+    cluster: "",
     faculty: "",
-    collegeName: "",
+    college: "",
     address: "",
     branch: "",
     remark: "",
@@ -94,9 +94,9 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         mobile: "",
         parentMobile: "",
         email: "",
-        clusterName: "",
+        cluster: "",
         faculty: "",
-        collegeName: "",
+        college: "",
         address: "",
         branch: "",
         remark: "",
@@ -106,10 +106,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSelectChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
 
@@ -226,87 +222,166 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
             {(mode === "edit" || mode === "add") && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Input name="firstName" isRequired label="First Name" value={formData.firstName} onChange={handleChange} required />
+                  <Input name="firstName"
+                  size="sm"
+                  variant="bordered"
+                  isRequired label="First Name" value={formData.firstName} onChange={handleChange} required />
                 </div>
                 <div>
-                  <Input name="lastName" isRequired  label="Last Name" value={formData.lastName} onChange={handleChange} />
+                  <Input name="lastName" 
+                  size="sm"
+                  variant="bordered"
+                  isRequired  label="Last Name" value={formData.lastName} onChange={handleChange} />
                 </div>
                 <div>
-                  <Input name="fatherName" label="Father's Name" value={formData.fatherName} onChange={handleChange} />
+                  <Input name="fatherName"
+                  size="sm"
+                  variant="bordered"
+                  label="Father's Name" value={formData.fatherName} onChange={handleChange} />
                 </div>
                 <div>
-                  <Input name="motherName" label="Mother's Name" value={formData.motherName} onChange={handleChange} />
+                  <Input name="motherName"
+                  size="sm"
+                  variant="bordered"
+                  label="Mother's Name" value={formData.motherName} onChange={handleChange} />
                 </div>
                 <div>
-                  <Input name="gender" label="Gender" value={formData.gender} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="dob" label="Date of Birth" value={formData.dob} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="category" label="Category" value={formData.category} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="disability" label="Disability" value={formData.disability} onChange={handleChange} />
-                </div>
-                <div>
-                  <Input name="hsc" label="HSC Score" value={formData.hsc} onChange={handleChange} type="number" required />
-                </div>
-                <div>
-                  <Input name="ssc" label="SSC Score" value={formData.ssc} onChange={handleChange} type="number" required />
-                </div>
-                <div>
-                  <Input name="cet" label="CET Score" value={formData.cet} onChange={handleChange} type="number" />
-                </div>
-                <div>
-                  <Input name="jee" label="JEE Score" value={formData.jee} onChange={handleChange} type="number" />
-                </div>
-                <div>
-                  <Input name="pcm" label="PCM Group" value={formData.pcm} onChange={handleChange} type="number" />
-                </div>
-                <div>
-                  <Input name="group" label="Group" value={formData.group} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="mobile" isRequired label="Mobile" value={formData.mobile} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="parentMobile" label="Parent's Mobile" value={formData.parentMobile} onChange={handleChange} />
-                </div>
-                <div>
-                  <Input name="email" label="Email" value={formData.email} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="clusterName" label="Cluster Name" value={formData.clusterName} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="collegeName" label="College Name" value={formData.collegeName} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="faculty" label="Faculty" value={formData.faculty} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="address" label="Address" value={formData.address} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Select name="branch" label="Interested Branch" placeholder="Select Branch" 
-                  selectedKeys={formData.branch ? [formData.branch] : []}
-                  onSelectionChange={(value) => handleSelectChange('branch', value)}
+                <Select name="gender" 
+                  label="Gender" 
+                  placeholder="Select gender" 
+                  size="sm"
+                  variant="bordered"
+                  selectedKeys={[formData.gender]}
+                  onChange={handleChange}
                   >
-                    <SelectItem value="CSE">CSE</SelectItem>
-                    <SelectItem value="ENTC">ENTC</SelectItem>
-                    <SelectItem value="Electrical">Electrical</SelectItem>
-                    <SelectItem value="MECH">MECH</SelectItem>
-                    <SelectItem value="Civil">Civil</SelectItem>
+                    <SelectItem  key="M" >Male</SelectItem>
+                    <SelectItem  key="F" >Female</SelectItem>
                   </Select>
                 </div>
                 <div>
-                  <Select name="remark" label="Remark" placeholder="Select Remark" 
-                  selectedKeys={formData.remark ? [formData.remark] : []}
-                  onSelectionChange={(value) => handleSelectChange('remark', value)}
+                  <Input name="dob"
+                  size="sm"
+                  variant="bordered"
+                  label="Date of Birth" value={formData.dob} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="category"
+                  size="sm"
+                  variant="bordered"
+                  label="Category" value={formData.category} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="disability" 
+                  size="sm"
+                  variant="bordered"
+                  label="Disability" value={formData.disability} onChange={handleChange} />
+                </div>
+                <div>
+                  <Input name="hsc"
+                  size="sm"
+                  variant="bordered"
+                  label="HSC Score" value={formData.hsc} onChange={handleChange} type="number" required />
+                </div>
+                <div>
+                  <Input name="ssc"
+                  size="sm"
+                  variant="bordered"
+                  label="SSC Score" value={formData.ssc} onChange={handleChange} type="number" required />
+                </div>
+                <div>
+                  <Input name="cet"
+                  size="sm"
+                  variant="bordered"
+                  label="CET Score" value={formData.cet} onChange={handleChange} type="number" />
+                </div>
+                <div>
+                  <Input name="jee"
+                  size="sm"
+                  variant="bordered"
+                  label="JEE Score" value={formData.jee} onChange={handleChange} type="number" />
+                </div>
+                <div>
+                  <Input name="pcm"
+                  size="sm"
+                  variant="bordered"
+                  label="PCM Group" value={formData.pcm} onChange={handleChange} type="number" />
+                </div>
+                <div>
+                  <Input name="group" 
+                  size="sm"
+                  variant="bordered"
+                  label="Group" value={formData.group} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="mobile" isRequired 
+                  size="sm"
+                  variant="bordered"
+                  label="Mobile" value={formData.mobile} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="parentMobile" 
+                  size="sm"
+                  variant="bordered"
+                  label="Parent's Mobile" value={formData.parentMobile} onChange={handleChange} />
+                </div>
+                <div>
+                  <Input name="email"
+                  size="sm"
+                  variant="bordered"
+                  label="Email" value={formData.email} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="cluster"
+                  size="sm"
+                  variant="bordered"
+                  label="Cluster Name" value={formData.cluster} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="college"
+                  size="sm"
+                  variant="bordered"
+                  label="College Name" value={formData.college} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="faculty"
+                  size="sm"
+                  variant="bordered"
+                  label="Faculty" value={formData.faculty} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Input name="address"
+                  size="sm"
+                  variant="bordered"
+                  label="Address" value={formData.address} onChange={handleChange} required />
+                </div>
+                <div>
+                  <Select name="branch" label="Interested Branch" 
+                  size="sm"
+                  variant="bordered"
+                  placeholder="Select Branch" 
+                  selectedKeys={[formData.branch]} 
+                  value={formData.branch}
+                  onChange={handleChange}
                   >
-                    <SelectItem value="Interested">Interested</SelectItem>
-                    <SelectItem value="Not Interested">Not Interested</SelectItem>
+                    <SelectItem  key="CSE">CSE</SelectItem>
+                    <SelectItem key="ENTC">ENTC</SelectItem>
+                    <SelectItem key="Electrical">Electrical</SelectItem>
+                    <SelectItem  key="MECH">MECHANICAL</SelectItem>
+                    <SelectItem  key="Civil">Civil</SelectItem>
+                  </Select>
+                </div>
+                <div>
+                  <Select name="remark" 
+                  size="sm"
+                  label="Remark" 
+                  placeholder="Select Remark" 
+                  // value={formData.remark}
+                  variant="bordered"
+                  selectedKeys={[formData.remark]}
+                  onChange={handleChange}
+                  >
+                    <SelectItem  key="Interested" >Interested</SelectItem>
+                    <SelectItem  key="Not Interested" >Not Interested</SelectItem>
                   </Select>
                 </div>
               </div>

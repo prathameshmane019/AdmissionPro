@@ -30,10 +30,10 @@ export async function POST(req) {
         await newFaculty.save();
 
         console.log("Faculty created successfully");
-        return NextResponse.json({ message: "Faculty created successfully"});
+        return NextResponse.json({ message: "Faculty created successfully"},{status:200});
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ error: "Failed to create faculty" });
+        return NextResponse.json({ error: "Failed to create faculty" },{status:500});
     }
 }
 
@@ -47,10 +47,10 @@ export async function GET(req) {
         console.log("Faculty fetched successfully");
         console.log(faculty);
 
-        return NextResponse.json(faculty);
+        return NextResponse.json(faculty,{status:200});
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ error: "Failed to fetch faculty" });
+        return NextResponse.json({ error: "Failed to fetch faculty" },{status:500});
     }
 }
 
@@ -108,13 +108,13 @@ export async function PUT(req) {
         );
 
         if (!updatedFaculty) {
-            return NextResponse.json({ error: "Faculty not found" });
+            return NextResponse.json({ error: "Faculty not found" },{status:500});
         }
 
         console.log("Faculty updated successfully", updatedFaculty);
-        return NextResponse.json({ message: "Faculty updated successfully", faculty: updatedFaculty });
+        return NextResponse.json({ message: "Faculty updated successfully", faculty: updatedFaculty },{status:200});
     } catch (error) {
         console.error("Error updating faculty:", error);
-        return NextResponse.json({ error: "Failed to update faculty" });
+        return NextResponse.json({ error: "Failed to update faculty" },{status:500});
     }
 }

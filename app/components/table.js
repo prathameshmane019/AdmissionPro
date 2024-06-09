@@ -454,7 +454,7 @@ console.log(visibleColumns);
                     cursor: "bg-foreground text-background",
                 }}
                 color="default"
-                isDisabled={hasSearchFilter}
+                // isDisabled={hasSearchFilter}
                 page={page}
                 total={pages}
                 variant="light"

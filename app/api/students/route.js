@@ -86,9 +86,9 @@ export async function PUT(req) {
         const updatedStudent = await Student.findByIdAndUpdate(_id, data, { new: true });
         if (!updatedStudent) return NextResponse.json({ error: "Student not found" });
         console.log("Student updated successfully", updatedStudent);
-        return NextResponse.json({ message: "Student updated successfully", student: updatedStudent });
+        return NextResponse.json({ message: "Student updated successfully", student: updatedStudent },{status:200});
     } catch (error) {
         console.error("Error updating student:", error);
-        return NextResponse.json({ error: "Failed to update student" });
+        return NextResponse.json({ error: "Failed to update student" },{status:500});
     }
 }

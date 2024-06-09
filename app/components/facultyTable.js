@@ -194,7 +194,6 @@ export default function FacultyTable() {
       try {
         const response = await axios.put(`/api/faculty?_id=${formData._id}`, formData);
         if (response.status === 200) {
-          setFaculty(faculty.map(fac => (fac._id === formData._id ? response.data : fac)));
           toast.success('Faculty updated successfully');
         } else {
           console.error("Failed to update faculty");

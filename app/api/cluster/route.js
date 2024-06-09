@@ -3,32 +3,50 @@ import { connectMongoDB } from "@/app/lib/connectDb";
 import Cluster from "@/app/model/cluster";
 import Student from "@/app/model/student";
 import Faculty from "@/app/model/faculty";
-
 export async function POST(req) {
   try {
     await connectMongoDB();
-    const { title, student_ids = [], faculty_ids = [] } = await req.json();
+    const { filters, title } = await req.json();
+    console.log("Received filters:", filters);
 
     if (!title) {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 });
+      return NextResponse.json({ error: "Title is required" });
     }
 
-    const existingCluster = await Cluster.findOne({ name:title });
-    if (existingCluster) {
-      return NextResponse.json({ error: "Cluster with the same title already exists" }, { status: 400 });
+    const query = {};
+    if (filters?.category) query.category = filters.category;
+    if (filters?.gender) query.gender = filters.gender;
+    if (filters?.college) query.college = filters.college;
+    if (filters?.pcm) query.pcm = { $gte: Number(filters.pcm) };
+    if (filters?.cet) query.cet = { $gte: Number(filters.cet) };
+    if (filters?.jee) query.jee = { $gte: Number(filters.jee) };
+    if (filters?.hsc) query.hsc = { $gte: Number(filters.hsc) };
+    if (filters?.address) query.address = new RegExp(filters.address, "i");
+
+    console.log("Query:", query);
+
+    const students = await Student.find(query).select('_id');
+    console.log("Found students:", students);
+
+    const studentIds = students.map(student => student._id);
+
+    let cluster = await Cluster.findOne({ name: title });
+    if (!cluster) {
+      cluster = new Cluster({ name: title, student_ids: [], faculty_ids: [] });
     }
 
-    const newCluster = new Cluster({
-      name:title,
-      student_ids,
-      faculty_ids,
-    });
+    cluster.student_ids = [...new Set([...cluster.student_ids, ...studentIds])];
+    await cluster.save();
 
-    await newCluster.save();
-    return NextResponse.json({ message: "Cluster created successfully", cluster: newCluster }, { status: 201 });
+    await Student.updateMany(
+      { _id: { $in: studentIds } },
+      { $set: { cluster: cluster._id } }
+    );
+
+    return NextResponse.json({ message: "Data clustered and saved successfully!" });
   } catch (error) {
-    console.error("Error creating cluster:", error);
-    return NextResponse.json({ error: "Failed to create cluster" }, { status: 500 });
+    console.error("Error clustering data:", error);
+    return NextResponse.json({ error: "Failed to cluster data" });
   }
 }
 
@@ -49,7 +67,63 @@ export async function GET(req) {
     return NextResponse.json({ error: "Failed to fetch clusters" });
   }
 }
+export async function PUT(req) {
+  try {
+    await connectMongoDB();
+    const { searchParams } = new URL(req.url);
+    const clusterId = searchParams.get('id');
+    const { action, ids, type } = await req.json();
 
+    console.log("PUT request data:", { action, ids, type });
+
+    const cluster = await Cluster.findById(clusterId);
+    if (!cluster) {
+      return NextResponse.json({ error: "Cluster not found" },{status:404});
+    }
+
+    if (!cluster.student_ids) cluster.student_ids = [];
+    if (!cluster.faculty_ids) cluster.faculty_ids = [];
+
+    if (action === 'add') {
+      if (type === 'faculty') {
+        const facultyToUpdate = await Faculty.find({ _id: { $in: ids } });
+        facultyToUpdate.forEach(faculty => {
+          faculty.cluster = clusterId;
+          cluster.faculty_ids.push(faculty._id);
+        });
+        await Faculty.bulkSave(facultyToUpdate);
+      } else if (type === 'student') {
+        const studentsToUpdate = await Student.find({ _id: { $in: ids } });
+        studentsToUpdate.forEach(student => {
+          student.cluster = clusterId;
+          cluster.student_ids.push(student._id);
+        });
+        await Student.bulkSave(studentsToUpdate);
+      }
+    } else if (action === 'remove') {
+      if (type === 'faculty') {
+        const facultyToUpdate = await Faculty.find({ _id: { $in: ids } });
+        facultyToUpdate.forEach(faculty => {
+          faculty.cluster = null;
+          cluster.faculty_ids = cluster.faculty_ids.filter(id => id.toString() !== faculty._id.toString());
+        });
+        await Faculty.bulkSave(facultyToUpdate);
+      } else if (type === 'student') {
+        const studentsToUpdate = await Student.find({ _id: { $in: ids } });
+        studentsToUpdate.forEach(student => {
+          student.cluster = null;
+          cluster.student_ids = cluster.student_ids.filter(id => id.toString() !== student._id.toString());
+        });
+        await Student.bulkSave(studentsToUpdate);
+      }
+    }
+    await cluster.save();
+    return NextResponse.json({ message: "Data updated successfully" },{status:201});
+  } catch (error) {
+    console.error("Error updating data:", error);
+    return NextResponse.json({ error: "Failed to update data" }, { status: 500 });
+  }
+}
 
 export async function DELETE(req) {
   try {
@@ -57,6 +131,8 @@ export async function DELETE(req) {
     const { searchParams } = new URL(req.url);
     const clusterId = searchParams.get('id');
     const { id, type } = await req.json();
+
+    console.log("DELETE request data:", { clusterId, id, type });
 
     const cluster = await Cluster.findById(clusterId);
     if (!cluster) {

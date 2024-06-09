@@ -54,11 +54,12 @@ export default function TableComponent() {
     const [sortDescriptor, setSortDescriptor] = useState({ column: "firstName", direction: "ascending" });
     const [page, setPage] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState("view");const [selectedUser, setSelectedUser] = useState(new Set());
+    const [modalMode, setModalMode] = useState("view");
+    const [selectedUser, setSelectedUser] = useState(new Set());
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" });
+    const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" ,cluster:"",college:""});
     const [clusters, setClusters] = useState([]);
     const [isSelectionModeOn, setIsSelectionModeOn] = useState(false);
 
@@ -116,9 +117,12 @@ export default function TableComponent() {
         try {
             setLoading(true);
             setError("");
+            console.log(selectedUser);
             const selectedIds = Array.from(selectedUser); // Convert Set to Array
             console.log(selectedIds);
-            await axios.post("/api/cluster", {title, student_ids: selectedIds });
+            console.log(title);
+            const res = await axios.post("/api/cluster", {title, filters });
+            console.log(res.body);
             setSelectedUser(new Set());
             setTitle("");
             console.log("Data clustered and saved successfully!");
@@ -163,10 +167,6 @@ export default function TableComponent() {
 
     const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "",college:"",cluster:"" });
 
-    const handleSelectionChange = (e) => {
-        filters.cluster = e.target.value;
-      };
-
     const filteredItems = useMemo(() => {
         let filteredUsers = data?.students || [];
         if (hasSearchFilter) {
@@ -177,8 +177,6 @@ export default function TableComponent() {
         }
         return filteredUsers;
     }, [data?.students, filterValue]);
-
-    const items = useMemo(() => data?.students || [], [data]);
 
     const renderCell = (user, columnKey) => {
         switch (columnKey) {
@@ -197,7 +195,7 @@ export default function TableComponent() {
             case "gender":
                 return user[columnKey];
                 case "actions":
-                    return isSelectionModeOn ? null : (
+                    return (
                         <div className="relative flex items-center gap-2">
                             <Button isIconOnly color="primary" variant="light" onPress={() => openModal("view", user)}>
                                 <EyeIcon className="h-4 w-4" />
@@ -293,22 +291,23 @@ export default function TableComponent() {
                     />
                     </div>                    
                     <div className="flex gap-4 my-3 items-center">
-                        <Select  
+                        {/* <Select  
                           label="select cluster"
                           variant="bordered"
+                          name="cluster"
                           placeholder="Select an cluster"
-                          selectedKeys={filters.cluster}
+                          selectedKeys={[filters.cluster]}
                           className="max-w-xs"
                           size="sm"
-                          onChange={handleSelectionChange}
+                          onChange={handleFilterChange}
                           >
                                 {clusters && clusters?.map((cluster) => (
-                                    <SelectItem key={cluster._id}>
-                                        {cluster._id}
+                                    <SelectItem textValue={cluster.name} key={cluster._id}>
+                                        {cluster.name}
                                     </SelectItem>
                                 ))}
 
-                        </Select>
+                        </Select> */}
 
                     <Input
                         aria-label="Filter by CET"
@@ -430,13 +429,7 @@ export default function TableComponent() {
                     >
                         Add New
                     </Button>
-                    <Button
-        className="bg-foreground text-background"
-        onClick={toggleSelectionMode}
-        size="sm"
-    >
-        {isSelectionModeOn ? 'Exit Selection Mode' : 'Selection Mode'}
-    </Button>
+              
                 </div>
 
             </div>
@@ -466,7 +459,6 @@ export default function TableComponent() {
                     cursor: "bg-foreground text-background",
                 }}
                 color="default"
-                // isDisabled={hasSearchFilter}
                 page={page}
                 total={pages}
                 variant="light"
@@ -485,8 +477,8 @@ export default function TableComponent() {
                 bottomContent={bottomContent}
                 bottomContentPlacement="outside"
                 onSortChange={setSortDescriptor}
-                selectedKeys={isSelectionModeOn ? selectedUser:visibleColumns}
-                onSelectionChange={isSelectionModeOn ? setSelectedUser:setVisibleColumns}
+                selectedKeys={visibleColumns}
+                onSelectionChange={setVisibleColumns}
                 topContent={topContent}
                 selectionMode={isSelectionModeOn ? 'multiple':null}
                 topContentPlacement="outside"

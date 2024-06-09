@@ -37,11 +37,13 @@ export async function POST(req) {
     }
 }
 
-export async function GET() {
+export async function GET(req) {
     try {
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get("id");
         await connectMongoDB();
 
-        const faculty = await Faculty.find();
+        const faculty = id ? await Faculty.findById(id) :await Faculty.find();
         console.log("Faculty fetched successfully");
         console.log(faculty);
 

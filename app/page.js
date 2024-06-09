@@ -1,3 +1,5 @@
+
+"use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -24,7 +26,7 @@ export default function Home() {
               </div>
               <nav className="space-x-4">
                 <Link href="#" className="text-gray-600 hover:text-blue-500">Home</Link>
-                <Link href="/givefeedback/" className="text-gray-600 hover:text-blue-500">Contact</Link>
+                <Link href="#" className="text-gray-600 hover:text-blue-500">Contact</Link>
                 <Link href="/login" className="text-gray-600 hover:text-blue-500">Login</Link>
               </nav>
             </div>

@@ -30,10 +30,10 @@ export async function POST(req) {
         await newFaculty.save();
 
         console.log("Faculty created successfully");
-        return NextResponse.json({ message: "Faculty created successfully"},{status:200});
+        return NextResponse.json({ message: "Faculty created successfully" }, { status: 200 });
     } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: "Failed to create faculty" },{status:500});
+        console.error("Error creating faculty:", error);
+        return NextResponse.json({ error: "Failed to create faculty" }, { status: 500 });
     }
 }
 
@@ -43,14 +43,14 @@ export async function GET(req) {
         const id = searchParams.get("id");
         await connectMongoDB();
 
-        const faculty = id ? await Faculty.findById(id) :await Faculty.find();
+        const faculty = id ? await Faculty.findById(id) : await Faculty.find();
         console.log("Faculty fetched successfully");
         console.log(faculty);
 
-        return NextResponse.json(faculty,{status:200});
+        return NextResponse.json(faculty, { status: 200 });
     } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: "Failed to fetch faculty" },{status:500});
+        console.error("Error fetching faculty:", error);
+        return NextResponse.json({ error: "Failed to fetch faculty" }, { status: 500 });
     }
 }
 
@@ -64,14 +64,14 @@ export async function DELETE(req) {
         const deleted = await Faculty.findByIdAndDelete(_id);
 
         if (!deleted) {
-            return NextResponse.json({ error: "Faculty not found" });
+            return NextResponse.json({ error: "Faculty not found" }, { status: 404 });
         }
 
         console.log("Faculty deleted successfully", deleted);
-        return NextResponse.json({ message: "Faculty deleted successfully" });
+        return NextResponse.json({ message: "Faculty deleted successfully" }, { status: 200 });
     } catch (error) {
         console.error("Error deleting faculty:", error);
-        return NextResponse.json({ error: "Failed to delete faculty" });
+        return NextResponse.json({ error: "Failed to delete faculty" }, { status: 500 });
     }
 }
 
@@ -79,7 +79,7 @@ export async function PUT(req) {
     try {
         await connectMongoDB();
         const { searchParams } = new URL(req.url);
-        const _id = searchParams.get("_id");
+        const _id = searchParams.get("id");
 
         const data = await req.json();
         console.log(data);
@@ -108,13 +108,13 @@ export async function PUT(req) {
         );
 
         if (!updatedFaculty) {
-            return NextResponse.json({ error: "Faculty not found" },{status:500});
+            return NextResponse.json({ error: "Faculty not found" }, { status: 404 });
         }
 
         console.log("Faculty updated successfully", updatedFaculty);
-        return NextResponse.json({ message: "Faculty updated successfully", faculty: updatedFaculty },{status:200});
+        return NextResponse.json({ message: "Faculty updated successfully", faculty: updatedFaculty }, { status: 200 });
     } catch (error) {
         console.error("Error updating faculty:", error);
-        return NextResponse.json({ error: "Failed to update faculty" },{status:500});
+        return NextResponse.json({ error: "Failed to update faculty" }, { status: 500 });
     }
 }

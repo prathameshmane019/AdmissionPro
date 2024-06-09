@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
 import { ChevronDownIcon } from "@/public/ChevronDownIcon";
 import { toast } from 'sonner';
-
 import {
   Table,
   Tooltip,
@@ -20,7 +19,6 @@ import {
   DropdownItem,
   Pagination,
 } from "@nextui-org/react";
-
 import { statusOptions } from "@/app/utils/data";
 import { capitalize } from "@/app/utils/utils";
 import { PlusIcon } from "@/public/PlusIcon";
@@ -39,6 +37,7 @@ const columns = [
   { uid: "mobile", name: "Mobile" },
   { uid: "actions", name: "Actions" },
 ];
+
 const INITIAL_VISIBLE_COLUMNS = ["name", "gender", "department", "role", "email", "mobile", "actions"];
 
 export default function FacultyTable() {
@@ -254,7 +253,8 @@ export default function FacultyTable() {
               </DropdownMenu>
             </Dropdown>
             <Button
-              className="bg-foreground text-background"
+              color="primary"
+              startContent="Add New"
               endContent={<PlusIcon />}
               size="sm"
               onClick={() => {

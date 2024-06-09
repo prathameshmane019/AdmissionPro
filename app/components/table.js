@@ -54,20 +54,23 @@ export default function TableComponent() {
     const [sortDescriptor, setSortDescriptor] = useState({ column: "firstName", direction: "ascending" });
     const [page, setPage] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState("view");
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [modalMode, setModalMode] = useState("view");const [selectedUser, setSelectedUser] = useState(new Set());
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" });
     const [clusters, setClusters] = useState([]);
-
+    const [isSelectionModeOn, setIsSelectionModeOn] = useState(false);
 
 
     useEffect(() => {
         fetchStudents();
         fetchClusters();
     }, [page, rowsPerPage]);
+
+    const toggleSelectionMode = () => {
+        setIsSelectionModeOn(!isSelectionModeOn);
+    };
 
     const fetchStudents = async () => {
         try {
@@ -113,7 +116,10 @@ export default function TableComponent() {
         try {
             setLoading(true);
             setError("");
-            await axios.post("/api/cluster", { title, filters });
+            const selectedIds = Array.from(selectedUser); // Convert Set to Array
+            console.log(selectedIds);
+            await axios.post("/api/cluster", {title, student_ids: selectedIds });
+            setSelectedUser(new Set());
             setTitle("");
             console.log("Data clustered and saved successfully!");
         } catch (error) {
@@ -155,7 +161,7 @@ export default function TableComponent() {
         return columns.filter((column) => visibleColumns.has(column.uid));
     }, [visibleColumns]);
 
-    const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "" });
+    const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "",college:"",cluster:"" });
 
     const handleSelectionChange = (e) => {
         filters.cluster = e.target.value;
@@ -190,20 +196,20 @@ export default function TableComponent() {
             case "address":
             case "gender":
                 return user[columnKey];
-            case "actions":
-                return (
-                    <div className="relative flex items-center gap-2">
-                        <Button isIconOnly color="primary" variant="light" onPress={() => openModal("view", user)}>
-                            <EyeIcon className="h-4 w-4" />
-                        </Button>
-                        <Button isIconOnly color="warning" variant="light" onPress={() => openModal("edit", user)}>
-                            <EditIcon className="h-4 w-4" />
-                        </Button>
-                        <Button isIconOnly color="danger" variant="light" onPress={() => deleteStudent(user._id)}>
-                            <DeleteIcon className="h-4 w-4" />
-                        </Button>
-                    </div>
-                );
+                case "actions":
+                    return isSelectionModeOn ? null : (
+                        <div className="relative flex items-center gap-2">
+                            <Button isIconOnly color="primary" variant="light" onPress={() => openModal("view", user)}>
+                                <EyeIcon className="h-4 w-4" />
+                            </Button>
+                            <Button isIconOnly color="warning" variant="light" onPress={() => openModal("edit", user)}>
+                                <EditIcon className="h-4 w-4" />
+                            </Button>
+                            <Button isIconOnly color="danger" variant="light" onPress={() => deleteStudent(user._id)}>
+                                <DeleteIcon className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    );
             default:
                 return user[columnKey];
         }
@@ -215,7 +221,6 @@ export default function TableComponent() {
         setModalOpen(true);
     };
 
-console.log(visibleColumns);
     const topContent = (
         <div className="flex flex-col gap-4 w-100">
             <div className="mx-auto w-100 flex justify-between">
@@ -425,6 +430,13 @@ console.log(visibleColumns);
                     >
                         Add New
                     </Button>
+                    <Button
+        className="bg-foreground text-background"
+        onClick={toggleSelectionMode}
+        size="sm"
+    >
+        {isSelectionModeOn ? 'Exit Selection Mode' : 'Selection Mode'}
+    </Button>
                 </div>
 
             </div>
@@ -473,9 +485,10 @@ console.log(visibleColumns);
                 bottomContent={bottomContent}
                 bottomContentPlacement="outside"
                 onSortChange={setSortDescriptor}
-                selectedKeys={visibleColumns}
-                onSelectionChange={setVisibleColumns}
+                selectedKeys={isSelectionModeOn ? selectedUser:visibleColumns}
+                onSelectionChange={isSelectionModeOn ? setSelectedUser:setVisibleColumns}
                 topContent={topContent}
+                selectionMode={isSelectionModeOn ? 'multiple':null}
                 topContentPlacement="outside"
             >
                 <TableHeader columns={headerColumns}>

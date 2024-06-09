@@ -2,22 +2,15 @@
 import mongoose from 'mongoose';
 
 const clusterSchema = new mongoose.Schema({
-  _id: {
+  name: {
     type: String,
     required: true
   },
-  student_names: {
-    type: [String],
-    required: true
-  },
-  faculty_name: {
-    type: [String],
-  },
-  faculty_id: {
+  faculty_ids: {
     type: [String],
   }
   ,
-  student_id: {
+  student_ids: {
     type: [String],
     required: true
   }

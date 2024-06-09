@@ -7,36 +7,28 @@ import Faculty from "@/app/model/faculty";
 export async function POST(req) {
   try {
     await connectMongoDB();
-    const { filters, title } = await req.json();
+    const { title, student_ids = [], faculty_ids = [] } = await req.json();
 
     if (!title) {
-      return NextResponse.json({ error: "Title is required" });
+      return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
 
-    const query = {};
-    if (filters.category) query.category = filters.category;
-    if (filters.gender) query.gender = filters.gender;
-    if (filters.pcm) query.pcm = { $gte: Number(filters.pcm) };
-    if (filters.cet) query.cet = { $gte: Number(filters.cet) };
-    if (filters.jee) query.jee = { $gte: Number(filters.jee) };
-    if (filters.hsc) query.hsc = { $gte: Number(filters.hsc) };
-    if (filters.address) query.address = new RegExp(filters.address, "i");
-
-    const students = await Student.find(query).select('_id');
-    const studentIds = students.map(student => student._id);
-
-    let cluster = await Cluster.findOne({ _id: title });
-    if (!cluster) {
-      cluster = new Cluster({ _id: title, student_ids: [], faculty_ids: [] });
+    const existingCluster = await Cluster.findOne({ name:title });
+    if (existingCluster) {
+      return NextResponse.json({ error: "Cluster with the same title already exists" }, { status: 400 });
     }
 
-    cluster.student_ids = [...new Set([...cluster.student_ids, ...studentIds])];
-    await cluster.save();
+    const newCluster = new Cluster({
+      name:title,
+      student_ids,
+      faculty_ids,
+    });
 
-    return NextResponse.json({ message: "Data clustered and saved successfully!" });
+    await newCluster.save();
+    return NextResponse.json({ message: "Cluster created successfully", cluster: newCluster }, { status: 201 });
   } catch (error) {
-    console.error("Error clustering data:", error);
-    return NextResponse.json({ error: "Failed to cluster data" });
+    console.error("Error creating cluster:", error);
+    return NextResponse.json({ error: "Failed to create cluster" }, { status: 500 });
   }
 }
 
@@ -58,62 +50,6 @@ export async function GET(req) {
   }
 }
 
-export async function PUT(req) {
-  try {
-    await connectMongoDB();
-    const { searchParams } = new URL(req.url);
-    const clusterId = searchParams.get('id');
-    const { action, ids, type } = await req.json();
-
-    const cluster = await Cluster.findById(clusterId);
-    if (!cluster) {
-      return NextResponse.json({ error: "Cluster not found" });
-    }
-
-    if (!cluster.student_ids) cluster.student_ids = [];
-    if (!cluster.faculty_ids) cluster.faculty_ids = [];
-
-    if (action === 'add') {
-      if (type === 'faculty') {
-        const facultyToUpdate = await Faculty.find({ _id: { $in: ids } });
-        facultyToUpdate.forEach(faculty => {
-          faculty.cluster = clusterId;
-          cluster.faculty_ids.push(faculty._id);
-        });
-        await Faculty.bulkSave(facultyToUpdate);
-      } else if (type === 'student') {
-        const studentsToUpdate = await Student.find({ _id: { $in: ids } });
-        studentsToUpdate.forEach(student => {
-          student.cluster = clusterId;
-          cluster.student_ids.push(student._id);
-        });
-        await Student.bulkSave(studentsToUpdate);
-      }
-    } else if (action === 'remove') {
-      if (type === 'faculty') {
-        const facultyToUpdate = await Faculty.find({ _id: { $in: ids } });
-        facultyToUpdate.forEach(faculty => {
-          faculty.cluster = null;
-          cluster.faculty_ids = cluster.faculty_ids.filter(id => id.toString() !== faculty._id.toString());
-        });
-        await Faculty.bulkSave(facultyToUpdate);
-      } else if (type === 'student') {
-        const studentsToUpdate = await Student.find({ _id: { $in: ids } });
-        studentsToUpdate.forEach(student => {
-          student.cluster = null;
-          cluster.student_ids = cluster.student_ids.filter(id => id.toString() !== student._id.toString());
-        });
-        await Student.bulkSave(studentsToUpdate);
-      }
-    }
-
-    await cluster.save();
-    return NextResponse.json({ message: "Data updated successfully" });
-  } catch (error) {
-    console.error("Error updating data:", error);
-    return NextResponse.json({ error: "Failed to update data" }, { status: 500 });
-  }
-}
 
 export async function DELETE(req) {
   try {

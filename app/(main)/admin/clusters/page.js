@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 const Page = () => {
   const [clusters, setClusters] = useState([]);
-
   useEffect(() => {
     fetchClusters();
   }, []);
@@ -34,10 +33,10 @@ const Page = () => {
           {clusters && clusters?.map((cluster) => (
             <TableRow key={cluster._id}>
               <TableCell>
-                <Link href={`clusters/${cluster._id}`}>{cluster._id}</Link>
+                <Link href={`clusters/${cluster._id}`}>{cluster.name}</Link>
               </TableCell>
-              <TableCell>{cluster.student_names.length}</TableCell>
-              <TableCell>{cluster.faculty_names?.length || 0}</TableCell>
+              <TableCell>{cluster?.student_ids?.length}</TableCell>
+              <TableCell>{cluster?.ids?.length || 0}</TableCell>
               <TableCell>
                 <Link href={`clusters/${cluster._id}/manage`}>
                   <Button>Manage</Button>

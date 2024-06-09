@@ -25,7 +25,8 @@ const facultySchema = new Schema(
     students: [],
     
     cluster: {
-      type: String
+      type: Schema.Types.ObjectId,
+      ref: 'Cluster'
     },
     password: {
       type: String,

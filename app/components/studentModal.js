@@ -254,8 +254,8 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   selectedKeys={[formData.gender]}
                   onChange={handleChange}
                   >
-                    <SelectItem  key="M" >Male</SelectItem>
-                    <SelectItem  key="F" >Female</SelectItem>
+                    <SelectItem  key="M" textValue="Male" >Male</SelectItem>
+                    <SelectItem  key="F" textValue="Female" >Female</SelectItem>
                   </Select>
                 </div>
                 <div>
@@ -363,11 +363,11 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   value={formData.branch}
                   onChange={handleChange}
                   >
-                    <SelectItem  key="CSE">CSE</SelectItem>
-                    <SelectItem key="ENTC">ENTC</SelectItem>
-                    <SelectItem key="Electrical">Electrical</SelectItem>
-                    <SelectItem  key="MECH">MECHANICAL</SelectItem>
-                    <SelectItem  key="Civil">Civil</SelectItem>
+                    <SelectItem  key="CSE" textValue="CSE">CSE</SelectItem>
+                    <SelectItem key="ENTC" textValue="ENTC">ENTC</SelectItem>
+                    <SelectItem key="Electrical" textValue="Electrical">Electrical</SelectItem>
+                    <SelectItem  key="MECH" textValue="MECH">MECHANICAL</SelectItem>
+                    <SelectItem  key="Civil" textValue="Civil">Civil</SelectItem>
                   </Select>
                 </div>
                 <div>
@@ -380,8 +380,8 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   selectedKeys={[formData.remark]}
                   onChange={handleChange}
                   >
-                    <SelectItem  key="Interested" >Interested</SelectItem>
-                    <SelectItem  key="Not Interested" >Not Interested</SelectItem>
+                    <SelectItem  key="Interested" textValue="Interested" >Interested</SelectItem>
+                    <SelectItem  key="Not Interested" textValue="Not Interested">Not Interested</SelectItem>
                   </Select>
                 </div>
               </div>

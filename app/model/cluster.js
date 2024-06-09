@@ -1,20 +1,22 @@
-// models/Cluster.js
-import mongoose from 'mongoose';
 
+import mongoose from 'mongoose';
+const { Schema, model } = mongoose;
 const clusterSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
   },
-  faculty_ids: {
-    type: [String],
-  }
-  ,
-  student_ids: {
-    type: [String],
-    required: true
-  }
-}, {
+  student_ids: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Student'
+  }],
+  // Add an array of references to faculties
+  faculty_ids: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Faculty'
+  }]
+},
+ {
   timestamps: true,
 });
 

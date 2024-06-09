@@ -13,7 +13,6 @@ const studentSchema = new Schema(
     },
     lastName: {
       type: String,
-      required: true
     },
     motherName: {
       type: String
@@ -59,7 +58,8 @@ const studentSchema = new Schema(
       type: String
     },
     cluster: {
-      type: String
+      type: Schema.Types.ObjectId,
+      ref: 'Cluster'
     },
     college: {
       type: String

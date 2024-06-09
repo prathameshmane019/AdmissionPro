@@ -17,11 +17,12 @@ export default function LoginComponent() {
 
   useEffect(() => {
     console.log(session);
-    if (session?.user?.role === "admin") {
+    if(session){
+    if ((session?.user?.role === "admin")) {
       router.replace("/admin");
-    } else if (session?.user?.role === "faculty") {
+    } else{
       router.replace("/faculty");
-    }
+    }}
   }, [session, router]);
 
   const handleSubmit = async (e) => {
@@ -64,7 +65,7 @@ export default function LoginComponent() {
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
             className="mb-4"
-            placeholder="User Email Address, Phone Number, or Name"
+            placeholder="Email Address or Phone Number"
           />
           <Input
             type={isVisible ? 'text' : 'password'}

@@ -15,8 +15,7 @@ export const authOptions = {
           const user = await Faculty.findOne({
             $or: [
               { email: userId },
-              { mobile: userId },
-              { name: userId }
+              { mobile: userId }
             ]
           });
 
@@ -28,9 +27,7 @@ export const authOptions = {
           if (!isVerified) {
             throw new Error('Invalid credentials');
           }
-
-          let userRole = user.department === "Central" ? "admin" : "faculty";
-          return { ...user.toObject(), role: userRole };
+          return { ...user.toObject(), role: user.role };
         } catch (error) {
           console.error('Error during authorization:', error);
           throw new Error('Authorization failed');

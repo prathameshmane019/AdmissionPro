@@ -6,16 +6,19 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,Input
+  Button,
+  Input
 } from "@nextui-org/react";
 import { toast } from "sonner";
+
 export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit }) {
   const [formData, setFormData] = useState({});
- 
 
   useEffect(() => {
     if (mode === "edit" && faculty) {
       setFormData(faculty);
+    } else if (mode === "add") {
+      setFormData({});
     }
   }, [isOpen, mode, faculty]);
 
@@ -37,8 +40,10 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
-        <ModalHeader>{mode === "add" ? "Add Faculty" : "Edit Faculty"}</ModalHeader>
-        <ModalBody>
+        <ModalHeader className="text-2xl font-semibold">
+          {mode === "add" ? "Add Faculty" : "Edit Faculty"}
+        </ModalHeader>
+        <ModalBody className="space-y-4">
           <div className="flex flex-col gap-4">
             <Input
               type="text"
@@ -46,6 +51,7 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
               value={formData.name || ""}
               placeholder="Name"
               onChange={handleChange}
+              className="w-full"
             />
             <Input
               type="text"
@@ -53,6 +59,7 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
               value={formData.gender || ""}
               placeholder="Gender"
               onChange={handleChange}
+              className="w-full"
             />
             <Input
               type="text"
@@ -60,6 +67,7 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
               value={formData.department || ""}
               placeholder="Department"
               onChange={handleChange}
+              className="w-full"
             />
             <Input
               type="text"
@@ -67,6 +75,7 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
               value={formData.role || ""}
               placeholder="Role"
               onChange={handleChange}
+              className="w-full"
             />
             <Input
               type="email"
@@ -74,6 +83,7 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
               value={formData.email || ""}
               placeholder="Email"
               onChange={handleChange}
+              className="w-full"
             />
             <Input
               type="text"
@@ -81,6 +91,7 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
               value={formData.mobile || ""}
               placeholder="Mobile"
               onChange={handleChange}
+              className="w-full"
             />
             {mode === "add" && (
               <Input
@@ -89,11 +100,12 @@ export default function FacultyModal({ isOpen, onClose, mode, faculty, onSubmit 
                 value={formData.password || ""}
                 placeholder="Password"
                 onChange={handleChange}
+                className="w-full"
               />
             )}
           </div>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="flex justify-end gap-4">
           <Button color="danger" variant="light" onClick={onClose}>
             Cancel
           </Button>

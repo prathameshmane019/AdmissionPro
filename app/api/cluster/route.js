@@ -8,7 +8,7 @@ export async function POST(req) {
   try {
     await connectMongoDB();
     const { filters, title } = await req.json();
-    
+
     if (!title) {
       return NextResponse.json({ error: "Title is required" });
     }
@@ -111,7 +111,7 @@ export async function PUT(req) {
     return NextResponse.json({ message: "Data updated successfully" });
   } catch (error) {
     console.error("Error updating data:", error);
-    return NextResponse.json({ error: "Failed to update data" });
+    return NextResponse.json({ error: "Failed to update data" }, { status: 500 });
   }
 }
 

@@ -59,7 +59,7 @@ export async function DELETE(req) {
         await connectMongoDB();
 
         const { searchParams } = new URL(req.url);
-        const _id = searchParams.get("_id");
+        const _id = searchParams.get("id");
 
         const deleted = await Faculty.findByIdAndDelete(_id);
 

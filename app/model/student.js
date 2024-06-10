@@ -21,7 +21,7 @@ const studentSchema = new Schema(
       type: String
     },
     dob: {
-      type: String // Assuming dob is a string
+      type: String 
     },
     category: {
       type: String

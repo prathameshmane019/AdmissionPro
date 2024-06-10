@@ -75,7 +75,7 @@ const Profile = () => {
           <h4 className="text-2xl font-semibold text-gray-800">
             Faculty Profile
           </h4>
-          <Button auto size="small" onClick={() => setIsEditing(!isEditing)}>
+          <Button auto size="sm"  variant='ghost' color='primary'  onClick={() => setIsEditing(!isEditing)}>
             {isEditing ? 'Cancel' : 'Edit'}
           </Button>
         </CardHeader>
@@ -110,7 +110,7 @@ const Profile = () => {
                 value={updatedFaculty.mobile} 
                 onChange={handleInputChange} 
               />
-              <Button auto onClick={handleSave}>
+              <Button auto size='sm' onClick={handleSave} variant='ghost'  color="primary">
                 Save
               </Button>
             </>

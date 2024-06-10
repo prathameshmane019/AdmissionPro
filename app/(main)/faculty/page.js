@@ -6,11 +6,11 @@ import { Card, CardBody } from '@nextui-org/react';
 import { UserCircleIcon, UsersIcon, UserGroupIcon } from '@heroicons/react/24/solid';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-
+import { Spinner } from '@nextui-org/react';
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 function Dashboard() {
- 
+  const [data, setData] = useState(null);  // Initialize data state as null
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -60,34 +60,49 @@ function Dashboard() {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('/api/dashboard');
-      setData(response.data);
+  // Inside fetchData function
+const fetchData = async () => {
+  try {
+    const response = await axios.get('/api/dashboard');
+    const fetchedData = response.data || {}; // Set default value to an empty object if response.data is undefined
+    setData(fetchedData);
 
-      const interestedCount = response.data.branchStats['Interested'] || 0;
-      const notInterestedCount = response.data.branchStats['Not Interested'] || 0;
+    console.log('Fetched Data:', fetchedData);  // Log fetched data for debugging
 
-      setChartData({
-        series: [{
-          name: "Interested",
-          data: [interestedCount]
-        }, {
-          name: "Not Interested",
-          data: [notInterestedCount]
-        }],
-        options: {
-          ...chartData.options,
-          xaxis: {
-            categories: ['Interested', 'Not Interested'],
-          }
+    const branchStats = fetchedData.branchStats || {}; // Ensure branchStats is defined
+
+    const interestedCount = branchStats['Interested'] || 0; // Set default value to 0 if interested count is undefined
+    const notInterestedCount = branchStats['Not Interested'] || 0; // Set default value to 0 if not interested count is undefined
+
+    setChartData({
+      series: [{
+        name: "Interested",
+        data: [interestedCount]
+      }, {
+        name: "Not Interested",
+        data: [notInterestedCount]
+      }],
+      options: {
+        ...chartData.options,
+        xaxis: {
+          categories: ['Interested', 'Not Interested'],
         }
-      });
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-      toast.error('Error fetching dashboard data');
-    }
-  };
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    toast.error('Error fetching dashboard data');
+  }
+};
+
+
+  if (!data) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <Spinner type="points" />
+      </div>
+    );// Show loading state until data is fetched
+  }
 
   return (
     <div className="container ml-4">
@@ -97,7 +112,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UserCircleIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Clusters</h5>
-            <h2 className="text-3xl font-bold text-white">{data.clusters}</h2>
+            <h2 className="text-3xl font-bold text-white">{data.clusters || 0}</h2>
           </CardBody>
         </Card>
 
@@ -105,7 +120,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UsersIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Faculty</h5>
-            <h2 className="text-3xl font-bold text-white">{data.facultyCount}</h2>
+            <h2 className="text-3xl font-bold text-white">{data.facultyCount || 0}</h2>
           </CardBody>
         </Card>
 
@@ -113,7 +128,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UserGroupIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Students</h5>
-            <h2 className="text-3xl font-bold text-white">{data.studentCount}</h2>
+            <h2 className="text-3xl font-bold text-white">{data.studentCount || 0}</h2>
           </CardBody>
         </Card>
       </div>
@@ -132,4 +147,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-

@@ -24,7 +24,7 @@ const sidebarItems = [
  
   {
     name: "Profile",
-    href: "/admin/profile",
+    href: "/faculty/profile",
     icon: TbReportAnalytics,
   },
 ];

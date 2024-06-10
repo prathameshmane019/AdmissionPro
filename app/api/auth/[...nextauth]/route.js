@@ -15,7 +15,8 @@ export const authOptions = {
           const user = await Faculty.findOne({
             $or: [
               { email: userId },
-              { mobile: userId }
+              { mobile: userId },
+              { name: userId }
             ]
           });
 

@@ -271,19 +271,7 @@ export default function TableComponent() {
                             inputWrapper: "border-1",
                         }}
                     />
-                    <Input
-                        aria-label="Filter by College Name "
-                        placeholder="Filter by College Name"
-                        value={filters.college}
-                        onChange={handleFilterChange}
-                        name="college"
-                        variant="bordered"
-                        size="sm"
-                        classNames={{
-                            base: "w-full sm:max-w-[44%]",
-                            inputWrapper: "border-1",
-                        }}
-                    />
+                    
                     <Input
                         aria-label="Filter by PCM"
                         placeholder="Filter by PCM"
@@ -316,6 +304,19 @@ export default function TableComponent() {
                                 ))}
 
                         </Select> */}
+                        <Input
+                        aria-label="Filter by College Name "
+                        placeholder="Filter by College Name"
+                        value={filters.college}
+                        onChange={handleFilterChange}
+                        name="college"
+                        variant="bordered"
+                        size="sm"
+                        classNames={{
+                            base: "w-full sm:max-w-[44%]",
+                            inputWrapper: "border-1",
+                        }}
+                    />
 
                     <Input
                         aria-label="Filter by CET"
@@ -370,6 +371,13 @@ export default function TableComponent() {
                     size="sm"
                     variant="bordered"
                 />
+                <Button
+                        color="secondary"
+                        className="bg-foreground text-background"
+                        size="sm"
+                        onClick={handleFilterReset}>
+                        Reset Filters
+                    </Button>
                 <Button onClick={handleClusterData} className="bg-foreground text-background" size="sm" disabled={loading}>
                     {loading ? "Clustering data..." : "Cluster Data"}
                 </Button>
@@ -397,13 +405,7 @@ export default function TableComponent() {
                         size="sm">
                         Search
                     </Button>
-                    <Button
-                        color="secondary"
-                        className="bg-foreground text-background"
-                        size="sm"
-                        onClick={handleFilterReset}>
-                        Reset Filters
-                    </Button>
+                    
                     <Dropdown>
                         <DropdownTrigger className="hidden sm:flex">
                             <Button endContent={<ChevronDownIcon className="text-small" />} size="sm" variant="flat">

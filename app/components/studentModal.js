@@ -66,8 +66,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         mobile: user.mobile || "",
         parentMobile: user.parentMobile || "",
         email: user.email || "",
-     
-        collegeName: user.college || "",
+        college: user.college || "",
         address: user.address || "",
         branch: user.branch || "",
         remark: user.remark || "",
@@ -80,6 +79,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         motherName: "",
         gender: "",
         dob: "",
+        category: "",
         disability: "",
         hsc: 0,
         ssc: 0,
@@ -136,253 +136,342 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
   }
 
   return (
-    <Modal backdrop="opaque" isOpen={isOpen} size="4xl" onOpenChange={onClose} classNames={{ backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20" }}>
+    <Modal 
+      backdrop="opaque" 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      size="lg" 
+      classNames={{ backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20" }}
+    >
       <ModalContent>
-        <>
-          <ModalHeader className="flex flex-col gap-1">
-            {mode === "view" ? "View User" : mode === "edit" ? "Edit User" : "Add New User"}
-          </ModalHeader>
-          <ModalBody>
-            {mode === "view" && user && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div>
-                  <p>Name: {user.firstName} {user.lastName}</p>
-                </div>
-                <div>
-                  <p>Father's Name: {user.fatherName}</p>
-                </div>
-                <div>
-                  <p>Mother's Name: {user.motherName}</p>
-                </div>
-                <div>
-                  <p>Gender: {user.gender}</p>
-                </div>
-                <div>
-                  <p>Date of Birth: {user.dob}</p>
-                </div>
-                <div>
-                  <p>Category: {user.category}</p>
-                </div>
-                <div>
-                  <p>Disability: {user.disability}</p>
-                </div>
-                <div>
-                  <p>HSC Score: {user.hsc}</p>
-                </div>
-                <div>
-                  <p>SSC Score: {user.ssc}</p>
-                </div>
-                <div>
-                  <p>CET Score: {user.cet}</p>
-                </div>
-                <div>
-                  <p>JEE Score: {user.jee}</p>
-                </div>
-                <div>
-                  <p>PCM Group: {user.pcm}</p>
-                </div>
-                <div>
-                  <p>Group: {user.group}</p>
-                </div>
-                <div>
-                  <p>Mobile: {user.mobile}</p>
-                </div>
-                <div>
-                  <p>Parent's Mobile: {user.parentMobile}</p>
-                </div>
-                <div>
-                  <p>Email: {user.email}</p>
-                </div>
-                <div>
-                  <p>Cluster Name: {user.cluster}</p>
-                </div>
-                {/* <div>
-                  <p>Faculty: {user.faculty}</p>
-                </div> */}
-                <div>
-                  <p>College Name: {user.college}</p>
-                </div>
-                <div>
-                  <p>Address: {user.address}</p>
-                </div>
-                <div>
-                  <p>Interested Branch: {user.branch}</p>
-                </div>
-                <div>
-                  <p>Remark: {user.remark}</p>
-                </div>
+        <ModalHeader className="flex flex-col gap-1">
+          {mode === "view" ? "View User" : mode === "edit" ? "Edit User" : "Add New User"}
+        </ModalHeader>
+        <ModalBody className="max-h-[60vh] overflow-y-auto">
+          {mode === "view" && user && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
               </div>
-            )}
-            {(mode === "edit" || mode === "add") && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Input name="firstName"
+              <div>
+                <p><strong>Father's Name:</strong> {user.fatherName}</p>
+              </div>
+              <div>
+                <p><strong>Mother's Name:</strong> {user.motherName}</p>
+              </div>
+              <div>
+                <p><strong>Gender:</strong> {user.gender}</p>
+              </div>
+              <div>
+                <p><strong>Date of Birth:</strong> {user.dob}</p>
+              </div>
+              <div>
+                <p><strong>Category:</strong> {user.category}</p>
+              </div>
+              <div>
+                <p><strong>Disability:</strong> {user.disability}</p>
+              </div>
+              <div>
+                <p><strong>HSC Score:</strong> {user.hsc}</p>
+              </div>
+              <div>
+                <p><strong>SSC Score:</strong> {user.ssc}</p>
+              </div>
+              <div>
+                <p><strong>CET Score:</strong> {user.cet}</p>
+              </div>
+              <div>
+                <p><strong>JEE Score:</strong> {user.jee}</p>
+              </div>
+              <div>
+                <p><strong>PCM Group:</strong> {user.pcm}</p>
+              </div>
+              <div>
+                <p><strong>Group:</strong> {user.group}</p>
+              </div>
+              <div>
+                <p><strong>Mobile:</strong> {user.mobile}</p>
+              </div>
+              <div>
+                <p><strong>Parent's Mobile:</strong> {user.parentMobile}</p>
+              </div>
+              <div>
+                <p><strong>Email:</strong> {user.email}</p>
+              </div>
+              <div>
+                <p><strong>College Name:</strong> {user.college}</p>
+              </div>
+              <div>
+                <p><strong>Address:</strong> {user.address}</p>
+              </div>
+              <div>
+                <p><strong>Interested Branch:</strong> {user.branch}</p>
+              </div>
+              <div>
+                <p><strong>Remark:</strong> {user.remark}</p>
+              </div>
+            </div>
+          )}
+          {(mode === "edit" || mode === "add") && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Input 
+                  name="firstName"
                   size="sm"
                   variant="bordered"
-                  isRequired label="First Name" value={formData.firstName} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="lastName" 
+                  isRequired 
+                  label="First Name" 
+                  value={formData.firstName} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="lastName" 
                   size="sm"
                   variant="bordered"
-                  isRequired  label="Last Name" value={formData.lastName} onChange={handleChange} />
-                </div>
-                <div>
-                  <Input name="fatherName"
+                  isRequired  
+                  label="Last Name" 
+                  value={formData.lastName} 
+                  onChange={handleChange} 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="fatherName"
                   size="sm"
                   variant="bordered"
-                  label="Father's Name" value={formData.fatherName} onChange={handleChange} />
-                </div>
-                <div>
-                  <Input name="motherName"
+                  label="Father's Name" 
+                  value={formData.fatherName} 
+                  onChange={handleChange} 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="motherName"
                   size="sm"
                   variant="bordered"
-                  label="Mother's Name" value={formData.motherName} onChange={handleChange} />
-                </div>
-                <div>
-                <Select name="gender" 
+                  label="Mother's Name" 
+                  value={formData.motherName} 
+                  onChange={handleChange} 
+                />
+              </div>
+              <div>
+                <Select 
+                  name="gender" 
                   label="Gender" 
                   placeholder="Select gender" 
                   size="sm"
                   variant="bordered"
                   selectedKeys={[formData.gender]}
                   onChange={handleChange}
-                  >
-                    <SelectItem  key="M" textValue="Male" >Male</SelectItem>
-                    <SelectItem  key="F" textValue="Female" >Female</SelectItem>
-                  </Select>
-                </div>
-                <div>
-                  <Input 
+                >
+                  <SelectItem key="M" textValue="Male">Male</SelectItem>
+                  <SelectItem key="F" textValue="Female">
+                  Female</SelectItem>
+                </Select>
+              </div>
+              <div>
+                <Input 
                   name="dob"
                   size="sm"
                   variant="bordered"
-                  label="Date of Birth" value={formData.dob} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="category"
+                  label="Date of Birth" 
+                  value={formData.dob} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="category"
                   size="sm"
                   variant="bordered"
-                  label="Category" value={formData.category} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="disability" 
+                  label="Category" 
+                  value={formData.category} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="disability" 
                   size="sm"
                   variant="bordered"
-                  label="Disability" value={formData.disability} onChange={handleChange} />
-                </div>
-                <div>
-                  <Input name="hsc"
+                  label="Disability" 
+                  value={formData.disability} 
+                  onChange={handleChange} 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="hsc"
                   size="sm"
                   variant="bordered"
-                  label="HSC Score" value={formData.hsc} onChange={handleChange} type="number" required />
-                </div>
-                <div>
-                  <Input name="ssc"
+                  label="HSC Score" 
+                  value={formData.hsc} 
+                  onChange={handleChange} 
+                  type="number" 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="ssc"
                   size="sm"
                   variant="bordered"
-                  label="SSC Score" value={formData.ssc} onChange={handleChange} type="number" required />
-                </div>
-                <div>
-                  <Input name="cet"
+                  label="SSC Score" 
+                  value={formData.ssc} 
+                  onChange={handleChange} 
+                  type="number" 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="cet"
                   size="sm"
                   variant="bordered"
-                  label="CET Score" value={formData.cet} onChange={handleChange} type="number" />
-                </div>
-                <div>
-                  <Input name="jee"
+                  label="CET Score" 
+                  value={formData.cet} 
+                  onChange={handleChange} 
+                  type="number" 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="jee"
                   size="sm"
                   variant="bordered"
-                  label="JEE Score" value={formData.jee} onChange={handleChange} type="number" />
-                </div>
-                <div>
-                  <Input name="pcm"
+                  label="JEE Score" 
+                  value={formData.jee} 
+                  onChange={handleChange} 
+                  type="number" 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="pcm"
                   size="sm"
                   variant="bordered"
-                  label="PCM Group" value={formData.pcm} onChange={handleChange} type="number" />
-                </div>
-                <div>
-                  <Input name="group" 
+                  label="PCM Group" 
+                  value={formData.pcm} 
+                  onChange={handleChange} 
+                  type="number" 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="group" 
                   size="sm"
                   variant="bordered"
-                  label="Group" value={formData.group} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="mobile" isRequired 
+                  label="Group" 
+                  value={formData.group} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="mobile" 
                   size="sm"
                   variant="bordered"
-                  label="Mobile" value={formData.mobile} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Input name="parentMobile" 
+                  isRequired 
+                  label="Mobile" 
+                  value={formData.mobile} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="parentMobile" 
                   size="sm"
                   variant="bordered"
-                  label="Parent's Mobile" value={formData.parentMobile} onChange={handleChange} />
-                </div>
-                <div>
-                  <Input name="email"
+                  label="Parent's Mobile" 
+                  value={formData.parentMobile} 
+                  onChange={handleChange} 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="email"
                   size="sm"
                   variant="bordered"
-                  label="Email" value={formData.email} onChange={handleChange} required />
-                </div>
-                
-                <div>
-                  <Input name="college"
+                  label="Email" 
+                  value={formData.email} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="college"
                   size="sm"
                   variant="bordered"
-                  label="College Name" value={formData.college} onChange={handleChange} required />
-                </div>
-               
-                <div>
-                  <Input name="address"
+                  label="College Name" 
+                  value={formData.college} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Input 
+                  name="address"
                   size="sm"
                   variant="bordered"
-                  label="Address" value={formData.address} onChange={handleChange} required />
-                </div>
-                <div>
-                  <Select name="branch" label="Interested Branch" 
+                  label="Address" 
+                  value={formData.address} 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div>
+                <Select 
+                  name="branch" 
+                  label="Interested Branch" 
                   size="sm"
                   variant="bordered"
                   placeholder="Select Branch" 
                   selectedKeys={[formData.branch]} 
                   value={formData.branch}
                   onChange={handleChange}
-                  >
-                    <SelectItem  key="CSE" textValue="CSE">CSE</SelectItem>
-                    <SelectItem key="ENTC" textValue="ENTC">ENTC</SelectItem>
-                    <SelectItem key="Electrical" textValue="Electrical">Electrical</SelectItem>
-                    <SelectItem  key="MECH" textValue="MECH">MECHANICAL</SelectItem>
-                    <SelectItem  key="Civil" textValue="Civil">Civil</SelectItem>
-                  </Select>
-                </div>
-                <div>
-                  <Select name="remark" 
+                >
+                  <SelectItem key="CSE" textValue="CSE">CSE</SelectItem>
+                  <SelectItem key="ENTC" textValue="ENTC">ENTC</SelectItem>
+                  <SelectItem key="Electrical" textValue="Electrical">Electrical</SelectItem>
+                  <SelectItem key="MECH" textValue="MECH">Mechanical</SelectItem>
+                  <SelectItem key="Civil" textValue="Civil">Civil</SelectItem>
+                </Select>
+              </div>
+              <div>
+                <Select 
+                  name="remark" 
                   size="sm"
+                  variant="bordered"
                   label="Remark" 
                   placeholder="Select Remark" 
-                  // value={formData.remark}
-                  variant="bordered"
                   selectedKeys={[formData.remark]}
                   onChange={handleChange}
-                  >
-                    <SelectItem  key="Interested" textValue="Interested" >Interested</SelectItem>
-                    <SelectItem  key="Not Interested" textValue="Not Interested">Not Interested</SelectItem>
-                  </Select>
-                </div>
+                >
+                  <SelectItem key="Interested" textValue="Interested">Interested</SelectItem>
+                  <SelectItem key="Not Interested" textValue="Not Interested">Not Interested</SelectItem>
+                </Select>
               </div>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button color="danger" variant="light" onPress={onClose} className="mr-2">
-              Close
+            </div>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" variant="light" onPress={onClose} className="mr-2">
+            Close
+          </Button>
+          {(mode === "edit" || mode === "add") && (
+            <Button  className="bg-foreground text-background" onPress={handleSubmit}>
+              Save
             </Button>
-            {(mode === "edit" || mode === "add") && (
-              <Button color="primary" onPress={handleSubmit}>
-                Save
-              </Button>
-            )}
-          </ModalFooter>
-        </>
+          )}
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

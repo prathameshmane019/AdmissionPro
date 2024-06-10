@@ -87,8 +87,8 @@ const Page = () => {
                   </Button>
                 </Link>
                 <Button
-                color="danger"
-                  className="text-background ml-2"
+                
+                  className="text-background ml-2 bg-red-600"
                   size="sm"
                   onClick={() => handleDeleteClick(cluster._id)}
                 >
@@ -116,7 +116,7 @@ const Page = () => {
             </Button>
             <Button 
               key="delete" 
-             color="danger"
+             className='bg-red-600'
               onClick={handleDelete}
               disabled={deleting}
             >

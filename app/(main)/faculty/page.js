@@ -10,7 +10,7 @@ import { Spinner } from '@nextui-org/react';
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 function Dashboard() {
-  const [data, setData] = useState(null);  // Initialize data state as null
+  const [data, setData] = useState(null);  
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -54,23 +54,22 @@ function Dashboard() {
     }
   });
 
+  const [pieChartData, setPieChartData] = useState([]);
+
   const router = useRouter();
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  // Inside fetchData function
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/dashboard');
       const fetchedData = response?.data || {};
-      console.log('Fetched Data:', fetchedData);
       setData(fetchedData);
 
       const branchStats = fetchedData?.branchStats || {};
 
-      // Filter out null keys
       const filteredBranchStats = Object.keys(branchStats)
         .filter(key => key !== null)
         .reduce((obj, key) => {
@@ -84,7 +83,7 @@ function Dashboard() {
       setChartData({
         series: [{
           name: "Remark",
-          data: [interestedCount,notInterestedCount]
+          data: [interestedCount, notInterestedCount]
         }],
         options: {
           ...chartData.options,
@@ -93,63 +92,77 @@ function Dashboard() {
           }
         }
       });
+
+      setPieChartData(fetchedData.pieChartData || []);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Error fetching dashboard data');
     }
   };
 
-
-
   if (!data) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <Spinner type="points" />
       </div>
-    );// Show loading state until data is fetched
+    );
   }
 
   return (
     <div className="container ml-4">
-      <h1 className="text-3xl text-center my-8">Dashboard</h1>
-
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card onClick={() => router.push("/cluster")} shadow="md" className="max-w-[350px] rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 transform hover:scale-105 transition duration-300 ease-in-out">
+      <h1 className="text-3xl text-center my-4">Dashboard</h1>
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-10">
+        <Card onClick={() => router.push("/cluster")} shadow="md" className="max-w-[300px] rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 transform hover:scale-105 transition duration-300 ease-in-out">
           <CardBody className="text-center">
-            <UserCircleIcon className="w-16 h-16 text-white mx-auto mb-4" />
-            <h5 className="mb-2 text-white">Total Clusters</h5>
-            <h2 className="text-3xl font-bold text-white">{data.clusters || 0}</h2>
+            <UserCircleIcon className="w-10 h-10 text-white mx-auto mb-2" />
+            <h5 className="mb-1 text-white text-sm">Total Clusters</h5>
+            <h2 className="text-2xl font-bold text-white">{data.clusters || 0}</h2>
           </CardBody>
         </Card>
 
-        <Card onClick={() => router.push("/faculty")} shadow="md" className="max-w-[350px] rounded-lg overflow-hidden bg-gradient-to-br from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 transform hover:scale-105 transition duration-300 ease-in-out">
+        <Card onClick={() => router.push("/faculty")} shadow="md" className="max-w-[300px] rounded-lg overflow-hidden bg-gradient-to-br from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 transform hover:scale-105 transition duration-300 ease-in-out">
           <CardBody className="text-center">
-            <UsersIcon className="w-16 h-16 text-white mx-auto mb-4" />
-            <h5 className="mb-2 text-white">Total Faculty</h5>
-            <h2 className="text-3xl font-bold text-white">{data.facultyCount || 0}</h2>
+            <UsersIcon className="w-10 h-10 text-white mx-auto mb-2" />
+            <h5 className="mb-1 text-white text-sm">Total Faculty</h5>
+            <h2 className="text-2xl font-bold text-white">{data.facultyCount || 0}</h2>
           </CardBody>
         </Card>
 
-        <Card onClick={() => router.push("/students")} shadow="md" className="max-w-[350px] rounded-lg overflow-hidden bg-gradient-to-br from-yellow-500 to-yellow-700 hover:from-yellow-600 hover:to-yellow-800 transform hover:scale-105 transition duration-300 ease-in-out">
+        <Card onClick={() => router.push("/students")} shadow="md" className="max-w-[300px] rounded-lg overflow-hidden bg-gradient-to-br from-yellow-500 to-yellow-700 hover:from-yellow-600 hover:to-yellow-800 transform hover:scale-105 transition duration-300 ease-in-out">
           <CardBody className="text-center">
-            <UserGroupIcon className="w-16 h-16 text-white mx-auto mb-4" />
-            <h5 className="mb-2 text-white">Total Students</h5>
-            <h2 className="text-3xl font-bold text-white">{data.studentCount || 0}</h2>
+            <UserGroupIcon className="w-10 h-10 text-white mx-auto mb-2" />
+            <h5 className="mb-1 text-white text-sm">Total Students</h5>
+            <h2 className="text-2xl font-bold text-white">{data.studentCount || 0}</h2>
           </CardBody>
         </Card>
       </div>
-
-
-      <div className="mt-8">
+      <div className="grid grid-cols-2 mx-10 gap-2 mt-10">
+      <div >
         <h2 className="text-2xl text-center mb-4">Interested Branch Statistics</h2>
         <Chart
           options={chartData.options}
           series={chartData.series}
           type="bar"
           height={350}
-          width={300}
+          className="mx-auto mt-10"
+          width={350}
         />
       </div>
+
+      <div className='mx-auto' >
+        <h2 className="text-2xl text-center ">Students from Different Clusters</h2>
+        <Chart
+          options={{
+            labels: pieChartData.map(item => item.name),
+          }}
+          series={pieChartData.map(item => item.count)}
+          type="pie"
+          height={350}
+          width={350}
+          className="mx-auto mt-10"
+        />
+      </div>
+    </div>
     </div>
   );
 }

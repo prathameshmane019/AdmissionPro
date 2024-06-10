@@ -22,7 +22,7 @@ export async function GET(req) {
         await connectMongoDB();
         const { searchParams } = new URL(req.url);
         const page = parseInt(searchParams.get("page") || "1", 10);
-        const limit = 10;
+        const limit = searchParams.get("limit")
         const skip = (page - 1) * limit;
 
         const filters = {};

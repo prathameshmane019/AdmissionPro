@@ -169,6 +169,7 @@ import { Spinner } from '@nextui-org/react';
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 function Dashboard() {
+
   const [data, setData] = useState(null);  
   const [chartData, setChartData] = useState({
     series: [],
@@ -221,6 +222,7 @@ function Dashboard() {
     fetchData();
   }, []);
 
+
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/dashboard');
@@ -258,6 +260,14 @@ function Dashboard() {
       toast.error('Error fetching dashboard data');
     }
   };
+
+  if (!data) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <Spinner type="points" />
+      </div>
+    );
+  }
 
   if (!data) {
     return (

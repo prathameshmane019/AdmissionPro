@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect,useCallback } from "react";
 import axios from "axios";
 import {
     Select, SelectItem, 
@@ -61,7 +61,6 @@ export default function TableComponent() {
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" ,cluster:"",college:""});
     // const [clusters, setClusters] = useState([]);
-    const [isSelectionModeOn, setIsSelectionModeOn] = useState(false);
 
 
     useEffect(() => {
@@ -137,6 +136,7 @@ export default function TableComponent() {
         setPage(1);
         await fetchStudents();
     };
+  
 
     const deleteStudent = async (_id) => {
         try {
@@ -148,11 +148,11 @@ export default function TableComponent() {
     };
 
     const pages = useMemo(() => (data?.total > 0 ? Math.ceil(data.total / rowsPerPage) : 0), [data?.total, rowsPerPage]);
-
-    const onRowsPerPageChange = (e) => {
+    const onRowsPerPageChange = useCallback((e) => {
         setRowsPerPage(Number(e.target.value));
         setPage(1);
-    };
+      }, []);
+      
 
     const hasSearchFilter = Boolean(filterValue);
 
@@ -179,6 +179,11 @@ export default function TableComponent() {
         }
         return filteredUsers;
     }, [data?.students, filterValue]);
+    const items = useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        return filteredItems.slice(start, end);
+      }, [page, filteredItems, rowsPerPage]);
 
     const renderCell = (user, columnKey) => {
         switch (columnKey) {
@@ -484,7 +489,7 @@ export default function TableComponent() {
                 selectedKeys={visibleColumns}
                 onSelectionChange={setVisibleColumns}
                 topContent={topContent}
-                selectionMode={isSelectionModeOn ? 'multiple':null}
+                
                 topContentPlacement="outside"
             >
                 <TableHeader columns={headerColumns}>

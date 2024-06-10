@@ -79,17 +79,22 @@ const Page = () => {
               <TableCell className="py-2 text-sm text-gray-700">
                 <Link href={`clusters/${cluster._id}`} passHref>
                   <Button
-                    color="secondary"
-                    className="bg-foreground text-background"
-                    size="sm"
+                    color='primary'
+                    // className="bg-foreground text-background"
+                     auto 
+                     size= "sm"
+                    variant= 'ghost'
                   >
                     Manage
                   </Button>
                 </Link>
                 <Button
-                
-                  className="text-background ml-2 bg-red-600"
+                color='danger'
+                  // className="text-background ml-2 "
+                  className="ml-2"
+                  auto 
                   size="sm"
+                  variant= 'ghost'
                   onClick={() => handleDeleteClick(cluster._id)}
                 >
                   Delete

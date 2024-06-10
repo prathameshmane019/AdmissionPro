@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { connectMongoDB } from "@/app/lib/connectDb";
 import Cluster from '@/app/model/cluster';
@@ -8,20 +7,21 @@ import Student from '@/app/model/student';
 export async function GET() {
   try {
     await connectMongoDB();
-    const clusters = await Cluster.find().countDocuments();
-    const facultyCount = await Faculty.find().countDocuments();
-    const studentCount = await Student.find().countDocuments();
+    
+    // Count documents
+    const clusters = await Cluster.countDocuments();
+    const facultyCount = await Faculty.countDocuments();
+    const studentCount = await Student.countDocuments();
 
-    const students = await Student.find();
-    const branchStats = students.reduce((acc, student) => {
-      const remark = student.remark;
-      if (remark) {
-        if (acc[remark]) {
-          acc[remark]++;
-        } else {
-          acc[remark] = 1;
-        }
-      }
+    // Calculate branch stats using aggregation pipeline
+    const branchStats = await Student.aggregate([
+      { $match: { remark: { $ne: null } } }, // Filter out documents where remark is not null
+      { $group: { _id: "$remark", count: { $sum: 1 } } } // Group by remark and count occurrences
+    ]);
+
+    // Convert branchStats array to object format
+    const formattedBranchStats = branchStats.reduce((acc, item) => {
+      acc[item._id] = item.count;
       return acc;
     }, {});
 
@@ -29,10 +29,10 @@ export async function GET() {
       clusters,
       facultyCount,
       studentCount,
-      branchStats
-    }, {status: 200});
+      branchStats: formattedBranchStats // Send the formatted branchStats
+    }, { status: 200 });
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
-    return NextResponse.json({ message: 'Internal server error' }, {status: 500});
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }

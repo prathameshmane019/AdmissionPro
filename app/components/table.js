@@ -49,7 +49,7 @@ const INITIAL_VISIBLE_COLUMNS = ["firstName", "fatherName", "lastName", "mobile"
 export default function TableComponent() {
     const [filterValue, setFilterValue] = useState("");
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(15);
     const [data, setData] = useState(null);
     const [sortDescriptor, setSortDescriptor] = useState({ column: "firstName", direction: "ascending" });
     const [page, setPage] = useState(1);
@@ -137,6 +137,7 @@ export default function TableComponent() {
         setPage(1);
         await fetchStudents();
     };
+  
 
     const deleteStudent = async (_id) => {
         try {
@@ -148,11 +149,11 @@ export default function TableComponent() {
     };
 
     const pages = useMemo(() => (data?.total > 0 ? Math.ceil(data.total / rowsPerPage) : 0), [data?.total, rowsPerPage]);
-
-    const onRowsPerPageChange = (e) => {
+    const onRowsPerPageChange = useCallback((e) => {
         setRowsPerPage(Number(e.target.value));
         setPage(1);
-    };
+      }, []);
+      
 
     const hasSearchFilter = Boolean(filterValue);
 
@@ -179,6 +180,11 @@ export default function TableComponent() {
         }
         return filteredUsers;
     }, [data?.students, filterValue]);
+    const items = useMemo(() => {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        return filteredItems.slice(start, end);
+      }, [page, filteredItems, rowsPerPage]);
 
     const renderCell = (user, columnKey) => {
         switch (columnKey) {

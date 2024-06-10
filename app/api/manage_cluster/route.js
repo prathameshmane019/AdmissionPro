@@ -29,43 +29,76 @@ export async function GET(req) {
   }
 }
 export async function PUT(req) {
+  try {
+    await connectMongoDB();
+    const { searchParams } = new URL(req.url);
+    const clusterId = searchParams.get('id');
+    const { action, ids, type } = await req.json();
+
+    if (!clusterId || !action || !ids || !type) {
+      return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
+    }
+
+    let updateAction;
+    if (action === 'add') {
+      updateAction = { $addToSet: { [`${type}_ids`]: { $each: ids } } };
+    } else if (action === 'remove') {
+      updateAction = { $pullAll: { [`${type}_ids`]: ids } };
+    } else {
+      return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+    }
+
+    const cluster = await Cluster.findByIdAndUpdate(clusterId, updateAction, { new: true });
+    if (!cluster) {
+      return NextResponse.json({ error: "Cluster not found" }, { status: 404 });
+    }
+
+    // Update students/faculties with new clusterId
+    if (action === 'add') {
+      if (type === 'student') {
+        await Student.updateMany({ _id: { $in: ids } }, { $set: { cluster: clusterId } });
+      } else if (type === 'faculty') {
+        await Faculty.updateMany({ _id: { $in: ids } }, { $set: { cluster: clusterId } });
+      }
+    } else if (action === 'remove') {
+      if (type === 'student') {
+        await Student.updateMany({ _id: { $in: ids } }, { $unset: { cluster: 1 } });
+      } else if (type === 'faculty') {
+        await Faculty.updateMany({ _id: { $in: ids } }, { $unset: { cluster: 1 } });
+      }
+    }
+
+    return NextResponse.json({ message: "Cluster updated successfully" });
+  } catch (error) {
+    console.error("Error updating cluster:", error);
+    return NextResponse.json({ error: "Failed to update cluster" }, { status: 500 });
+  }
+}
+
+  export async function DELETE(req) {
     try {
       await connectMongoDB();
       const { searchParams } = new URL(req.url);
-      const clusterId = searchParams.get('id');
-      const { action, ids, type } = await req.json();
+      const clusterId = searchParams.get("id");
   
-      if (!clusterId || !action || !ids || !type) {
-        return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
+      if (!clusterId) {
+        return NextResponse.json({ error: "Cluster ID is missing" }, { status: 400 });
       }
   
-      let updateAction;
-      if (action === 'add') {
-        updateAction = { $addToSet: { [`${type}Ids`]: { $each: ids } } };
-      } else if (action === 'remove') {
-        updateAction = { $pullAll: { [`${type}Ids`]: ids } };
-      } else {
-        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
-      }
-  
-      const cluster = await Cluster.findByIdAndUpdate(clusterId, updateAction, { new: true });
-      if (!cluster) {
+      const deletedCluster = await Cluster.findByIdAndDelete(clusterId);
+      if (!deletedCluster) {
         return NextResponse.json({ error: "Cluster not found" }, { status: 404 });
       }
   
-      // Update students/faculties with new clusterId
-      if (action === 'add') {
-        await Student.updateMany({ _id: { $in: ids } }, { $set: { clusterId } });
-        await Faculty.updateMany({ _id: { $in: ids } }, { $set: { clusterId } });
-      } else if (action === 'remove') {
-        await Student.updateMany({ _id: { $in: ids } }, { $unset: { clusterId: 1 } });
-        await Faculty.updateMany({ _id: { $in: ids } }, { $unset: { clusterId: 1 } });
-      }
+      // Update students and faculties to remove the cluster reference
+      await Student.updateMany({ _id: { $in: deletedCluster.student_ids } }, { $unset: { cluster: 1 } });
+      await Faculty.updateMany({ _id: { $in: deletedCluster.faculty_ids } }, { $unset: { cluster: 1 } });
   
-      return NextResponse.json({ message: "Cluster updated successfully" });
+      console.log("Cluster deleted successfully", deletedCluster);
+      return NextResponse.json({ message: "Cluster deleted successfully", cluster: deletedCluster }, { status: 200 });
     } catch (error) {
-      console.error("Error updating cluster:", error);
-      return NextResponse.json({ error: "Failed to update cluster" }, { status: 500 });
+      console.error("Error deleting cluster:", error);
+      return NextResponse.json({ error: "Failed to delete cluster" }, { status: 500 });
     }
   }
   

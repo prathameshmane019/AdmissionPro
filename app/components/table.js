@@ -172,7 +172,9 @@ export default function TableComponent() {
         if (hasSearchFilter) {
             filteredUsers = filteredUsers.filter((user) =>
                 (user.firstName && user.firstName.toLowerCase().includes(filterValue.toLowerCase())) ||
-                (user.lastName && user.lastName.toLowerCase().includes(filterValue.toLowerCase()))
+                (user.lastName && user.lastName.toLowerCase().includes(filterValue.toLowerCase()))||
+                (user.mobile && user.mobile.toLowerCase().includes(filterValue.toLowerCase()))
+
             );
         }
         return filteredUsers;

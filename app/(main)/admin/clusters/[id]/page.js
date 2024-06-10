@@ -26,7 +26,6 @@ const ManageClusterPage = ({ params }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [faculty, setFaculty] = useState([]);
-  const [values, setValues] = useState(new Set([]));
   const [debounceTimer, setDebounceTimer] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -66,8 +65,7 @@ const ManageClusterPage = ({ params }) => {
       console.error(`Error adding ${type}s:`, error);
     } finally {
       setSelectedStudents(new Set([])); // Clear selected students
-      setSelectedFaculties(new Set([])); // Clear selected faculties
-      setValues(new Set([]));
+      setSelectedFaculties(new Set([]));
     }
   };
 
@@ -85,7 +83,6 @@ const ManageClusterPage = ({ params }) => {
     } finally {
       setSelectedStudents(new Set([])); 
       setSelectedFaculties(new Set([]));
-      setValues(new Set([]))
     }
   };
 
@@ -121,9 +118,11 @@ const ManageClusterPage = ({ params }) => {
   };
 
   const handleSelectStudent = (id) => {
-    console.log(id);
+
     selected === "students" ? setSelectedStudents(prevStudents => new Set([...prevStudents, id])) : setSelectedFaculties(prevStudents => new Set([...prevStudents, id]));
+  
     const studentToAdd = students.find(s => s._id === id);
+    console.log(studentToAdd);
     if (studentToAdd) {
       if (selected === "students") {
         setStudents(prevStudents => [...prevStudents, studentToAdd]);
@@ -131,15 +130,6 @@ const ManageClusterPage = ({ params }) => {
         setFaculties(prevStudents => [...prevStudents, studentToAdd]);
       }
     }
-  };
-
-  const handleDeselectFaculty = (facultyId) => {
-    setSelectedFaculties(prevSelectedFaculties => {
-      const newSelectedFaculties = new Set(prevSelectedFaculties);
-      newSelectedFaculties.delete(facultyId);
-      return newSelectedFaculties;
-    });
-    setFaculties(prevFaculties => prevFaculties.filter(f => f._id !== facultyId));
   };
 
   if (isLoading) {

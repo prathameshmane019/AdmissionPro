@@ -24,8 +24,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     mobile: "",
     parentMobile: "",
     email: "",
-    cluster: "",
-    faculty: "",
     college: "",
     address: "",
     branch: "",
@@ -68,8 +66,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         mobile: user.mobile || "",
         parentMobile: user.parentMobile || "",
         email: user.email || "",
-        clusterName: user.cluster || "",
-        faculty: user.faculty || "",
+     
         collegeName: user.college || "",
         address: user.address || "",
         branch: user.branch || "",
@@ -83,7 +80,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         motherName: "",
         gender: "",
         dob: "",
-        category: "",
         disability: "",
         hsc: 0,
         ssc: 0,
@@ -94,8 +90,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         mobile: "",
         parentMobile: "",
         email: "",
-        cluster: "",
-        faculty: "",
         college: "",
         address: "",
         branch: "",
@@ -202,9 +196,9 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 <div>
                   <p>Cluster Name: {user.cluster}</p>
                 </div>
-                <div>
+                {/* <div>
                   <p>Faculty: {user.faculty}</p>
-                </div>
+                </div> */}
                 <div>
                   <p>College Name: {user.college}</p>
                 </div>
@@ -259,7 +253,8 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   </Select>
                 </div>
                 <div>
-                  <Input name="dob"
+                  <Input 
+                  name="dob"
                   size="sm"
                   variant="bordered"
                   label="Date of Birth" value={formData.dob} onChange={handleChange} required />
@@ -330,24 +325,14 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   variant="bordered"
                   label="Email" value={formData.email} onChange={handleChange} required />
                 </div>
-                <div>
-                  <Input name="cluster"
-                  size="sm"
-                  variant="bordered"
-                  label="Cluster Name" value={formData.cluster} onChange={handleChange} required />
-                </div>
+                
                 <div>
                   <Input name="college"
                   size="sm"
                   variant="bordered"
                   label="College Name" value={formData.college} onChange={handleChange} required />
                 </div>
-                <div>
-                  <Input name="faculty"
-                  size="sm"
-                  variant="bordered"
-                  label="Faculty" value={formData.faculty} onChange={handleChange} required />
-                </div>
+               
                 <div>
                   <Input name="address"
                   size="sm"

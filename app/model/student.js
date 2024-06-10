@@ -49,7 +49,6 @@ const studentSchema = new Schema(
     },
     mobile: {
       type: String,
-      required: true
     },
     parentMobile: {
       type: String
@@ -62,9 +61,6 @@ const studentSchema = new Schema(
       ref: 'Cluster'
     },
     college: {
-      type: String
-    },
-    faculty: {
       type: String
     },
     address: {

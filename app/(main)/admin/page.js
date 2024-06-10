@@ -6,17 +6,11 @@ import { Card, CardBody } from '@nextui-org/react';
 import { UserCircleIcon, UsersIcon, UserGroupIcon } from '@heroicons/react/24/solid';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-
+import { Spinner } from '@nextui-org/react';
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 function Dashboard() {
-  const [data, setData] = useState({
-    clusters: 'Loading',
-    facultyCount: 'Loading',
-    studentCount: 'Loading',
-    branchStats: {}
-  });
-
+  const [data, setData] = useState(null);  // Initialize data state as null
   const [chartData, setChartData] = useState({
     series: [],
     options: {
@@ -66,21 +60,31 @@ function Dashboard() {
     fetchData();
   }, []);
 
+  // Inside fetchData function
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/dashboard');
-      setData(response.data);
+      const fetchedData = response?.data || {};
+      console.log('Fetched Data:', fetchedData);
+      setData(fetchedData);
 
-      const interestedCount = response.data.branchStats['Interested'] || 0;
-      const notInterestedCount = response.data.branchStats['Not Interested'] || 0;
+      const branchStats = fetchedData?.branchStats || {};
+
+      // Filter out null keys
+      const filteredBranchStats = Object.keys(branchStats)
+        .filter(key => key !== null)
+        .reduce((obj, key) => {
+          obj[key] = branchStats[key];
+          return obj;
+        }, {});
+
+      const interestedCount = filteredBranchStats['Interested'] || 0;
+      const notInterestedCount = filteredBranchStats['Not Interested'] || 0;
 
       setChartData({
         series: [{
-          name: "Interested",
-          data: [interestedCount]
-        }, {
-          name: "Not Interested",
-          data: [notInterestedCount]
+          name: "Remark",
+          data: [interestedCount,notInterestedCount]
         }],
         options: {
           ...chartData.options,
@@ -95,6 +99,16 @@ function Dashboard() {
     }
   };
 
+
+
+  if (!data) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <Spinner type="points" />
+      </div>
+    );// Show loading state until data is fetched
+  }
+
   return (
     <div className="container ml-4">
       <h1 className="text-3xl text-center my-8">Dashboard</h1>
@@ -103,7 +117,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UserCircleIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Clusters</h5>
-            <h2 className="text-3xl font-bold text-white">{data.clusters}</h2>
+            <h2 className="text-3xl font-bold text-white">{data.clusters || 0}</h2>
           </CardBody>
         </Card>
 
@@ -111,7 +125,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UsersIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Faculty</h5>
-            <h2 className="text-3xl font-bold text-white">{data.facultyCount}</h2>
+            <h2 className="text-3xl font-bold text-white">{data.facultyCount || 0}</h2>
           </CardBody>
         </Card>
 
@@ -119,7 +133,7 @@ function Dashboard() {
           <CardBody className="text-center">
             <UserGroupIcon className="w-16 h-16 text-white mx-auto mb-4" />
             <h5 className="mb-2 text-white">Total Students</h5>
-            <h2 className="text-3xl font-bold text-white">{data.studentCount}</h2>
+            <h2 className="text-3xl font-bold text-white">{data.studentCount || 0}</h2>
           </CardBody>
         </Card>
       </div>
@@ -131,6 +145,7 @@ function Dashboard() {
           series={chartData.series}
           type="bar"
           height={350}
+          width={300}
         />
       </div>
     </div>

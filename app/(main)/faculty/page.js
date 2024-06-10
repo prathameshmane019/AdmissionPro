@@ -61,39 +61,44 @@ function Dashboard() {
   }, []);
 
   // Inside fetchData function
-const fetchData = async () => {
-  try {
-    const response = await axios.get('/api/dashboard');
-    const fetchedData = response.data || {}; // Set default value to an empty object if response.data is undefined
-    setData(fetchedData);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/api/dashboard');
+      const fetchedData = response?.data || {};
+      console.log('Fetched Data:', fetchedData);
+      setData(fetchedData);
 
-    console.log('Fetched Data:', fetchedData);  // Log fetched data for debugging
+      const branchStats = fetchedData?.branchStats || {};
 
-    const branchStats = fetchedData.branchStats || {}; // Ensure branchStats is defined
+      // Filter out null keys
+      const filteredBranchStats = Object.keys(branchStats)
+        .filter(key => key !== null)
+        .reduce((obj, key) => {
+          obj[key] = branchStats[key];
+          return obj;
+        }, {});
 
-    const interestedCount = branchStats['Interested'] || 0; // Set default value to 0 if interested count is undefined
-    const notInterestedCount = branchStats['Not Interested'] || 0; // Set default value to 0 if not interested count is undefined
+      const interestedCount = filteredBranchStats['Interested'] || 0;
+      const notInterestedCount = filteredBranchStats['Not Interested'] || 0;
 
-    setChartData({
-      series: [{
-        name: "Interested",
-        data: [interestedCount]
-      }, {
-        name: "Not Interested",
-        data: [notInterestedCount]
-      }],
-      options: {
-        ...chartData.options,
-        xaxis: {
-          categories: ['Interested', 'Not Interested'],
+      setChartData({
+        series: [{
+          name: "Remark",
+          data: [interestedCount,notInterestedCount]
+        }],
+        options: {
+          ...chartData.options,
+          xaxis: {
+            categories: ['Interested', 'Not Interested'],
+          }
         }
-      }
-    });
-  } catch (error) {
-    console.error('Error fetching dashboard data:', error);
-    toast.error('Error fetching dashboard data');
-  }
-};
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      toast.error('Error fetching dashboard data');
+    }
+  };
+
 
 
   if (!data) {
@@ -140,6 +145,7 @@ const fetchData = async () => {
           series={chartData.series}
           type="bar"
           height={350}
+          width={300}
         />
       </div>
     </div>

@@ -112,6 +112,7 @@ function Dashboard() {
   return (
     <div className="container ml-4">
       <h1 className="text-3xl text-center my-8">Dashboard</h1>
+
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card onClick={() => router.push("/cluster")} shadow="md" className="max-w-[350px] rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 transform hover:scale-105 transition duration-300 ease-in-out">
           <CardBody className="text-center">
@@ -137,6 +138,7 @@ function Dashboard() {
           </CardBody>
         </Card>
       </div>
+
 
       <div className="mt-8">
         <h2 className="text-2xl text-center mb-4">Interested Branch Statistics</h2>

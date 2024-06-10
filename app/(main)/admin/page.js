@@ -10,7 +10,9 @@ import { Spinner } from '@nextui-org/react';
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 function Dashboard() {
+
   const [data, setData] = useState(null);  // Initialize data state as null
+
   const [chartData, setChartData] = useState({
     series: [],
     options: {

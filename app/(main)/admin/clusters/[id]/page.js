@@ -2,8 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import {
   Autocomplete,
-  AutocompleteSection,
-  AutocompleteItem, Button, Table, TableHeader, Select, SelectItem, TableBody, TableRow, TableCell, TableColumn, Tab, Tabs
+  Spinner,
+  AutocompleteItem,
+  Button,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableColumn,
+  Tab,
+  Tabs
 } from '@nextui-org/react';
 import axios from 'axios';
 
@@ -25,22 +34,8 @@ const ManageClusterPage = ({ params }) => {
   useEffect(() => {
     if (params.id) {
       fetchCluster();
-      fetchFaculties();
     }
   }, [params.id]);
-
-  const fetchFaculties = async () => {
-    try {
-      setIsLoading(true);
-      const facultyRes = await axios.get('/api/faculty');
-      setFaculty(facultyRes.data);
-    } catch (error) {
-      setError('Error fetching faculties');
-      console.error('Error fetching faculties:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const fetchCluster = async () => {
     try {
@@ -88,8 +83,8 @@ const ManageClusterPage = ({ params }) => {
     } catch (error) {
       console.error(`Error removing ${type}s:`, error);
     } finally {
-      setSelectedStudents(new Set([])); // Clear selected students
-      setSelectedFaculties(new Set([])); // Clear selected faculties
+      setSelectedStudents(new Set([])); 
+      setSelectedFaculties(new Set([]));
       setValues(new Set([]))
     }
   };
@@ -124,15 +119,15 @@ const ManageClusterPage = ({ params }) => {
       setFaculties(prevFaculties => [...prevFaculties, facultyToAdd]);
     }
   };
+
   const handleSelectStudent = (id) => {
     console.log(id);
-    selected ==="students" ? setSelectedStudents(prevStudents => new Set([...prevStudents, id])): setSelectedFaculties(prevStudents => new Set([...prevStudents, id]));
+    selected === "students" ? setSelectedStudents(prevStudents => new Set([...prevStudents, id])) : setSelectedFaculties(prevStudents => new Set([...prevStudents, id]));
     const studentToAdd = students.find(s => s._id === id);
     if (studentToAdd) {
-      if(selected==="students"){
-      setStudents(prevStudents => [...prevStudents, studentToAdd]);
-    }
-      else{
+      if (selected === "students") {
+        setStudents(prevStudents => [...prevStudents, studentToAdd]);
+      } else {
         setFaculties(prevStudents => [...prevStudents, studentToAdd]);
       }
     }
@@ -148,7 +143,11 @@ const ManageClusterPage = ({ params }) => {
   };
 
   if (isLoading) {
-    return <h2>Loading...</h2>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <Spinner type="points" />
+      </div>
+    );
   }
 
   if (error) {
@@ -156,21 +155,21 @@ const ManageClusterPage = ({ params }) => {
   }
 
   return (
-    <div className="flex w-full flex-col mx-auto items-center">
+    <div className="flex w-full min-h-screen flex-col items-center p-5 bg-gray-50">
+      <h1 className="text-2xl font-bold mb-5">Manage Cluster</h1>
       <Autocomplete
-        label="Select Student"
+        label={`Select ${selected}`}
         variant="bordered"
-        placeholder="Search for a student"
-        className="max-w-xs"
+        placeholder={`Search for ${selected}`}
+        className="max-w-xs mb-5"
         value={searchValue}
         onInputChange={handleSearchInputChange}
         selectedKeys={selectedStudents}
         onSelectionChange={handleSelectStudent}
       >
-        {Array.isArray(searchResults) && searchResults.map((student) => (
-          <AutocompleteItem key={student._id} value={student._id} onClick={() => handleSelectFaculty(student._id)} // Add selected faculty to main table
-          >
-            {selected ==="students"?(`${student.firstName} ${student.lastName}`): student.name}
+        {Array.isArray(searchResults) && searchResults.map((result) => (
+          <AutocompleteItem key={result._id} value={result._id} onClick={() => handleSelectFaculty(result._id)}>
+            {selected === "students" ? `${result.firstName} ${result.lastName}` : result.name}
           </AutocompleteItem>
         ))}
       </Autocomplete>
@@ -182,7 +181,8 @@ const ManageClusterPage = ({ params }) => {
       >
         <Tab key="students" title="Students">
           <Table
-            aria-label="Controlled table example with dynamic content"
+            className='h-[50vh] w-[50vw]'
+            aria-label="Students table"
             selectionMode="multiple"
             selectedKeys={selectedStudents}
             onSelectionChange={setSelectedStudents}
@@ -191,7 +191,10 @@ const ManageClusterPage = ({ params }) => {
               <TableColumn>Sr.No:</TableColumn>
               <TableColumn>Name</TableColumn>
             </TableHeader>
-            <TableBody items={students.map((student, index) => ({ id: student._id, name: `${student.firstName} ${student.middleName || ''} ${student.lastName}`.trim() }))}>
+            <TableBody items={students.map((student, index) => ({
+              id: student._id,
+              name: `${student.firstName} ${student.middleName || ''} ${student.lastName}`.trim()
+            }))}>
               {(item) => (
                 <TableRow key={item.id}>
                   <TableCell>{students.findIndex(s => s._id === item.id) + 1}</TableCell>
@@ -200,12 +203,25 @@ const ManageClusterPage = ({ params }) => {
               )}
             </TableBody>
           </Table>
-          <Button onClick={() => handleAddUsers('student')}>Add Selected Students</Button>
-          <Button onClick={() => handleRemoveUsers('student')}>Remove Selected Students</Button>
+          <div className="flex gap-10 mt-4 justify-center items-center">
+            <Button
+              onClick={() => handleAddUsers('student')}
+              className="bg-foreground text-background"
+            >
+              Add Selected Students
+            </Button>
+            <Button
+              onClick={() => handleRemoveUsers('student')}
+              className="bg-foreground text-background"
+            >
+              Remove Selected Students
+            </Button>
+          </div>
         </Tab>
         <Tab key="faculty" title="Faculties">
           <Table
-            aria-label="Controlled table example with dynamic content"
+  className='h-[50vh] w-[50vw]'
+            aria-label="Faculties table"
             selectionMode="multiple"
             selectedKeys={selectedFaculties}
             onSelectionChange={setSelectedFaculties}
@@ -214,7 +230,10 @@ const ManageClusterPage = ({ params }) => {
               <TableColumn>Sr.No:</TableColumn>
               <TableColumn>Name</TableColumn>
             </TableHeader>
-            <TableBody items={faculties.map((faculty, index) => ({ id: faculty._id, name: faculty.name }))}>
+            <TableBody items={faculties.map((faculty, index) => ({
+              id: faculty._id,
+              name: faculty.name
+            }))}>
               {(item) => (
                 <TableRow key={item.id}>
                   <TableCell>{faculties.findIndex(f => f._id === item.id) + 1}</TableCell>
@@ -223,41 +242,24 @@ const ManageClusterPage = ({ params }) => {
               )}
             </TableBody>
           </Table>
-          <Button onClick={() => handleAddUsers('faculty')}>Add Selected Faculties</Button>
-          <Button onClick={() => handleRemoveUsers('faculty')}>Remove Selected Faculties</Button>
-          <Select
-            items={faculty || []}
-            label={`Select faculty`}
-            variant="bordered"
-            isMultiline={true}
-            selectedKeys={values}
-            selectionMode="multiple"
-            placeholder={`Select a faculty`}
-            labelPlacement="outside"
-            classNames={{
-              base: "max-w-xs",
-              trigger: "min-h-12 py-2",
-            }}
-            onSelectionChange={(keys) => setValues(new Set(keys))}
-          >
-            {(user) => (
-              <SelectItem
-                key={user._id}
-                textValue={user.name}
-                onClick={() => handleSelectFaculty(user._id)} // Add selected faculty to main table
-                onDeselect={() => handleDeselectFaculty(user._id)} // Remove deselected faculty from main table
-              >
-                <div className="flex gap-2 items-center">
-                  <div className="flex flex-col">
-                    <span className="text-small">{user.name}</span>
-                  </div>
-                </div>
-              </SelectItem>
-            )}
-          </Select>
+          <div className="flex gap-10 mt-4 justify-center items-center">
+          <Button
+              onClick={() => handleRemoveUsers('faculty')}
+              className="bg-foreground text-background"
+            >
+              Remove Selected Faculties
+            </Button>
+            <Button
+              onClick={() => handleAddUsers('faculty')}
+              className="bg-foreground text-background"
+            >
+              Add Selected Faculties
+            </Button>
+           
+          </div>
         </Tab>
       </Tabs>
-    </div >
+    </div>
   );
 };
 

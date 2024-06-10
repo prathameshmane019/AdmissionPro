@@ -70,7 +70,7 @@ export default function FacultyTable() {
 
   const deleteFaculty = async (_id) => {
     try {
-      await axios.delete(`/api/faculty?_id=${_id}`);
+      await axios.delete(`/api/faculty?id=${_id}`);
       fetchFaculty();
       toast.success('Faculty deleted successfully');
     } catch (error) {
@@ -192,7 +192,7 @@ export default function FacultyTable() {
       }
     } else if (modalMode === "edit") {
       try {
-        const response = await axios.put(`/api/faculty?_id=${formData._id}`, formData);
+        const response = await axios.put(`/api/faculty?id=${formData._id}`, formData);
         if (response.status === 200) {
           toast.success('Faculty updated successfully');
         } else {

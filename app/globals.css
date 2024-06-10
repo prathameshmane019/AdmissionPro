@@ -40,6 +40,7 @@
   
   .sidebar__list {
     list-style: none;
+
   }
   
   .sidebar__link {
@@ -51,11 +52,13 @@
     background-color: var(--color-sidebar-item);
     margin-bottom: 1rem;
     border-radius: 0.8rem;
+    align-items: center;
+    justify-content: start;
   }
   
   .sidebar__link--active {
     color: #fff;
-    background-color: #690bdc;
+    background-color: #212529;
   }
   
   .sidebar__icon {
@@ -68,7 +71,7 @@
   }
   
   [data-collapse="true"] {
-    width: 5.3rem;
+    width: 4.8rem;
   }
   
   [data-collapse="true"] .sidebar__name,

@@ -1,12 +1,11 @@
 "use client"
 import Image from "next/image";
-import { RxDashboard } from "react-icons/rx";
+import { RxDashboard, RxExit } from "react-icons/rx";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@nextui-org/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation"; 
@@ -81,9 +80,9 @@ const Sidebar = () => {
               </li>
             );
           })}
-           <Button onClick={handleSignOut} color="secondary" variant="flat">
-                Log Out
-              </Button>
+           <button onClick={handleSignOut} color="primary" width="30"  >
+           <RxExit className="w-5 h-5 ml-3 my-2 " />
+              </button>
         </ul>
       </aside>
     </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect,useCallback } from "react";
 import axios from "axios";
 import {
     Select, SelectItem, 
@@ -49,7 +49,7 @@ const INITIAL_VISIBLE_COLUMNS = ["firstName", "fatherName", "lastName", "mobile"
 export default function TableComponent() {
     const [filterValue, setFilterValue] = useState("");
     const [visibleColumns, setVisibleColumns] = useState(new Set(INITIAL_VISIBLE_COLUMNS));
-    const [rowsPerPage, setRowsPerPage] = useState(15);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [data, setData] = useState(null);
     const [sortDescriptor, setSortDescriptor] = useState({ column: "firstName", direction: "ascending" });
     const [page, setPage] = useState(1);
@@ -61,7 +61,6 @@ export default function TableComponent() {
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" ,cluster:"",college:""});
     // const [clusters, setClusters] = useState([]);
-    const [isSelectionModeOn, setIsSelectionModeOn] = useState(false);
 
 
     useEffect(() => {
@@ -490,7 +489,7 @@ export default function TableComponent() {
                 selectedKeys={visibleColumns}
                 onSelectionChange={setVisibleColumns}
                 topContent={topContent}
-                selectionMode={isSelectionModeOn ? 'multiple':null}
+                
                 topContentPlacement="outside"
             >
                 <TableHeader columns={headerColumns}>

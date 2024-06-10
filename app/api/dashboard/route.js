@@ -25,11 +25,22 @@ export async function GET() {
       return acc;
     }, {});
 
+    const pieChartData = await Cluster.aggregate([
+      // Unwind the student_ids array
+      { $unwind: "$student_ids" },
+      // Group by name and count occurrences
+      { $group: { _id: "$name", count: { $sum: 1 } } },
+      // Project name and count fields
+      { $project: { _id: 0, name: "$_id", count: 1 } }
+    ]);
+
+    console.log(pieChartData);
     return NextResponse.json({
       clusters,
       facultyCount,
       studentCount,
-      branchStats: formattedBranchStats // Send the formatted branchStats
+      branchStats: formattedBranchStats, // Send the formatted branchStats
+      pieChartData // Send pie chart data for students in different clusters
     }, { status: 200 });
   } catch (error) {
     console.error('Error fetching dashboard data:', error);

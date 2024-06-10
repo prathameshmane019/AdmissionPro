@@ -60,18 +60,14 @@ export default function TableComponent() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" ,cluster:"",college:""});
-    const [clusters, setClusters] = useState([]);
+    // const [clusters, setClusters] = useState([]);
     const [isSelectionModeOn, setIsSelectionModeOn] = useState(false);
 
 
     useEffect(() => {
         fetchStudents();
-        fetchClusters();
     }, [page, rowsPerPage]);
 
-    const toggleSelectionMode = () => {
-        setIsSelectionModeOn(!isSelectionModeOn);
-    };
 
     const fetchStudents = async () => {
         try {
@@ -91,17 +87,17 @@ export default function TableComponent() {
             setLoading(false);
         }
     };
-    const fetchClusters = async () => {
-        try {
-            setLoading(true);
-            const res = await axios.get('/api/cluster',);
-            setClusters(res.data);
-        } catch (error) {
-            console.error("Error fetching clusters:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const fetchClusters = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const res = await axios.get('/api/cluster',);
+    //         setClusters(res.data);
+    //     } catch (error) {
+    //         console.error("Error fetching clusters:", error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const onSearchChange = (value) => {
         if (value) {
@@ -165,7 +161,11 @@ export default function TableComponent() {
         return columns.filter((column) => visibleColumns.has(column.uid));
     }, [visibleColumns]);
 
-    const handleFilterReset = () => setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "",college:"",cluster:"" });
+    const handleFilterReset = () => 
+        {
+             fetchStudents();
+            setFilters({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "", search: "",college:"",cluster:"" });
+        }
 
     const filteredItems = useMemo(() => {
         let filteredUsers = data?.students || [];

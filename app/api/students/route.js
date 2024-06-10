@@ -10,10 +10,10 @@ export async function POST(req) {
         const newStudent = new  Student(data)
         await newStudent.save();
         console.log("Student created successfully");
-        return NextResponse.json({ message: "Student created successfully", student: newStudent });
+        return NextResponse.json({ message: "Student created successfully", student: newStudent },{status:201});
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: "Failed to create student" });
+        return NextResponse.json({ error: "Failed to create student" },{status:500});
     }
 }
 
@@ -26,7 +26,6 @@ export async function GET(req) {
         const skip = (page - 1) * limit;
 
         const filters = {};
-
         const college = searchParams.get("college");
         if (college) filters.college = college;
 
@@ -66,14 +65,12 @@ export async function GET(req) {
 
         console.log("Students fetched successfully");
         
-        
-
         console.log(students);
         console.log("Students fetched successfully");
-        return NextResponse.json({ students, total: totalStudents });
+        return NextResponse.json({ students, total: totalStudents },{status:201});
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: "Failed to fetch students" });
+        return NextResponse.json({ error: "Failed to fetch students" },{status:500});
     }
 }
 
@@ -84,11 +81,28 @@ export async function PUT(req) {
         const _id = searchParams.get("_id");
         const data = await req.json();
         const updatedStudent = await Student.findByIdAndUpdate(_id, data, { new: true });
-        if (!updatedStudent) return NextResponse.json({ error: "Student not found" });
+        if (!updatedStudent) return NextResponse.json({ error: "Student not found" },{status:404});
         console.log("Student updated successfully", updatedStudent);
         return NextResponse.json({ message: "Student updated successfully", student: updatedStudent },{status:200});
     } catch (error) {
         console.error("Error updating student:", error);
         return NextResponse.json({ error: "Failed to update student" },{status:500});
+    }
+}
+
+export async function DELETE(req) {
+    try {
+        await connectMongoDB();
+        const { searchParams } = new URL(req.url);
+        const _id = searchParams.get("_id");
+        
+        const deletedStudent = await Student.findByIdAndDelete(_id);
+        if (!deletedStudent) return NextResponse.json({ error: "Student not found" },{status:404});
+        
+        console.log("Student deleted successfully", deletedStudent);
+        return NextResponse.json({ message: "Student deleted successfully", student: deletedStudent },{status:200});
+    } catch (error) {
+        console.error("Error deleting student:", error);
+        return NextResponse.json({ error: "Failed to delete student" },{status:500});
     }
 }

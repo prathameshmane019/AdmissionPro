@@ -154,10 +154,10 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
               </div>
               <div>
-                <p><strong>Father's Name:</strong> {user.fatherName}</p>
+                <p><strong>Father &#39 s Name:</strong> {user.fatherName}</p>
               </div>
               <div>
-                <p><strong>Mother's Name:</strong> {user.motherName}</p>
+                <p><strong>Mother &#39 s Name:</strong> {user.motherName}</p>
               </div>
               <div>
                 <p><strong>Gender:</strong> {user.gender}</p>
@@ -193,7 +193,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 <p><strong>Mobile:</strong> {user.mobile}</p>
               </div>
               <div>
-                <p><strong>Parent's Mobile:</strong> {user.parentMobile}</p>
+                <p><strong>Parent &#39 s Mobile:</strong> {user.parentMobile}</p>
               </div>
               <div>
                 <p><strong>Email:</strong> {user.email}</p>

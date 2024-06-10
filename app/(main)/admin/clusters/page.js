@@ -1,11 +1,16 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Table, TableHeader, TableRow, TableCell, TableBody, TableColumn, Button, Spinner } from '@nextui-org/react';
+import { Table, TableHeader, TableRow, TableCell, TableBody, TableColumn, Button, Spinner, Modal, useToasts, ModalFooter, ModalBody, ModalContent, ModalHeader } from '@nextui-org/react';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import axios from 'axios';
 
 const Page = () => {
   const [clusters, setClusters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchClusters();
@@ -20,6 +25,30 @@ const Page = () => {
       console.error('Error fetching clusters:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setShowModal(true);
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      const res = await axios.delete(`/api/manage_cluster?id=${deleteId}`);
+      if (res.status === 200) {
+        toast.success('Cluster deleted successfully');
+        fetchClusters();
+      } else {
+        throw new Error('Failed to delete cluster');
+      }
+    } catch (error) {
+      console.error('Error deleting cluster:', error);
+      toast.error('Failed to delete cluster');
+    } finally {
+      setShowModal(false);
+      setDeleting(false);
     }
   };
 
@@ -57,11 +86,45 @@ const Page = () => {
                     Manage
                   </Button>
                 </Link>
+                <Button
+                color="danger"
+                  className="text-background ml-2"
+                  size="sm"
+                  onClick={() => handleDeleteClick(cluster._id)}
+                >
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+      >
+        <ModalContent>
+          <ModalHeader>
+            Delete Cluster
+          </ModalHeader>
+          <ModalBody>
+            Are you sure you want to delete this cluster?
+          </ModalBody>
+          <ModalFooter>
+            <Button key="cancel" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+            <Button 
+              key="delete" 
+             color="danger"
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? 'Deleting...' : 'Delete'}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

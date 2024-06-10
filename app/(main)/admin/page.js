@@ -10,12 +10,12 @@ import { useRouter } from 'next/navigation';
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 function Dashboard() {
-  const [data, setData] = useState({
-    clusters: 'Loading',
-    facultyCount: 'Loading',
-    studentCount: 'Loading',
-    branchStats: {}
-  });
+  // const [data, setData] = useState({
+  //   clusters: 'Loading',
+  //   facultyCount: 'Loading',
+  //   studentCount: 'Loading',
+  //   branchStats: {}
+  // });
 
   const [chartData, setChartData] = useState({
     series: [],

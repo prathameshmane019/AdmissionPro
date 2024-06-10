@@ -38,7 +38,12 @@ export async function GET(req) {
         const gender = searchParams.get("gender");
         if (gender) filters.gender = gender;
         const search = searchParams.get("search");
-        if (search) filters.firstName = search;
+        if (search){  filters.$or = [
+            { firstName: { $regex: new RegExp(search, "i") } },
+            { middleName: { $regex: new RegExp(search, "i") } },
+            { lastName: { $regex: new RegExp(search, "i") } }, 
+             { mobile: { $regex: new RegExp(search, "i") } }
+        ];}
         const pcmRange = searchParams.get("pcm");
         if (pcmRange) {
             const [min, max] = pcmRange.split(",");

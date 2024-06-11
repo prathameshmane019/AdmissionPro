@@ -19,10 +19,8 @@ import {
   DropdownItem,
   Pagination,
 } from "@nextui-org/react";
-import { statusOptions } from "@/app/utils/data";
 import { capitalize } from "@/app/utils/utils";
 import { PlusIcon } from "@/public/PlusIcon";
-import { EyeIcon } from "@/public/EyeIcon";
 import { EditIcon } from "@/public/EditIcon";
 import { DeleteIcon } from "@/public/DeleteIcon";
 import { SearchIcon } from "@/public/SearchIcon";
@@ -155,7 +153,7 @@ export default function FacultyTable() {
         return cellValue;
     }
   }, []);
-
+  
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
     setPage(1);
@@ -176,37 +174,39 @@ export default function FacultyTable() {
   };
 
   const handleModalSubmit = async (formData) => {
-    if (modalMode === "add") {
-      try {
-        const response = await axios.post("/api/faculty", formData);
+    try {
+      let response;
+      if (modalMode === "add") {
+        response = await axios.post("/api/faculty", formData);
+        fetchFaculty();
         if (response.status === 200 || response.status === 201) {
-          setFaculty([...faculty, response.data]);
+          setFaculty((prevFaculty) => [...prevFaculty, response.data]);
           toast.success('Faculty added successfully');
         } else {
           console.error("Failed to add faculty");
           toast.error('Failed to add faculty');
         }
-      } catch (error) {
-        console.error("Error adding faculty:", error);
-        toast.error('Error adding faculty');
-      }
-    } else if (modalMode === "edit") {
-      try {
-        const response = await axios.put(`/api/faculty?id=${formData._id}`, formData);
+      } else if (modalMode === "edit") {
+        response = await axios.put(`/api/faculty?id=${formData._id}`, formData);
         if (response.status === 200) {
+          setFaculty((prevFaculty) =>
+            prevFaculty.map((facultyMember) =>
+              facultyMember._id === formData._id ? response.data : facultyMember
+            )
+          );
           toast.success('Faculty updated successfully');
         } else {
           console.error("Failed to update faculty");
           toast.error('Failed to update faculty');
         }
-      } catch (error) {
-        console.error("Error updating faculty:", error);
-        toast.error('Error updating faculty');
       }
+    } catch (error) {
+      console.error("Error adding/updating faculty:", error);
+      toast.error(`Error ${modalMode === "add" ? "adding" : "updating"} faculty`);
     }
     handleModalClose();
   };
-
+  
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">

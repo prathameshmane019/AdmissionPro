@@ -15,7 +15,8 @@ import {
   Tabs
 } from '@nextui-org/react';
 import axios from 'axios';
-
+import { toast } from 'sonner';
+import NoInternetPage from '@/app/components/NoInternetPage';
 const ManageClusterPage = ({ params }) => {
   const [selectedStudents, setSelectedStudents] = useState(new Set([]));
   const [selectedFaculties, setSelectedFaculties] = useState(new Set([]));
@@ -29,6 +30,21 @@ const ManageClusterPage = ({ params }) => {
   const [debounceTimer, setDebounceTimer] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    const handleOnlineStatusChange = () => {
+      setIsOnline(navigator.onLine);
+    };
+
+    window.addEventListener('online', handleOnlineStatusChange);
+    window.addEventListener('offline', handleOnlineStatusChange);
+
+    return () => {
+      window.removeEventListener('online', handleOnlineStatusChange);
+      window.removeEventListener('offline', handleOnlineStatusChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (params.id) {
@@ -81,7 +97,7 @@ const ManageClusterPage = ({ params }) => {
     } catch (error) {
       console.error(`Error removing ${type}s:`, error);
     } finally {
-      setSelectedStudents(new Set([])); 
+      setSelectedStudents(new Set([]));
       setSelectedFaculties(new Set([]));
     }
   };
@@ -96,9 +112,8 @@ const ManageClusterPage = ({ params }) => {
       try {
         const response = await axios.get(`/api/search_${selected}?search=${value}`);
         setSearchResults(response.data.user);
-        console.log(response.data.user);
       } catch (error) {
-        setError(`Error searching ${selected}`);
+        toast.error(`Error searching ${selected}`);
         console.error(`Error searching ${selected}:`, error);
       } finally {
         setIsLoading(false);
@@ -120,7 +135,7 @@ const ManageClusterPage = ({ params }) => {
   const handleSelectStudent = (id) => {
 
     selected === "students" ? setSelectedStudents(prevStudents => new Set([...prevStudents, id])) : setSelectedFaculties(prevStudents => new Set([...prevStudents, id]));
-  
+
     const studentToAdd = students.find(s => s._id === id);
     console.log(studentToAdd);
     if (studentToAdd) {
@@ -144,7 +159,7 @@ const ManageClusterPage = ({ params }) => {
     return <h2 style={{ color: 'red' }}>{error}</h2>;
   }
 
-  return (
+  return (!isOnline ? <NoInternetPage /> :
     <div className="flex w-full min-h-screen flex-col items-center p-5 bg-gray-50">
       <h1 className="text-2xl font-bold mb-5">Manage Cluster</h1>
       <Autocomplete
@@ -157,7 +172,7 @@ const ManageClusterPage = ({ params }) => {
         selectedKeys={selectedStudents}
         onSelectionChange={handleSelectStudent}
       >
-        {Array.isArray(searchResults) && searchResults.map((result) => (
+        {Array.isArray(searchResults) && searchResults?.map((result) => (
           <AutocompleteItem key={result._id} value={result._id} onClick={() => handleSelectFaculty(result._id)}>
             {selected === "students" ? `${result.firstName} ${result.lastName}` : result.name}
           </AutocompleteItem>
@@ -178,39 +193,41 @@ const ManageClusterPage = ({ params }) => {
             onSelectionChange={setSelectedStudents}
           >
             <TableHeader>
-              <TableColumn>Sr.No:</TableColumn>
               <TableColumn>Name</TableColumn>
             </TableHeader>
-            <TableBody items={students.map((student, index) => ({
+            <TableBody items={students && students.map((student, index) => ({
               id: student._id,
-              name: `${student.firstName} ${student.middleName || ''} ${student.lastName}`.trim()
+              name: `${student.firstName} ${student.lastName}`
             }))}>
               {(item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{students.findIndex(s => s._id === item.id) + 1}</TableCell>
+                  {/* Ensure each row has two cells */}
+                  
                   <TableCell>{item.name}</TableCell>
                 </TableRow>
               )}
             </TableBody>
+
           </Table>
           <div className="flex gap-10 mt-4 justify-center items-center">
-            <Button
-              onClick={() => handleAddUsers('student')}
-              className="bg-foreground text-background"
-            >
-              Add Selected Students
-            </Button>
+
             <Button
               onClick={() => handleRemoveUsers('student')}
               className="bg-foreground text-background"
             >
               Remove Selected Students
             </Button>
+            <Button
+              onClick={() => handleAddUsers('student')}
+              className="bg-foreground text-background"
+            >
+              Add Selected Students
+            </Button>
           </div>
         </Tab>
         <Tab key="faculty" title="Faculties">
           <Table
-  className='h-[50vh] w-[50vw]'
+            className='h-[50vh] w-[50vw]'
             aria-label="Faculties table"
             selectionMode="multiple"
             selectedKeys={selectedFaculties}
@@ -220,20 +237,20 @@ const ManageClusterPage = ({ params }) => {
               <TableColumn>Sr.No:</TableColumn>
               <TableColumn>Name</TableColumn>
             </TableHeader>
-            <TableBody items={faculties.map((faculty, index) => ({
+            <TableBody items={faculties && faculties?.map((faculty, index) => ({
               id: faculty._id,
               name: faculty.name
             }))}>
               {(item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{faculties.findIndex(f => f._id === item.id) + 1}</TableCell>
+                  <TableCell>{faculties?.findIndex(f => f._id === item.id) + 1}</TableCell>
                   <TableCell>{item.name}</TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
           <div className="flex gap-10 mt-4 justify-center items-center">
-          <Button
+            <Button
               onClick={() => handleRemoveUsers('faculty')}
               className="bg-foreground text-background"
             >
@@ -245,7 +262,7 @@ const ManageClusterPage = ({ params }) => {
             >
               Add Selected Faculties
             </Button>
-           
+
           </div>
         </Tab>
       </Tabs>

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectMongoDB } from "@/app/lib/connectDb";
 import Student from "@/app/model/student";
-
+import Cluster from "@/app/model/cluster";
 export async function POST(req) {
     try {
         await connectMongoDB();
@@ -16,13 +16,12 @@ export async function POST(req) {
         return NextResponse.json({ error: "Failed to create student" },{status:500});
     }
 }
-
 export async function GET(req) {
     try {
         await connectMongoDB();
         const { searchParams } = new URL(req.url);
         const page = parseInt(searchParams.get("page") || "1", 10);
-        const limit = searchParams.get("limit")
+        const limit = parseInt(searchParams.get("limit") || "10", 10); // Make sure limit is parsed to an integer
         const skip = (page - 1) * limit;
 
         const filters = {};
@@ -38,12 +37,14 @@ export async function GET(req) {
         const gender = searchParams.get("gender");
         if (gender) filters.gender = gender;
         const search = searchParams.get("search");
-        if (search){  filters.$or = [
-            { firstName: { $regex: new RegExp(search, "i") } },
-            { middleName: { $regex: new RegExp(search, "i") } },
-            { lastName: { $regex: new RegExp(search, "i") } }, 
-             { mobile: { $regex: new RegExp(search, "i") } }
-        ];}
+        if (search) { 
+            filters.$or = [
+                { firstName: { $regex: new RegExp(search, "i") } },
+                { middleName: { $regex: new RegExp(search, "i") } },
+                { lastName: { $regex: new RegExp(search, "i") } },
+                { mobile: { $regex: new RegExp(search, "i") } }
+            ];
+        }
         const pcmRange = searchParams.get("pcm");
         if (pcmRange) {
             const [min, max] = pcmRange.split(",");
@@ -66,16 +67,20 @@ export async function GET(req) {
         }
 
         const totalStudents = await Student.countDocuments(filters);
-        const students = await Student.find(filters).skip(skip).limit(limit);
+        const students = await Student.find(filters).skip(skip).limit(limit).populate('cluster', 'name');
+
+        const formattedStudents = students.map(student => {
+            return {
+                ...student.toObject(),
+                cluster: student.cluster ? student.cluster.name : null
+            };
+        });
 
         console.log("Students fetched successfully");
-        
-        console.log(students);
-        console.log("Students fetched successfully");
-        return NextResponse.json({ students, total: totalStudents },{status:201});
+        return NextResponse.json({ students: formattedStudents, total: totalStudents }, { status: 200 });
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: "Failed to fetch students" },{status:500});
+        return NextResponse.json({ error: "Failed to fetch students" }, { status: 500 });
     }
 }
 
@@ -100,7 +105,14 @@ export async function DELETE(req) {
         await connectMongoDB();
         const { searchParams } = new URL(req.url);
         const _id = searchParams.get("_id");
-        
+        const clustersToUpdate = await Cluster.find({ student_ids: _id });
+
+        // Update each cluster to remove the facultyId from faculty_ids
+        await Promise.all(clustersToUpdate.map(async (cluster) => {
+            cluster.student_ids = cluster.student_ids.filter(id => id.toString() !== _id);
+            await cluster.save();
+        }));
+
         const deletedStudent = await Student.findByIdAndDelete(_id);
         if (!deletedStudent) return NextResponse.json({ error: "Student not found" },{status:404});
         

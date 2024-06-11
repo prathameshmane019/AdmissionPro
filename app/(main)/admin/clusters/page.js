@@ -71,8 +71,8 @@ const Page = () => {
           <TableColumn className="text-base font-medium">Actions</TableColumn>
         </TableHeader>
         <TableBody>
-          {clusters && clusters.map((cluster) => (
-            <TableRow key={cluster._id}>
+          {clusters && clusters?.map((cluster) => (
+            <TableRow key={cluster?._id}>
               <TableCell className="py-2 text-sm text-gray-700">{cluster.name}</TableCell>
               <TableCell className="py-2 text-sm text-gray-700">{cluster?.student_ids?.length}</TableCell>
               <TableCell className="py-2 text-sm text-gray-700">{cluster?.faculty_ids?.length || 0}</TableCell>

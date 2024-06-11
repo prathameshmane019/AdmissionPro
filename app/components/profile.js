@@ -116,7 +116,7 @@ const Profile = () => {
             </>
           ) : (
             <>
-              <h6 className="text-lg font-medium text-gray-700">FirstName: {faculty.name}</h6>
+              <h6 className="text-lg font-medium text-gray-700">Name: {faculty.name}</h6>
               <p className="text-gray-600">Email: {faculty.email}</p>
               <p className="text-gray-600">Role: {faculty.role}</p>
               <p className="text-gray-600">Mobile: {faculty.mobile}</p>

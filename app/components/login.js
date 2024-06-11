@@ -36,7 +36,7 @@ export default function LoginComponent() {
       });
 
       if (result.ok) {
-        toast.success('Login Successful');
+        toast.success('Login Successfully');
       } else {
         toast.error(result.error || 'Login failed');
       }

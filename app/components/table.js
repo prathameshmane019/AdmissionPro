@@ -60,11 +60,12 @@ export default function TableComponent() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({ category: "", gender: "", pcm: "", cet: "", jee: "", hsc: "", address: "" ,cluster:"",college:""});
-    // const [clusters, setClusters] = useState([]);
+    const [clusters, setClusters] = useState([]);
 
 
     useEffect(() => {
         fetchStudents();
+        fetchClusters()
     }, [page, rowsPerPage]);
 
 
@@ -86,17 +87,17 @@ export default function TableComponent() {
             setLoading(false);
         }
     };
-    // const fetchClusters = async () => {
-    //     try {
-    //         setLoading(true);
-    //         const res = await axios.get('/api/cluster',);
-    //         setClusters(res.data);
-    //     } catch (error) {
-    //         console.error("Error fetching clusters:", error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+    const fetchClusters = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get('/api/cluster',);
+            setClusters(res.data);
+        } catch (error) {
+            console.error("Error fetching clusters:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const onSearchChange = (value) => {
         if (value) {
@@ -286,7 +287,7 @@ export default function TableComponent() {
                     />
                     </div>                    
                     <div className="flex gap-4 my-3 items-center">
-                        {/* <Select  
+                        <Select  
                           label="select cluster"
                           variant="bordered"
                           name="cluster"
@@ -302,7 +303,7 @@ export default function TableComponent() {
                                     </SelectItem>
                                 ))}
 
-                        </Select> */}
+                        </Select>
                         <Input
                         aria-label="Filter by College Name "
                         placeholder="Filter by College Name"

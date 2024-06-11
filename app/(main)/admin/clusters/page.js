@@ -90,7 +90,6 @@ const Page = () => {
                 </Link>
                 <Button
                 color='danger'
-                  // className="text-background ml-2 "
                   className="ml-2"
                   auto 
                   size="sm"

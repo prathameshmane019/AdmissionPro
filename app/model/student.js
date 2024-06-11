@@ -21,7 +21,7 @@ const studentSchema = new Schema(
       type: String
     },
     dob: {
-      type: String 
+      type: String // Assuming dob is a string
     },
     category: {
       type: String
@@ -61,6 +61,9 @@ const studentSchema = new Schema(
       ref: 'Cluster'
     },
     college: {
+      type: String
+    },
+    faculty: {
       type: String
     },
     address: {

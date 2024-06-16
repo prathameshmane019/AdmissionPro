@@ -69,7 +69,7 @@ const Sidebar = () => {
             return (
               <li className="sidebar__item items-center "  key={name}>
                 <Link
-                  className={`sidebar__link  ${pathname === href ? "sidebar__link--active " : ""}`}
+                  className={`sidebar__link  ${pathname == href ? "sidebar__link--active " : ""}`}
                   href={href}
                 >
                   <span className="sidebar__icon">

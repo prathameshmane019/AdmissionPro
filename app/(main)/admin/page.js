@@ -137,19 +137,19 @@ function Dashboard() {
         </Card>
       </div>
       <div className="grid grid-cols-2 mx-10 gap-2 mt-10">
-      <div >
-        <h2 className="text-2xl text-center mb-4">Interested Branch Statistics</h2>
+      <div  className='mx-auto my-auto'>
+        <h2 className="text-2xl text-center ">Interested Branch Statistics</h2>
         <Chart
           options={chartData.options}
           series={chartData.series}
           type="bar"
-          height={350}
+          height={400}
           className="mx-auto mt-10"
-          width={350}
+          width={400}
         />
       </div>
 
-      <div className='mx-auto' >
+      <div className='mx-auto my-auto' >
         <h2 className="text-2xl text-center ">Students from Different Clusters</h2>
         <Chart
           options={{
@@ -157,8 +157,8 @@ function Dashboard() {
           }}
           series={pieChartData.map(item => item.count)}
           type="pie"
-          height={350}
-          width={350}
+          height={450}
+          width={450}
           className="mx-auto mt-10"
         />
       </div>

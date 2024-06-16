@@ -74,6 +74,9 @@ const studentSchema = new Schema(
     },
     remark: {
       type: String
+    },
+    status:{
+      type:String,
     }
   },
   {

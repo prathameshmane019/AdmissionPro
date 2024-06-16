@@ -28,9 +28,16 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     address: "",
     branch: [],
     remark: "",
+    status:""
   });
 
   const [isOnline, setIsOnline] = useState(true);
+  const [branch, setBranch] = React.useState(new Set([]));
+
+  const handleSelectionChange = (e) => {
+    setBranch(new Set(e.target.value.split(",")));
+    console.log(branch);
+  };
 
   useEffect(() => {
     const handleOnlineStatusChange = () => {
@@ -70,6 +77,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         address: user.address || "",
         branch: user.branch || [],
         remark: user.remark || "",
+        status:user.status || ""
       });
     } else {
       setFormData({
@@ -92,8 +100,9 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         email: "",
         college: "",
         address: "",
-        branch: "",
+        branch: [],
         remark: "",
+        status :""
       });
     }
   }, [isOpen, mode, user]);
@@ -105,6 +114,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
 
   const handleSubmit = async () => {
     try {
+      const branchArray = Array.from(branch);
       const cleanedFormData = {
         ...formData,
         hsc: parseInt(formData.hsc, 10),
@@ -112,7 +122,9 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         cet: parseInt(formData.cet, 10),
         jee: parseInt(formData.jee, 10),
         pcm: parseInt(formData.pcm, 10),
+        branch: branchArray
       };
+      console.log(formData);
 
       if (mode === "add") {
         const response = await axios.post("/api/students", cleanedFormData);
@@ -140,7 +152,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
       backdrop="opaque" 
       isOpen={isOpen} 
       onClose={onClose} 
-      size="lg" 
+      size="3xl" 
       classNames={{ backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20" }}
     >
       <ModalContent>
@@ -149,7 +161,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         </ModalHeader>
         <ModalBody className="max-h-[60vh] overflow-y-auto">
           {mode === "view" && user && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-y-3 gap-x-10">
               <div>
                 <p><strong>Name:</strong> {user.firstName}{user.lastName}</p>
               </div>
@@ -205,10 +217,13 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 <p><strong>Address:</strong> {user.address}</p>
               </div>
               <div>
-                <p><strong>Interested Branch:</strong> {user.branch}</p>
+              <p><strong>Interested Branches (Priority):</strong> {user.branch.sort().join(", ")}</p>
               </div>
               <div>
                 <p><strong>Remark:</strong> {user.remark}</p>
+              </div>
+              <div>
+                <p><strong>Status:</strong> {user.status}</p>
               </div>
             </div>
           )}
@@ -268,8 +283,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   onChange={handleChange}
                 >
                   <SelectItem key="M" textValue="Male">Male</SelectItem>
-                  <SelectItem key="F" textValue="Female">
-                  Female</SelectItem>
+                  <SelectItem key="F" textValue="Female">Female</SelectItem>
                 </Select>
               </div>
               <div>
@@ -428,23 +442,25 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 />
               </div>
               <div>
-                <Select 
-                  name="branch" 
-                  label="Interested Branch" 
-                  size="sm"
-                  variant="bordered"
-                  placeholder="Select Branch" 
-                  selectedKeys={[formData.branch]} 
-                  value={formData.branch}
-                  onChange={handleChange}
+                <Select
+                    label="Select Branches"
+                    varient ="bordered"
+                    size="sm"
+                    selectionMode="multiple"
+                    placeholder="Select an animal"
+                    name="branch"
+                    selectedKeys={Array.from(branch)}
+                    className="max-w-xs"
+                    onChange={handleSelectionChange}
                 >
-                  <SelectItem key="CSE" textValue="CSE">CSE</SelectItem>
-                  <SelectItem key="ENTC" textValue="ENTC">ENTC</SelectItem>
-                  <SelectItem key="Electrical" textValue="Electrical">Electrical</SelectItem>
-                  <SelectItem key="MECH" textValue="MECH">Mechanical</SelectItem>
-                  <SelectItem key="Civil" textValue="Civil">Civil</SelectItem>
+                    <SelectItem key="CSE" textValue="CSE">CSE</SelectItem>
+                    <SelectItem key="ENTC" textValue="ENTC">ENTC</SelectItem>
+                    <SelectItem key="Electrical" textValue="Electrical">Electrical</SelectItem>
+                    <SelectItem key="MECH" textValue="MECH">Mechanical</SelectItem>
+                    <SelectItem key="Civil" textValue="Civil">Civil</SelectItem>
                 </Select>
               </div>
+
               <div>
                 <Select 
                   name="remark" 
@@ -457,6 +473,21 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 >
                   <SelectItem key="Interested" textValue="Interested">Interested</SelectItem>
                   <SelectItem key="Not Interested" textValue="Not Interested">Not Interested</SelectItem>
+                </Select>
+              </div>
+              <div>
+                <Select 
+                  name="status" 
+                  label="Status" 
+                  placeholder="Select Status" 
+                  size="sm"
+                  variant="bordered"
+                  selectedKeys={[formData.status]}
+                  onChange={handleChange}
+                >
+                  <SelectItem key="Eligible" textValue="Eligible">Eligible</SelectItem>
+                  <SelectItem key="Pending" textValue="Pending">Pending</SelectItem>
+                  <SelectItem key="Not Eligible" textValue="Not Eligible">Not Eligible</SelectItem>
                 </Select>
               </div>
             </div>

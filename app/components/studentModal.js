@@ -4,7 +4,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input
 import axios from "axios";
 import { toast } from 'sonner';
 import NoInternetPage from './NoInternetPage'; // Import NoInternetPage component
-
+// import { Select, SelectItem } from '@some-library/select'; 
 const StudentModal = ({ isOpen, onClose, mode, user }) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,9 +28,11 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     address: "",
     branch: "",
     remark: "",
+    status :"",
   });
 
   const [isOnline, setIsOnline] = useState(true);
+   const [selectedBranches, setSelectedBranches] = useState([]);
 
   useEffect(() => {
     const handleOnlineStatusChange = () => {
@@ -70,6 +72,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         address: user.address || "",
         branch: user.branch || "",
         remark: user.remark || "",
+        status :user.status || "",
       });
     } else {
       setFormData({
@@ -94,6 +97,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         address: "",
         branch: "",
         remark: "",
+        status:"",
       });
     }
   }, [isOpen, mode, user]);
@@ -209,6 +213,9 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
               </div>
               <div>
                 <p><strong>Remark:</strong> {user.remark}</p>
+              </div>
+              <div>
+                <p><strong>Status:</strong> {user.status}</p>
               </div>
             </div>
           )}
@@ -428,22 +435,23 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 />
               </div>
               <div>
-                <Select 
-                  name="branch" 
-                  label="Interested Branch" 
-                  size="sm"
-                  variant="bordered"
-                  placeholder="Select Branch" 
-                  selectedKeys={[formData.branch]} 
-                  value={formData.branch}
-                  onChange={handleChange}
-                >
-                  <SelectItem key="CSE" textValue="CSE">CSE</SelectItem>
-                  <SelectItem key="ENTC" textValue="ENTC">ENTC</SelectItem>
-                  <SelectItem key="Electrical" textValue="Electrical">Electrical</SelectItem>
-                  <SelectItem key="MECH" textValue="MECH">Mechanical</SelectItem>
-                  <SelectItem key="Civil" textValue="Civil">Civil</SelectItem>
-                </Select>
+              <Select 
+      name="branch" 
+      label="Interested Branch" 
+      size="sm"
+      variant="bordered"
+      placeholder="Select Branch" 
+      selectedKeys={selectedBranches} 
+      value={selectedBranches}
+      onSelectionChange={handleChange}
+      multiple
+    >
+      <SelectItem key="CSE" textValue="CSE">CSE</SelectItem>
+      <SelectItem key="ENTC" textValue="ENTC">ENTC</SelectItem>
+      <SelectItem key="Electrical" textValue="Electrical">Electrical</SelectItem>
+      <SelectItem key="MECH" textValue="MECH">Mechanical</SelectItem>
+      <SelectItem key="Civil" textValue="Civil">Civil</SelectItem>
+    </Select>
               </div>
               <div>
                 <Select 
@@ -458,6 +466,17 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   <SelectItem key="Interested" textValue="Interested">Interested</SelectItem>
                   <SelectItem key="Not Interested" textValue="Not Interested">Not Interested</SelectItem>
                 </Select>
+              </div>
+              <div>
+                <Input 
+                  name="status"
+                  size="sm"
+                  variant="bordered"
+                  label="Status" 
+                  value={formData.address} 
+                  onChange={handleChange} 
+                  required 
+                />
               </div>
             </div>
           )}

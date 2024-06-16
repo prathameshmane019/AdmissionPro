@@ -85,6 +85,8 @@ const Profile = () => {
               <Input 
                 fullWidth 
                 label="FirstName" 
+          
+          
                 name="name" 
                 value={updatedFaculty.name} 
                 onChange={handleInputChange} 

@@ -25,7 +25,7 @@ import { EditIcon } from "@/public/EditIcon";
 import { DeleteIcon } from "@/public/DeleteIcon";
 import { SearchIcon } from "@/public/SearchIcon";
 import FacultyModal from "./facultyModal";
-
+import * as XLSX from "xlsx";
 const columns = [
   { uid: "name", name: "Name", sortable: true },
   { uid: "gender", name: "Gender" },
@@ -64,6 +64,13 @@ export default function FacultyTable() {
     } catch (error) {
       console.error('Error fetching faculty:', error);
     }
+  };
+
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(faculty);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Faculty");
+    XLSX.writeFile(workbook, "faculty_data.xlsx");
   };
 
   const deleteFaculty = async (_id) => {
@@ -263,6 +270,14 @@ export default function FacultyTable() {
             >
               Add New
             </Button>
+            <Button
+              color="primary"
+              size="sm"
+              variant="ghost"
+              onClick={downloadExcel}
+            >
+              Download
+            </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -328,6 +343,7 @@ export default function FacultyTable() {
 
   return (
     <>
+    
       <Table
         isCompact
         removeWrapper

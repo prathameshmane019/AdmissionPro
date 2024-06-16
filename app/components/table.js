@@ -18,6 +18,7 @@ import {
     Pagination,
     Spinner,
 } from "@nextui-org/react";
+import * as XLSX from "xlsx";
 
 import { PlusIcon } from "@/public/PlusIcon";
 import { EyeIcon } from "@/public/EyeIcon";
@@ -180,6 +181,38 @@ export default function TableComponent() {
         }
         return filteredUsers;
     }, [data?.students, filterValue]);
+
+
+    const downloadExcel = async () => {
+        try {
+            // Fetch all students data without pagination
+            const response = await axios.get('/api/students', {
+                params: {
+                    ...filters,
+                    search: filterValue,
+                    limit: '', // Fetch all records
+                    page: '',  // Remove pagination
+                }
+            });
+    
+            // Check if data is an array
+            if (!Array.isArray(response.data.students)) {
+                throw new Error("Data is not an array");
+            }
+    
+            // Create worksheet and workbook
+            const worksheet = XLSX.utils.json_to_sheet(response.data.students);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+    
+            // Write workbook to file
+            XLSX.writeFile(workbook, "student_data.xlsx");
+        } catch (error) {
+            console.error("Error downloading Excel file:", error);
+        }
+    };
+    
+    
     const items = useMemo(() => {
         const start = (page - 1) * rowsPerPage;
         const end = start + rowsPerPage;
@@ -439,7 +472,14 @@ export default function TableComponent() {
                     >
                         Add New
                     </Button>
-              
+                    <Button
+              color="primary"
+              size="sm"
+              variant="ghost"
+              onClick={downloadExcel}
+            >
+              Download
+            </Button>
                 </div>
 
             </div>

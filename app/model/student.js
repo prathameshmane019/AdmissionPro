@@ -70,7 +70,7 @@ const studentSchema = new Schema(
       type: String
     },
     branch: {
-      type: String
+      type: [String]
     },
     remark: {
       type: String

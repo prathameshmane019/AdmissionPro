@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem } from "@nextui-org/react";
 import axios from "axios";
 import { toast } from 'sonner';
+
 import NoInternetPage from './NoInternetPage'; // Import NoInternetPage component
-// import { Select, SelectItem } from '@some-library/select'; 
+
 const StudentModal = ({ isOpen, onClose, mode, user }) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -26,7 +27,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     email: "",
     college: "",
     address: "",
-    branch: "",
+    branch: [],
     remark: "",
     status :"",
   });
@@ -70,7 +71,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         email: user.email || "",
         college: user.college || "",
         address: user.address || "",
-        branch: user.branch || "",
+        branch: user.branch || [],
         remark: user.remark || "",
         status :user.status || "",
       });
@@ -155,40 +156,40 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
           {mode === "view" && user && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+                <p><strong>Name:</strong> {user.firstName}{user.lastName}</p>
               </div>
               <div>
-                <p><strong>Father &#39; s Name:</strong> {user.fatherName}</p>
+                <p><strong>Father &#39; s Name:</strong>{user.fatherName}</p>
               </div>
               <div>
-                <p><strong>Mother &#39; s Name:</strong> {user.motherName}</p>
+                <p><strong>Mother &#39; s Name:</strong>{user.motherName}</p>
               </div>
               <div>
-                <p><strong>Gender:</strong> {user.gender}</p>
+                <p><strong>Gender:</strong>{user.gender}</p>
               </div>
               <div>
-                <p><strong>Date of Birth:</strong> {user.dob}</p>
+                <p><strong>Date of Birth:</strong>{user.dob}</p>
               </div>
               <div>
-                <p><strong>Category:</strong> {user.category}</p>
+                <p><strong>Category:</strong>{user.category}</p>
               </div>
               <div>
-                <p><strong>Disability:</strong> {user.disability}</p>
+                <p><strong>Disability:</strong>{user.disability}</p>
               </div>
               <div>
-                <p><strong>HSC Score:</strong> {user.hsc}</p>
+                <p><strong>HSC Score:</strong>{user.hsc}</p>
               </div>
               <div>
-                <p><strong>SSC Score:</strong> {user.ssc}</p>
+                <p><strong>SSC Score:</strong>{user.ssc}</p>
               </div>
               <div>
-                <p><strong>CET Score:</strong> {user.cet}</p>
+                <p><strong>CET Score:</strong>{user.cet}</p>
               </div>
               <div>
-                <p><strong>JEE Score:</strong> {user.jee}</p>
+                <p><strong>JEE Score:</strong>{user.jee}</p>
               </div>
               <div>
-                <p><strong>PCM Group:</strong> {user.pcm}</p>
+                <p><strong>PCM Group:</strong>{user.pcm}</p>
               </div>
               <div>
                 <p><strong>Group:</strong> {user.group}</p>
@@ -495,5 +496,4 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     </Modal>
   );
 };
-
 export default StudentModal;

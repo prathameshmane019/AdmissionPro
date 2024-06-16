@@ -14,6 +14,8 @@ import {
   Tab,
   Tabs
 } from '@nextui-org/react';
+import * as XLSX from "xlsx";
+
 import axios from 'axios';
 import { toast } from 'sonner';
 import NoInternetPage from '@/app/components/NoInternetPage';
@@ -131,6 +133,22 @@ const ManageClusterPage = ({ params }) => {
       setFaculties(prevFaculties => [...prevFaculties, facultyToAdd]);
     }
   };
+  
+  const downloadExcel = () => {
+    if(selected=="students"){
+    const worksheet = XLSX.utils.json_to_sheet(students);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+    XLSX.writeFile(workbook, `${cluster.name}_students.xlsx`);
+    }
+    else
+    {
+      const worksheet = XLSX.utils.json_to_sheet(faculties);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Faculty");
+      XLSX.writeFile(workbook, `${cluster.name}_faculties.xlsx`);
+      }
+  };
 
   const handleSelectStudent = (id) => {
 
@@ -178,6 +196,14 @@ const ManageClusterPage = ({ params }) => {
           </AutocompleteItem>
         ))}
       </Autocomplete>
+      <Button
+              color="primary"
+              size="sm"
+              variant="ghost"
+              onClick={downloadExcel}
+            >
+              Download
+            </Button>
       <Tabs
         aria-label="Options"
         selectedKey={selected}

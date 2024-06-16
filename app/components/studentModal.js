@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem } from "@nextui-org/react";
 import axios from "axios";
 import { toast } from 'sonner';
-import NoInternetPage from './NoInternetPage'; 
+
+import NoInternetPage from './NoInternetPage'; // Import NoInternetPage component
 
 const StudentModal = ({ isOpen, onClose, mode, user }) => {
   const [formData, setFormData] = useState({
@@ -28,16 +29,14 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     address: "",
     branch: [],
     remark: "",
+
     status:""
   });
 
-  const [isOnline, setIsOnline] = useState(true);
-  const [branch, setBranch] = React.useState(new Set([]));
 
-  const handleSelectionChange = (e) => {
-    setBranch(new Set(e.target.value.split(",")));
-    console.log(branch);
-  };
+  const [isOnline, setIsOnline] = useState(true);
+   const [selectedBranches, setSelectedBranches] = useState([]);
+
 
   useEffect(() => {
     const handleOnlineStatusChange = () => {
@@ -77,7 +76,11 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         address: user.address || "",
         branch: user.branch || [],
         remark: user.remark || "",
+
         status:user.status || ""
+
+        status :user.status || "",
+
       });
     } else {
       setFormData({
@@ -103,6 +106,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         branch: [],
         remark: "",
         status :""
+
       });
     }
   }, [isOpen, mode, user]);
@@ -442,6 +446,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 />
               </div>
               <div>
+
                 <Select
                     label="Select Branches"
                     varient ="bordered"
@@ -459,6 +464,8 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                     <SelectItem key="MECH" textValue="MECH">Mechanical</SelectItem>
                     <SelectItem key="Civil" textValue="Civil">Civil</SelectItem>
                 </Select>
+
+           
               </div>
 
               <div>
@@ -476,6 +483,7 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                 </Select>
               </div>
               <div>
+
                 <Select 
                   name="status" 
                   label="Status" 
@@ -489,6 +497,16 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   <SelectItem key="Pending" textValue="Pending">Pending</SelectItem>
                   <SelectItem key="Not Eligible" textValue="Not Eligible">Not Eligible</SelectItem>
                 </Select>
+
+                <Input 
+                  name="status"
+                  size="sm"
+                  variant="bordered"
+                  label="Status" 
+                  value={formData.address} 
+                  onChange={handleChange} 
+                  required 
+                />
               </div>
             </div>
           )}

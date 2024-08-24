@@ -56,7 +56,7 @@ export default function Home() {
                 <Link href="/login" legacyBehavior>
                   <a>
                     <button className="bg-blue-500 text-white px-8 py-3 rounded-full hover:bg-blue-600 shadow-lg">
-                      Let's Start
+                      Let &apos;s Start
                     </button>
                   </a>
                 </Link>

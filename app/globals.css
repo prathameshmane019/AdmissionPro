@@ -6,8 +6,6 @@
   position: relative;
 }
 
-
-
 .sidebar {
   width: 17rem;
   height: 100%;
@@ -39,13 +37,13 @@
   font-weight: 600;
   
 }
-
 .sidebar__list {
   list-style: none;
+  color: #212121;
 }
 
 .sidebar__link:hover {
-  background-color: #efebeb;
+  background-color: #e9e3eb;
   color:#212121;
 }
 .sidebar__link {
@@ -59,22 +57,25 @@
   border-radius: 0.8rem;
   align-items: center;
   justify-content: start;
+  color: #212121;
 }
 
 .sidebar__link--active {
   color: #fff;
-  background-color: #212121;
+  background-color: #7c3aed;
 }
-
+.sidebar__link--active .sidebar__icon{
+  color: #fff;
+}
 .sidebar__icon {
   display: inline-block;
   font-size: 1.2rem;
+  color:#4c1d95;
 }
 
 .sidebar__name {
   margin-left: 0.5rem;
 }
-
 [data-collapse="true"] {
   width: 5.3rem;
 }

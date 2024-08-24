@@ -330,12 +330,11 @@ export default function TableComponent() {
                           size="sm"
                           onChange={handleFilterChange}
                           >
-                                {clusters && clusters?.map((cluster) => (
+                        {clusters && clusters?.map((cluster) => (
                                     <SelectItem textValue={cluster.name} key={cluster._id}>
                                         {cluster.name}
                                     </SelectItem>
                                 ))}
-
                         </Select>
                         <Input
                         aria-label="Filter by College Name "

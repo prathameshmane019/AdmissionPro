@@ -1,80 +1,81 @@
+/** @type {import('tailwindcss').Config} */
 const {nextui} = require("@nextui-org/react");
-
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './app/**/*.{js,ts,jsx,tsx}',
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-    './node_modules/@nextui-org/theme/dist/components/(button|snippet|code|input).js'
   ],
   theme: {
     extend: {
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
   },
-  darkMode:"class",
   plugins: [
     nextui({
       themes: {
         light: {
           colors: {
-            background: "#FFFFFF", // or DEFAULT
-            foreground: "#11181C", // or 50 to 900 DEFAULT
+            background: "hsl(250 100% 99%)",
+            foreground: "hsl(250 20% 10%)",
             primary: {
-              foreground: "#FFFFFF",
-              DEFAULT: "#000000",
+              DEFAULT: "hsl(265 83% 45%)",
+              foreground: "hsl(0 0% 100%)",
             },
             secondary: {
-              50: "#faf5ff",
-              100: "#f3e8ff",
-              200: "#e9d5ff",
-              300: "#d8b4fe",
-              400: "#c084fc",
-              500: "#a855f7",
-              600: "#9333ea",
-              700: "#7e22ce",
-              800: "#6b21a8",
-              900: "#581c87",
-              950:"#3b0764"
+              DEFAULT: "hsl(250 30% 90%)",
+              foreground: "hsl(250 60% 25%)",
             },
+            muted: {
+              DEFAULT: "hsl(250 20% 95%)",
+              foreground: "hsl(250 10% 40%)",
+            },
+            accent: {
+              DEFAULT: "hsl(280 75% 60%)",
+              foreground: "hsl(0 0% 100%)",
+            },
+            destructive: {
+              DEFAULT: "hsl(0 84% 60%)",
+              foreground: "hsl(0 0% 100%)",
+            },
+            border: "hsl(250 30% 86%)",
+            input: "hsl(250 30% 86%)",
+            ring: "hsl(265 83% 45%)",
           },
         },
         dark: {
           colors: {
-            background: "#000000", // or DEFAULT
-            foreground: "#FFFFFF", // or 50 to 900 DEFAULT
+            background: "hsl(250 30% 10%)",
+            foreground: "hsl(250 20% 90%)",
             primary: {
-              background:'#000000',
-              foreground: "#FFFFFF",
-              DEFAULT: "#690bdc",
+              DEFAULT: "hsl(265 83% 55%)",
+              foreground: "hsl(0 0% 100%)",
             },
             secondary: {
-              50: "#faf5ff",
-              100: "#f3e8ff",
-              200: "#e9d5ff",
-              300: "#d8b4fe",
-              400: "#c084fc",
-              500: "#a855f7",
-              600: "#9333ea",
-              700: "#7e22ce",
-              800: "#6b21a8",
-              900: "#581c87",
-              950:"#3b0764"
+              DEFAULT: "hsl(250 30% 20%)",
+              foreground: "hsl(250 20% 90%)",
             },
-          },
-        },
-        mytheme: {
-          extend: "dark",
-          colors: {
-            primary: {
-              DEFAULT: "#86469C",
-              foreground: "#FFFFFF",
+            muted: {
+              DEFAULT: "hsl(250 30% 25%)",
+              foreground: "hsl(250 20% 70%)",
             },
-            focus: "#BEF264",
+            accent: {
+              DEFAULT: "hsl(280 75% 50%)",
+              foreground: "hsl(0 0% 100%)",
+            },
+            destructive: {
+              DEFAULT: "hsl(0 62% 30%)",
+              foreground: "hsl(0 0% 100%)",
+            },
+            border: "hsl(250 30% 30%)",
+            input: "hsl(250 30% 30%)",
+            ring: "hsl(265 83% 55%)",
           },
         },
       },

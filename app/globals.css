@@ -3,99 +3,105 @@
 @tailwind utilities;
 
 .sidebar__wrapper {
-    position: relative;
-  }
-  
-  .sidebar {
-    width: 17rem;
-    height: 100%;
-    background-color: var(--color-bg);
-    padding: 1rem;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-    overflow: hidden;
-  }
-  
-  .sidebar__top {
-    width: max-content;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  
-  .sidebar__logo {
-    width: 3.5rem;
-    height: 3.5rem;
-    object-fit: contain;
-    border-radius: 1rem;
-  }
-  
-  .sidebar__logo-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-    
-  }
-  
-  .sidebar__list {
-    list-style: none;
+  position: relative;
+}
 
-  }
+.sidebar {
+  width: 17rem;
+  height: 100%;
+  background-color: var(--color-bg);
+  padding: 1rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  overflow: hidden;
+}
+
+.sidebar__top {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar__logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: contain;
+  border-radius: 1rem;
+}
+
+.sidebar__logo-name {
+  font-size: 1.2rem;
+  font-weight: 600;
   
-  .sidebar__link {
-    display: inline-block;
-    font-size: 1rem;
-    text-decoration: none;
-    padding: 0.4rem 0.8rem;
-    display: flex;
-    background-color: var(--color-sidebar-item);
-    margin-bottom: 1rem;
-    border-radius: 0.8rem;
-    align-items: center;
-    justify-content: start;
-  }
-  
-  .sidebar__link--active {
-    color: #fff;
-    background-color: #212529;
-  }
-  
-  .sidebar__icon {
-    display: inline-block;
-    font-size: 1.2rem;
-  }
-  
-  .sidebar__name {
-    margin-left: 0.5rem;
-  }
-  
-  [data-collapse="true"] {
-    width: 4.8rem;
-  }
-  
-  [data-collapse="true"] .sidebar__name,
-  [data-collapse="true"] .sidebar__logo-name {
-    display: none;
-  }
-  
-  .btn {
-    position: absolute;
-    right: 0;
-    top: 4.7rem;
-    border: none;
-    background-color: var(--color-bg);
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transform: translateX(50%);
-    font-size: 2.1rem;
-    background: #ffffff;
-    color: #11181C;
-  
-  }
+}
+.sidebar__list {
+  list-style: none;
+  color: #212121;
+}
+
+.sidebar__link:hover {
+  background-color: #e9e3eb;
+  color:#212121;
+}
+.sidebar__link {
+  display: inline-block;
+  font-size: 1rem;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  background-color: var(--color-sidebar-item);
+  margin-bottom: 1rem;
+  border-radius: 0.8rem;
+  align-items: center;
+  justify-content: start;
+  color: #212121;
+}
+
+.sidebar__link--active {
+  color: #fff;
+  background-color: #7c3aed;
+}
+.sidebar__link--active .sidebar__icon{
+  color: #fff;
+}
+.sidebar__icon {
+  display: inline-block;
+  font-size: 1.2rem;
+  color:#4c1d95;
+}
+
+.sidebar__name {
+  margin-left: 0.5rem;
+}
+[data-collapse="true"] {
+  width: 5.3rem;
+}
+
+[data-collapse="true"] .sidebar__name,
+[data-collapse="true"] .sidebar__logo-name {
+  display: none;
+}
+
+.btn {
+  position: absolute;
+  right: 0;
+  top: 4.7rem;
+  border: none;
+  background-color: var(--color-bg);
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transform: translateX(50%);
+  font-size: 2.1rem;
+  background: #ffffff;
+  color: #212121;
+
+}

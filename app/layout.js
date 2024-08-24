@@ -7,7 +7,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Admission Pro",
-  description: "SKN Sinhgad College of Engineering Pandharpur",
+  description: "SKN Sinhagad College Of Engineering Korti,Pandharpur",
+  icons:{
+    icon:"/logoschool.jpeg"
+  }
+
 };
 
 export default function RootLayout({ children }) {

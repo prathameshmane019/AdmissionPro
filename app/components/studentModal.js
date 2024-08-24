@@ -29,15 +29,17 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
     address: "",
     branch: [],
     remark: "",
-
     status:""
   });
 
 
-  const [isOnline, setIsOnline] = useState(true);
-   const [selectedBranches, setSelectedBranches] = useState([]);
+  
+  const [isOnline, setIsOnline] = useState(true);  
+  const [branch, setBranch] = useState(new Set([]));
 
-
+  const handleSelectionChange = (e) => {
+    setBranch(new Set(e.target.value.split(",")));
+  };
   useEffect(() => {
     const handleOnlineStatusChange = () => {
       setIsOnline(navigator.onLine);
@@ -78,8 +80,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         remark: user.remark || "",
 
         status:user.status || ""
-
-        status :user.status || "",
 
       });
     } else {
@@ -139,7 +139,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
         console.log("Student updated:", response.data);
         toast.success('Student updated successfully');
       }
-      
       onClose();
     } catch (error) {
       console.error("Error:", error);
@@ -449,13 +448,12 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
 
                 <Select
                     label="Select Branches"
-                    varient ="bordered"
+                    variant ="bordered"
                     size="sm"
                     selectionMode="multiple"
-                    placeholder="Select an animal"
+                    placeholder="Select Branch  prioritywise"
                     name="branch"
                     selectedKeys={Array.from(branch)}
-                    className="max-w-xs"
                     onChange={handleSelectionChange}
                 >
                     <SelectItem key="CSE" textValue="CSE">CSE</SelectItem>
@@ -464,7 +462,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                     <SelectItem key="MECH" textValue="MECH">Mechanical</SelectItem>
                     <SelectItem key="Civil" textValue="Civil">Civil</SelectItem>
                 </Select>
-
            
               </div>
 
@@ -497,16 +494,6 @@ const StudentModal = ({ isOpen, onClose, mode, user }) => {
                   <SelectItem key="Pending" textValue="Pending">Pending</SelectItem>
                   <SelectItem key="Not Eligible" textValue="Not Eligible">Not Eligible</SelectItem>
                 </Select>
-
-                <Input 
-                  name="status"
-                  size="sm"
-                  variant="bordered"
-                  label="Status" 
-                  value={formData.address} 
-                  onChange={handleChange} 
-                  required 
-                />
               </div>
             </div>
           )}

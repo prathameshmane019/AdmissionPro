@@ -25,9 +25,10 @@ export default function Home() {
               </div>
             </div>
             <nav className="flex items-center space-x-4">
+              
               <Link href="/login" legacyBehavior>
-                <a className="text-gray-600 hover:text-blue-500">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                <a>
+                  <button className="b1">
                     Login
                   </button>
                 </a>
@@ -55,8 +56,24 @@ export default function Home() {
                 </p>
                 <Link href="/login" legacyBehavior>
                   <a>
-                    <button className="bg-blue-500 text-white px-8 py-3 rounded-full hover:bg-blue-600 shadow-lg">
-                      Let &apos;s Start
+                    <button className="custom-button">
+                      <div className="svg-wrapper-1">
+                        <div className="svg-wrapper">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="24"
+                            height="24"
+                          >
+                            <path fill="none" d="M0 0h24v24H0z"></path>
+                            <path
+                              fill="currentColor"
+                              d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                            ></path>
+                          </svg>
+                        </div>
+                      </div>
+                      <span>Start </span>
                     </button>
                   </a>
                 </Link>
